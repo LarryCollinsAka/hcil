@@ -82,6 +82,10 @@ Likely first extraction: AI inference and background processing (slow, costly, o
 7. Evidence attaches only to active capabilities.
 8. Every insert, update and delete on taxonomy tables is audited by trigger, including edits made outside the app.
 
+## Capability principle
+
+HCIL never represents human capability as a single aggregate employability or intelligence score. Capability is multidimensional, contextual, evidence-backed and time-dependent.
+
 ## Core rule
 
 HCIL is modular in design before it is distributed in deployment. Extracting a service later is a deployment choice, not a domain rewrite.
