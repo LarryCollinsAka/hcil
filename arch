@@ -1,0 +1,102 @@
+hcil/
+├─ .next/
+│  └─ types/
+│     ├─ cache-life.d.ts
+│     ├─ root-params.d.ts
+│     ├─ routes.d.ts
+│     └─ validator.ts
+├─ artifacts/
+│  ├─ HCIL_CAPABILITY_DESIGN_v1.1.md
+│  ├─ HCIL_WORK_DESIGN_v1.1.md
+│  ├─ HCILArchitecturev1.MD
+│  └─ WORK_IMPLEMENTATION_NOTES_v1.md
+├─ drizzle/
+│  ├─ meta/
+│  │  ├─ _journal.json
+│  │  ├─ 0000_snapshot.json
+│  │  ├─ 0001_snapshot.json
+│  │  ├─ 0002_snapshot.json
+│  │  ├─ 0003_snapshot.json
+│  │  ├─ 0004_snapshot.json
+│  │  └─ 0005_snapshot.json
+│  ├─ 0000_uneven_miek.sql
+│  ├─ 0001_adorable_phantom_reporter.sql
+│  ├─ 0002_triggers_and_rls.sql
+│  ├─ 0003_capability_integrity.sql
+│  ├─ 0004_keen_patriot.sql
+│  └─ 0005_triggers_and_rls.sql
+├─ public/
+│  ├─ file.svg
+│  ├─ globe.svg
+│  ├─ next.svg
+│  ├─ vercel.svg
+│  └─ window.svg
+├─ src/
+│  ├─ app/
+│  │  ├─ [locale]/
+│  │  │  ├─ layout.tsx
+│  │  │  └─ page.tsx
+│  │  ├─ favicon.ico
+│  │  ├─ globals.css
+│  │  └─ route.ts
+│  ├─ components/
+│  │  ├─ home/
+│  │  │  ├─ Audiences.tsx
+│  │  │  ├─ BlockRenderer.tsx
+│  │  │  ├─ Cta.tsx
+│  │  │  ├─ Faq.tsx
+│  │  │  ├─ Hero.tsx
+│  │  │  ├─ Highlights.tsx
+│  │  │  ├─ Languages.tsx
+│  │  │  ├─ Principles.tsx
+│  │  │  └─ Steps.tsx
+│  │  └─ site/
+│  │     ├─ Footer.tsx
+│  │     ├─ Header.tsx
+│  │     ├─ Icon.tsx
+│  │     ├─ LocaleSwitcher.tsx
+│  │     ├─ Logo.tsx
+│  │     └─ ui.ts
+│  ├─ config/
+│  │  └─ brand.ts
+│  ├─ content/
+│  │  ├─ homepage/
+│  │  │  ├─ homepage.en.ts
+│  │  │  ├─ homepage.fr.ts
+│  │  │  ├─ index.ts
+│  │  │  └─ types.ts
+│  │  ├─ home.ts
+│  │  ├─ site.ts
+│  │  └─ types.ts
+│  ├─ db/
+│  │  ├─ schema/
+│  │  │  ├─ sql/
+│  │  │  │  ├─ 0002_capability_integrity.sql
+│  │  │  │  ├─ 0002_work_guards.sql
+│  │  │  │  └─ 001_triggers_and_rls.sql
+│  │  │  ├─ _shared.ts
+│  │  │  ├─ capability.ts
+│  │  │  ├─ community.ts
+│  │  │  ├─ content.ts
+│  │  │  ├─ identity.ts
+│  │  │  ├─ index.ts
+│  │  │  ├─ platform.ts
+│  │  │  ├─ reference.ts
+│  │  │  └─ work.ts
+│  │  └─ index.ts
+│  └─ lib/
+│     └─ i18n.ts
+├─ .env
+├─ .gitignore
+├─ AGENTS.md
+├─ CLAUDE.md
+├─ drizzle.config.ts
+├─ eslint.config.mjs
+├─ LICENSE
+├─ next-env.d.ts
+├─ next.config.ts
+├─ package-lock.json
+├─ package.json
+├─ postcss.config.mjs
+├─ README.md
+└─ tsconfig.json

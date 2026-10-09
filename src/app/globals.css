@@ -1,26 +1,97 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/*
+ * PALETTE: only the three colours of the Cameroon flag, as tints (toward white) and shades (toward black).
+ *   Yellow  #FCD116  primary and dominant ("gold")
+ *   Green   #007A5E  secondary, also the deep ink used for text and dark surfaces
+ *   Red     #CE1126  rare accent: the smallest touches only
+ * Tailwind's default palette is cleared on purpose, so an off-palette colour cannot slip in by accident.
+ * White is the one neutral kept (text on dark surfaces, card surfaces); remove --color-white to forbid it.
+ */
+@theme {
+  --color-*: initial;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+  --color-white: #ffffff;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  /* Gold: the flag yellow #FCD116 is gold-500 */
+  --color-gold-50: #fffae8;
+  --color-gold-100: #fef4c5;
+  --color-gold-200: #feea96;
+  --color-gold-300: #fde168;
+  --color-gold-400: #fcd839;
+  --color-gold-500: #fcd116;
+  --color-gold-600: #deb813;
+  --color-gold-700: #b59610;
+  --color-gold-800: #7e690b;
+  --color-gold-900: #473b06;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  /* Green: the flag green #007A5E is green-600; 900/950 are the ink colours */
+  --color-green-50: #ebf4f2;
+  --color-green-100: #d1e7e2;
+  --color-green-200: #a6d0c7;
+  --color-green-400: #4ca28e;
+  --color-green-600: #007a5e;
+  --color-green-700: #005f49;
+  --color-green-800: #004334;
+  --color-green-900: #00271e;
+  --color-green-950: #001611;
+
+  /* Red: the flag red #CE1126 is red-600 */
+  --color-red-50: #fcf1f2;
+  --color-red-100: #f6d4d8;
+  --color-red-600: #ce1126;
+  --color-red-700: #a50e1e;
+  --color-red-800: #7c0a17;
+
+  --animate-float-slow: float-slow 7s ease-in-out infinite;
+  --animate-float-slower: float-slow 9s ease-in-out infinite reverse;
+
+  @keyframes float-slow {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-9px);
+    }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@theme inline {
+  --font-sans: var(--font-inter, "Inter"), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  body {
+    background-color: var(--color-gold-50);
+    color: var(--color-green-950);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: var(--color-gold-500);
+    color: var(--color-green-950);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-green-700);
+    outline-offset: 3px;
+  }
+
+  summary {
+    cursor: pointer;
+  }
 }
