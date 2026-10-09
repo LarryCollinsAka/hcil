@@ -54,3 +54,11 @@ export const valuesIn = (
 
 export const slugFormat = (name: string, col: AnyPgColumn) =>
   check(name, sql`${col} ~ '^[a-z0-9]+(-[a-z0-9]+)*$'`);
+
+// Language modalities, shared by capability (proficiency) and work (requirements).
+export const MODALITIES = [
+  "reading",
+  "writing",
+  "listening",
+  "speaking",
+] as const;

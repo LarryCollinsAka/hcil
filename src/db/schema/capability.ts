@@ -30,7 +30,13 @@ import {
   uniqueIndex,
   uuid,
 } from "drizzle-orm/pg-core";
-import { createdAt, translationMeta, updatedAt, valuesIn } from "./_shared";
+import {
+  MODALITIES,
+  createdAt,
+  translationMeta,
+  updatedAt,
+  valuesIn,
+} from "./_shared";
 import { profiles } from "./identity";
 import { capabilities, languages } from "./reference";
 
@@ -46,12 +52,7 @@ export const EVIDENCE_KINDS = [
   "self_declared",
   "admin_adjustment",
 ] as const;
-export const MODALITIES = [
-  "reading",
-  "writing",
-  "listening",
-  "speaking",
-] as const;
+export { MODALITIES };
 export const ASSESSMENT_KINDS = [
   "knowledge_quiz",
   "practical_task",

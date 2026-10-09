@@ -1,569 +1,110 @@
-# HCIL Work Domain Design v1.1
+# HCIL Work Domain v1.1
 
-**Status:** Schema-ready
-**Bounded context:** `work`
-**Depends on:** `reference`, `identity`, `capability`
-**Does not own:** `matching` decisions, payment ledger/escrow, chat, learning
+**Status:** frozen for MVP. Supersedes `HCIL_WORK_DESIGN_v1.md`. Schema: `src/db/schema/work.ts`; integrity SQL: `custom-migrations/0003_work_integrity.sql`; checks: `db/tests/work_checks.sql`.
 
-## 1. Purpose
+## Purpose
 
-The Work context models **economic demand as structured work**, not as a conventional job advertisement.
+`work` represents economic demand as work to be accomplished, not as a job advertisement:
 
-Its central question is:
+> What outcome does an organization need, what work achieves it, and what acceptance conditions define completion?
 
-> **What outcome does an organization need, what work must be performed to achieve it, and what measurable conditions define completion?**
+It records the commitment between a worker and a piece of work, and the deliverables and decisions that follow. It does not decide who should do the work (`matching`), move money (`payments`), or change what a worker can demonstrate (`capability`).
 
-Work owns the durable commercial commitment created from that demand. Matching recommends who should do the work; Payments owns money movement.
-
----
-
-## 2. Locked decisions
-
-### 2.1 One hierarchical package model
-
-There is no separate `work_units` table.
-
-A `work_package` may have children through `parent_id`:
+## Core model
 
 ```text
-Work Request
-  |
-  +-- Data preparation (container)
-  |     +-- Clean dataset (leaf)
-  |     +-- Validate dataset (leaf)
-  |
-  +-- Analysis (container)
-        +-- Pivot analysis (leaf)
-        +-- Business insights (leaf)
+Organization
+   |
+   v
+Work Request --- Milestones (funding / progress checkpoints)
+   |                  ^
+   v                  | each leaf in at most one milestone
+Work Package tree ----+
+   |  (leaf = executable)
+   +-- Requirements: capability (0-5 scale), language by modality (1-6)
+   +-- Assignments (worker <-> leaf, with agreed terms)
+          +-- Submissions (append-only, versioned)
+                 +-- Acceptance (one decision per submission)
 ```
 
-**Leaf-ness is derived from the absence of children.** It is not stored as a `package_type` field.
+## Decisions
 
-A leaf package is the executable unit of work for MVP purposes.
+1. **Milestones group leaf packages, not assignments.** A milestone is the employer's outcome checkpoint and funding unit. It does not change when a worker is replaced. A leaf belongs to at most one milestone (`work_packages.milestone_id`).
+2. **The assignment is a Work record (`assignments`).** Matching decides who; Work records the commitment. Matching calls a Work command to create it and leaves an opaque `source_match_id`. Payments never owns it but points at it.
+3. **Worker payout releases on package acceptance;** escrow is funded per milestone. A teammate's pace never delays another worker's pay. The alternative (release on milestone acceptance) was rejected for micro-teams.
+4. **Leaf-ness is derived** (a package with no children), not stored.
+5. **No `work_units` table.** Leaf packages are the executable units.
+6. **No durable `micro_teams` table in Work.** A team is the set of workers with assignments under one request. Matching keeps team proposals as recommendations.
 
-### 2.2 Milestones group packages, never assignments
+## Tables
 
-A milestone is an employer outcome/funding checkpoint. Leaf packages may belong to at most one milestone.
+**`work_requests`**: `organization_id`, `created_by`, `title`, `problem_statement`, `desired_outcome`, `source_language_id`, `status` (draft, submitted, decomposing, structured, cancelled). The problem statement is never rewritten. Completion is derived from packages.
 
-`milestone_packages` enforces that relationship.
+**`milestones`**: `work_request_id`, `sequence`, `title`, `description`, `acceptance_criteria`, `due_at`, `budget_amount`, `currency`, `status` (planned, funded, in_progress, completed, cancelled). Budget is the employer's commercial commitment; the escrow ledger is Payments'. Status `funded` is set by Work when it consumes `payments.milestone_funded`.
 
-Changing a worker does not change the milestone's outcome structure.
+**`work_packages`**: `work_request_id`, `parent_id`, `milestone_id`, `title`, `description`, `acceptance_criteria`, `sequence`, `status` (draft, proposed, confirmed, in_progress, completed, cancelled), `origin` (human, ai), `created_by` (null for ai), `estimated_hours`, `starts_at`, `due_at`. Composite foreign keys guarantee a package's parent and milestone belong to the same request. AI decomposition creates `proposed` packages; only employer-confirmed leaves are matchable.
 
-### 2.3 Assignment is a Work record
+**`work_package_capabilities`** (package, capability): `minimum_level` (1 to 5), `weight`, `is_critical` (independent of weight), `required_confidence` (optional floor), `notes`.
 
-An assignment is a durable commitment between a worker and an executable package.
+**`work_package_languages`** (package, language, modality): `minimum_level` (1 to 6 = A1 to C2), `weight`, `is_critical`. One row per modality, mirroring `worker_language_proficiency`.
 
-Matching decides **who should do the work**. Work records the commitment:
+**`assignments`**: `work_package_id`, `worker_id` (must have a `worker_profiles` row), `status` (offered, accepted, active, completed, declined, withdrawn, terminated), `agreed_amount`, `currency`, `agreed_hours`, `due_at`, `source_match_id` (opaque), `offered_by`, timestamps. At most one open assignment per package. Terminal statuses never change.
 
-- worker
-- package
-- agreed amount
-- hours/availability commitment
-- due date
-- lifecycle
-- optional opaque `source_match_id`
+**`submissions`** (append-only): `assignment_id`, `version`, `summary`, `storage_path`, `external_url`, `submitted_at`. Versions are sequential; a new one is allowed only after the previous received a decision. State is derived from the decision.
 
-Work never creates a foreign key into Matching.
+**`acceptances`** (append-only): `submission_id` (unique, one decision each), `decision` (accepted, rejected, revision_requested), `quality` (0 to 1), `feedback`, `decided_by`, `decided_at`. `decided_by` must be a member of the owning organization, or null for a system decision. A revision request leads to a new submission.
 
-### 2.4 Payout is triggered by package acceptance
-
-The payout unit is the accepted worker package, not the entire milestone.
+## Money flow
 
 ```text
-milestone.budget_amount
-    >=
-SUM(assignment.agreed_amount)
-for assignments whose packages belong to that milestone
+milestone.budget_amount  >=  sum(agreed_amount of committed assignments in it)   (trigger)
+
+payments emits  payments.milestone_funded -> Work sets milestone status = funded
+Work emits      work.deliverable_accepted  -> Payments releases that assignment's payout once
 ```
 
-The flow is:
+Committed statuses: offered, accepted, active, completed. Currency must match the milestone.
 
-```text
-payments.milestone_funded
-        -> Work marks milestone as funded
+## Lifecycles
 
-work.deliverable_accepted
-        -> Payments releases the assignment's agreed amount once
-           (idempotent by assignment)
-```
+- **Assignment:** offered -> accepted -> active -> completed; offered -> declined | withdrawn; accepted or active -> terminated. A package can be reassigned after declined, withdrawn or terminated.
+- **Package:** draft or proposed -> confirmed -> in_progress -> completed (or cancelled). A leaf needs acceptance criteria before leaving draft or proposed.
+- **Milestone:** completed when all its leaf packages are completed (derived by the service, then stored).
 
-Payments does not own the assignment; it owns the financial movement.
+## Synchronous vs asynchronous
 
----
+Synchronous, one transaction: creating or editing requests, packages, requirements and milestones; offering and responding to assignments; recording submissions and decisions; writing outbox events.
 
-## 3. Work Request
+Asynchronous (outbox): AI decomposition, Qdrant indexing, notifications, analytics, capability evidence from accepted work, payment release.
 
-A Work Request is the employer's original business need. It may be vague before AI/human structuring.
+`work.deliverable_accepted` carries a **snapshot** of the package's capability and language requirements, the quality, and the assignment, milestone and amount. The capability module turns that into `work_outcome` evidence (context level = the requirement's minimum level, quality = the decision's quality) without reading Work tables. This is eventually consistent: a worker's projection can lag by a short window.
 
-Fields:
+## Events Work emits (module.event, snake case)
 
-- `id`
-- `organization_id`
-- `created_by_profile_id`
-- `title`
-- `problem_statement`
-- `desired_outcome`
-- `source_language_id` nullable
-- `status`
-- `created_at`
-- `updated_at`
+`work.request_submitted`, `work.request_structured`, `work.request_cancelled`, `work.package_proposed`, `work.package_confirmed`, `work.package_requirements_changed`, `work.milestone_created`, `work.milestone_completed`, `work.assignment_offered`, `work.assignment_accepted`, `work.assignment_activated`, `work.assignment_ended`, `work.submission_received`, `work.revision_requested`, `work.deliverable_accepted`, `work.deliverable_rejected`, `work.package_completed`.
 
-Initial lifecycle:
+Consumes: `payments.milestone_funded`.
 
-```text
-DRAFT -> SUBMITTED -> DECOMPOSING -> STRUCTURED
-                                  \-> CANCELLED
-```
+## Integrity (database)
 
-The `origin` of individual packages is tracked separately because AI decomposition is not automatically trusted.
+- Composite FKs: a package's parent and milestone belong to its request.
+- Triggers: leaf-only requirements, milestone and assignments; a package with assignments, requirements or a milestone cannot become a container; no milestone change while money is committed; acceptance criteria required on leaves past draft; requirements only for active capabilities and languages.
+- Assignment guard: leaf only, package confirmed, milestone present, budget and currency respected (milestone row locked against concurrent offers), terminal states final, package and worker immutable.
+- Submissions and acceptances append-only; sequential versions; one decision per submission; decisions only on active assignments; one accepted submission per assignment; deciders limited to organization members.
+- CHECK constraints on levels, weights, amounts, currency codes, dates and statuses. RLS on, no policies yet.
 
----
+## Foreign key direction
 
-## 4. Work Package
+reference and identity are the base; capability and work sit above them; matching and payments sit above work. Schema foreign keys point down this order only. Work points at nothing in matching or payments; it uses opaque columns (`source_match_id`).
 
-A Work Package is a structured piece of work or outcome within a request. It supports hierarchical decomposition via `parent_id`.
+## Invariants
 
-Fields:
+1. Only leaf packages are assigned, carry requirements and belong to milestones.
+2. Requirements describe the work, not any worker. Work never writes capability or payment state.
+3. A submission is immutable history; acceptance never overwrites it.
+4. Committed assignment amounts never exceed the milestone budget.
+5. Every payout is traceable to an accepted submission through its assignment.
 
-- `id`
-- `work_request_id`
-- `parent_id` nullable
-- `title`
-- `description`
-- `sequence`
-- `status`
-- `origin`
-- `estimated_hours` nullable
-- `starts_at` nullable
-- `due_at` nullable
-- `acceptance_criteria` nullable for containers, required before a leaf becomes assignable
-- `created_at`
-- `updated_at`
+## Deferred
 
-### Status
-
-Initial values:
-
-```text
-proposed
-confirmed
-matching
-in_progress
-completed
-cancelled
-```
-
-AI-generated packages begin as `proposed`.
-
-Only employer-confirmed packages become eligible for matching/assignment.
-
-### Origin
-
-```text
-human
-ai
-```
-
-`ai` means an AI process created the proposal. It does not imply acceptance or correctness.
-
-### Leaf invariants
-
-- A package with children cannot receive an assignment.
-- A package with children cannot receive a submission.
-- A package with an assignment, submission, or milestone membership cannot gain children.
-- A package parent must belong to the same Work Request.
-- Package hierarchy cycles are rejected.
-- A leaf must have non-empty `acceptance_criteria` before it can be assigned.
-
-These rules are enforced with database triggers because leaf-ness is relational state.
-
----
-
-## 5. Capability Requirements
-
-`work_package_capabilities` describes the capability context required by a package.
-
-Fields:
-
-- `work_package_id`
-- `capability_id`
-- `minimum_level` — integer `1..5`
-- `weight` — numeric `0..1`
-- `is_critical`
-- `required_confidence` nullable, numeric `0..1`
-- `notes` nullable
-
-Unique key:
-
-```text
-(work_package_id, capability_id)
-```
-
-Example:
-
-```text
-Pivot Tables       minimum 3   weight .25   critical
-Data Analysis      minimum 3   weight .40   critical
-Reporting          minimum 2   weight .20   non-critical
-Excel Formatting   minimum 2   weight .15   non-critical
-```
-
-Requirements belong to Work. Worker capability evidence belongs to Capability.
-
----
-
-## 6. Language Requirements
-
-Language requirements are intentionally **one row per modality**.
-
-`work_package_language_requirements` fields:
-
-- `work_package_id`
-- `language_id`
-- `modality` — `reading | writing | listening | speaking`
-- `minimum_level` — integer `1..6`
-- `weight` — numeric `0..1`
-- `is_critical`
-
-The language scale is mapped to:
-
-```text
-1 = A1
-2 = A2
-3 = B1
-4 = B2
-5 = C1
-6 = C2
-```
-
-Unique key:
-
-```text
-(work_package_id, language_id, modality)
-```
-
-This keeps language requirements structurally consistent with the Capability context without pretending language is an ordinary technical skill.
-
----
-
-## 7. Milestones
-
-Milestones are Work-owned outcome/funding checkpoints.
-
-Fields:
-
-- `id`
-- `work_request_id`
-- `sequence`
-- `title`
-- `description`
-- `budget_amount`
-- `currency`
-- `due_at`
-- `status`
-- `acceptance_criteria` nullable
-- `created_at`
-- `updated_at`
-
-Initial states:
-
-```text
-draft
-funded
-in_progress
-completed
-cancelled
-```
-
-Funding state is changed by handling `payments.milestone_funded`.
-
-Progress/completion is derived from the milestone's packages and assignments, with explicit state transitions performed by the Work application layer.
-
-### Milestone package membership
-
-`milestone_packages` links a milestone to executable leaf packages.
-
-Constraints:
-
-- package must be a leaf
-- package may belong to **at most one** milestone
-- a package already assigned/submitted should not be moved into a different milestone without an explicit controlled transition
-
----
-
-## 8. Assignments
-
-Assignments are Work records representing durable execution commitments.
-
-Fields:
-
-- `id`
-- `work_package_id`
-- `worker_profile_id`
-- `source_match_id` nullable, opaque reference to Matching
-- `engagement_role` nullable
-- `agreed_amount`
-- `currency`
-- `agreed_hours` nullable
-- `due_at` nullable
-- `status`
-- `offered_at` nullable
-- `accepted_at` nullable
-- `started_at` nullable
-- `completed_at` nullable
-- `declined_at` nullable
-- `withdrawn_at` nullable
-- `terminated_at` nullable
-- `created_at`
-- `updated_at`
-
-Lifecycle:
-
-```text
-offered -> accepted -> active -> completed
-     \-> declined
-     \-> withdrawn
-active -> terminated
-```
-
-An executable package may have only one **active commitment** at a time. Reassignment is supported by retaining historical assignments with terminal states and creating a new assignment.
-
-Matching may create an assignment only through the Work application's command/interface; it does not write this table directly.
-
----
-
-## 9. Commercial invariant
-
-For every milestone:
-
-```text
-budget_amount >=
-sum(agreed_amount)
-for assignments whose work packages belong to the milestone
-```
-
-The check must run whenever any of these change:
-
-- milestone budget
-- milestone/package membership
-- assignment amount
-- assignment package
-
-It is implemented as a **deferred constraint trigger** so a valid multi-row transaction can temporarily be incomplete and still commit successfully when its final state satisfies the invariant.
-
----
-
-## 10. Submissions
-
-Submissions are append-only records of worker deliverable attempts.
-
-A submission always belongs to a real assignment. There is no nullable `assignment_id` and no duplicate `work_package_id`.
-
-Fields:
-
-- `id`
-- `assignment_id`
-- `version`
-- `summary`
-- `storage_path` nullable
-- `external_url` nullable
-- `content_hash` nullable
-- `submitted_at`
-- `created_at`
-
-Unique key:
-
-```text
-(assignment_id, version)
-```
-
-A submission never changes state after creation.
-
-A new attempt is another submission version.
-
----
-
-## 11. Acceptance
-
-Acceptance records the decision about a submission.
-
-Fields:
-
-- `id`
-- `submission_id`
-- `decision`
-- `quality` — numeric `0..1`
-- `feedback` nullable
-- `decided_by_profile_id` nullable
-- `decided_at`
-- `created_at`
-
-Decisions:
-
-```text
-accepted
-rejected
-revision_requested
-```
-
-The current submission state is derived from its latest acceptance decision. Historical decisions remain intact.
-
-### Why `quality` is required
-
-`quality` becomes one input to the Capability context when accepted work is converted into performance evidence.
-
-The evidence layer can preserve the context:
-
-```text
-required capability level
-+
-accepted work quality
-+
-other performance signals
-```
-
-rather than turning acceptance into a universal worker score.
-
----
-
-## 12. Package acceptance and payout event
-
-When an acceptance decision is `accepted`, the Work transaction creates:
-
-```text
-work.deliverable_accepted
-```
-
-The event identifies the durable commitment:
-
-```json
-{
-  "assignment_id": "...",
-  "work_package_id": "...",
-  "accepted_at": "..."
-}
-```
-
-Payments retrieves the authoritative `agreed_amount` from the Work assignment. An event payload must not be able to override the financial agreement.
-
-Payments then releases that assignment's agreed payout **once**, idempotently by `assignment_id`.
-
-The accepted package does not wait for other packages in its milestone.
-
----
-
-## 13. Domain events
-
-Initial Work event names are snake_case and follow the outbox convention:
-
-```text
-work.work_request_submitted
-work.work_request_structured
-work.work_package_created
-work.work_package_confirmed
-work.work_package_cancelled
-work.milestone_created
-work.submission_received
-work.revision_requested
-work.deliverable_accepted
-work.work_package_completed
-work.work_request_completed
-work.work_request_cancelled
-```
-
-Inbound integration event:
-
-```text
-payments.milestone_funded
-```
-
-It causes Work to mark the corresponding milestone as funded through an idempotent handler.
-
----
-
-## 14. Synchronous vs asynchronous
-
-### Same transaction
-
-- create/update request
-- confirm package
-- attach requirements
-- create milestone
-- assign a package through Work command
-- record submission
-- record acceptance
-- update assignment state associated with the acceptance
-- write the corresponding outbox event
-
-### Outbox side effects
-
-- AI decomposition
-- Qdrant indexing
-- recommendation refresh
-- notifications
-- analytics
-- asynchronous capability-evidence projection
-
-The Work database remains authoritative for Work state.
-
----
-
-## 15. Module ownership
-
-### Work owns
-
-- work requests
-- work package hierarchy
-- capability requirements
-- language requirements
-- milestones
-- milestone/package membership
-- assignments
-- submissions
-- acceptance decisions
-
-### Capability owns
-
-- canonical capabilities and worker capability evidence
-- language proficiency evidence
-- assessment results and capability projections
-
-### Matching owns
-
-- match calculations
-- candidate recommendations
-- team proposals
-- Qdrant derived indexes
-
-It may reference Work through commands/query interfaces and may provide an opaque `source_match_id` when asking Work to create an assignment.
-
-### Payments owns
-
-- escrow
-- ledger entries
-- payout execution
-- provider/mobile-money integrations
-- refund/chargeback state
-
-Payments refers to Work IDs but Work never depends on Payments by foreign key.
-
----
-
-## 16. MVP invariants
-
-1. Leaf-ness is derived from children; there is no stored `package_type`.
-2. Only leaf packages are executable.
-3. A leaf must have acceptance criteria before assignment.
-4. AI-created packages start as `proposed`.
-5. Only confirmed packages are matchable.
-6. A package belongs to at most one milestone.
-7. A package cannot gain children after assignment, submission, or milestone membership.
-8. A submission requires a durable assignment.
-9. Submissions are append-only.
-10. Acceptance decisions are append-only.
-11. An accepted package produces one payout request for its assignment.
-12. Payout is not blocked by slower teammates.
-13. `milestone.budget_amount` cannot be below the sum of assignment commitments for its packages.
-14. Work does not directly mutate Capability state.
-15. Money movement remains exclusively Payments-owned.
-16. Matching recommendations are not assignments until Work records the commitment.
+Escrow and payout implementation (payments), team proposals and match scoring (matching), AI decomposition, chat, contracts and legal documents, time tracking, invoicing, dispute handling, milestone-level release option.

@@ -1,368 +1,394 @@
--- HCIL WORK domain guards.
--- Cross-row / relational invariants live here rather than in simple CHECKs.
+-- Create with: npx drizzle-kit generate --custom --name=work_integrity
+-- then paste this file's contents into the generated empty migration.
+-- Run AFTER the migration that creates the work tables, and after 0001 and 0002 (it reuses
+-- public.forbid_mutation(), public.require_active_capability() and public.require_active_language()).
+--
+-- Statuses that count against a milestone budget: offered, accepted, active, completed.
+-- Terminal assignment statuses: completed, declined, withdrawn, terminated.
 
-create or replace function public.work_is_leaf(p_package_id uuid)
-returns boolean
-language sql
-stable
-as $$
-  select not exists (
-    select 1
-    from public.work_packages child
-    where child.parent_id = p_package_id
-  );
-$$;
+/* ------------------------------------------------------------------ */
+/* 1. Requirements only use ACTIVE capabilities / languages            */
+/* ------------------------------------------------------------------ */
 
-create or replace function public.work_package_has_execution_records(p_package_id uuid)
-returns boolean
-language sql
-stable
-as $$
-  select exists (
-    select 1 from public.assignments a where a.work_package_id = p_package_id
-  )
-  or exists (
-    select 1
-    from public.submissions s
-    join public.assignments a on a.id = s.assignment_id
-    where a.work_package_id = p_package_id
-  );
-$$;
+drop trigger if exists trg_active_capability on public.work_package_capabilities;
+create trigger trg_active_capability
+  before insert on public.work_package_capabilities
+  for each row execute function public.require_active_capability();
 
-create or replace function public.work_guard_package_hierarchy()
+drop trigger if exists trg_active_language on public.work_package_languages;
+create trigger trg_active_language
+  before insert on public.work_package_languages
+  for each row execute function public.require_active_language();
+
+/* ------------------------------------------------------------------ */
+/* 2. Package structure: leaves only                                   */
+/* ------------------------------------------------------------------ */
+
+-- Leaf-ness is derived: a package with no children. These rules keep container packages free of
+-- execution state, and make a leaf carry acceptance criteria once it is past draft / proposed.
+create or replace function public.guard_package_structure()
 returns trigger
 language plpgsql
-as $$
-begin
-  -- A package cannot become its own parent.
-  if new.parent_id is not null and new.parent_id = new.id then
-    raise exception 'work package cannot be its own parent';
-  end if;
-
-  -- Adding a child to a package that has already entered execution would
-  -- change the meaning of an existing leaf and invalidate assignments.
-  if new.parent_id is not null then
-    if public.work_package_has_execution_records(new.parent_id) then
-      raise exception 'cannot add children to work package % after execution has started', new.parent_id;
-    end if;
-
-    if exists (
-      select 1
-      from public.milestone_packages mp
-      where mp.work_package_id = new.parent_id
-    ) then
-      raise exception 'cannot add children to work package % after milestone membership', new.parent_id;
-    end if;
-
-    -- A parent must belong to the same work request.
-    if exists (
-      select 1
-      from public.work_packages parent_pkg
-      where parent_pkg.id = new.parent_id
-        and parent_pkg.work_request_id <> new.work_request_id
-    ) then
-      raise exception 'work package parent must belong to the same work request';
-    end if;
-
-    -- Prevent ancestor cycles such as A -> B -> A.
-    if tg_op = 'UPDATE' and exists (
-      with recursive ancestors as (
-        select wp.id, wp.parent_id
-        from public.work_packages wp
-        where wp.id = new.parent_id
-
-        union all
-
-        select wp.id, wp.parent_id
-        from public.work_packages wp
-        join ancestors a on wp.id = a.parent_id
-      )
-      select 1 from ancestors where id = new.id
-    ) then
-      raise exception 'work package hierarchy cannot contain cycles';
-    end if;
-  end if;
-
-  -- Moving an existing package under a new parent also cannot convert an
-  -- already executable/executed leaf into a container.
-  if tg_op = 'UPDATE' and new.parent_id is distinct from old.parent_id then
-    if public.work_package_has_execution_records(old.id)
-       or exists (
-         select 1 from public.milestone_packages mp where mp.work_package_id = old.id
-       ) then
-      raise exception 'cannot re-parent work package % after execution or milestone membership', old.id;
-    end if;
-  end if;
-
-  return new;
-end;
-$$;
-
-create trigger work_package_hierarchy_guard
-before insert or update of parent_id on public.work_packages
-for each row execute function public.work_guard_package_hierarchy();
-
-create or replace function public.work_guard_milestone_package()
-returns trigger
-language plpgsql
-as $$
-begin
-  if not public.work_is_leaf(new.work_package_id) then
-    raise exception 'only leaf work packages may belong to a milestone';
-  end if;
-
-  if exists (
-    select 1
-    from public.work_packages wp
-    where wp.id = new.work_package_id
-      and public.work_package_has_execution_records(wp.id)
-  ) then
-    raise exception 'a work package with execution records cannot be added to a milestone';
-  end if;
-
-  return new;
-end;
-$$;
-
-create trigger work_milestone_package_guard
-before insert or update on public.milestone_packages
-for each row execute function public.work_guard_milestone_package();
-
-create or replace function public.work_guard_assignment()
-returns trigger
-language plpgsql
+set search_path = ''
 as $$
 declare
-  v_criteria jsonb;
-  v_status text;
+  v_parent_changed boolean;
+  v_milestone_changed boolean;
+  v_is_leaf boolean;
 begin
-  select wp.acceptance_criteria, wp.status
-    into v_criteria, v_status
-  from public.work_packages wp
-  where wp.id = new.work_package_id;
-
-  if not public.work_is_leaf(new.work_package_id) then
-    raise exception 'assignments may only attach to leaf work packages';
+  if tg_op = 'INSERT' then
+    v_parent_changed := new.parent_id is not null;
+    v_milestone_changed := false;
+  else
+    v_parent_changed := new.parent_id is distinct from old.parent_id and new.parent_id is not null;
+    v_milestone_changed := new.milestone_id is distinct from old.milestone_id;
   end if;
 
-  if v_status not in ('confirmed', 'matching', 'in_progress') then
-    raise exception 'work package % is not assignable in status %', new.work_package_id, v_status;
+  -- Giving a package its first child turns it into a container.
+  if v_parent_changed then
+    if exists (select 1 from public.assignments a where a.work_package_id = new.parent_id) then
+      raise exception 'package % has assignments and cannot become a container', new.parent_id
+        using errcode = '23514';
+    end if;
+    if exists (select 1 from public.work_package_capabilities r where r.work_package_id = new.parent_id)
+       or exists (select 1 from public.work_package_languages r where r.work_package_id = new.parent_id) then
+      raise exception 'package % has requirements; move them to its children first', new.parent_id
+        using errcode = '23514';
+    end if;
+    if exists (select 1 from public.work_packages p where p.id = new.parent_id and p.milestone_id is not null) then
+      raise exception 'package % belongs to a milestone; assign the milestone to its children instead', new.parent_id
+        using errcode = '23514';
+    end if;
   end if;
 
-  if v_criteria is null or jsonb_array_length(v_criteria) = 0 then
-    raise exception 'leaf work package % must have acceptance criteria before assignment', new.work_package_id;
+  v_is_leaf := not exists (select 1 from public.work_packages c where c.parent_id = new.id);
+
+  -- Milestones group leaves only, and a leaf cannot move milestones while money is committed to it.
+  if new.milestone_id is not null and not v_is_leaf then
+    raise exception 'container package % cannot belong to a milestone', new.id using errcode = '23514';
+  end if;
+  if v_milestone_changed
+     and exists (
+       select 1 from public.assignments a
+       where a.work_package_id = new.id and a.status in ('offered', 'accepted', 'active', 'completed')
+     ) then
+    raise exception 'package % has committed assignments; its milestone cannot change', new.id
+      using errcode = '23514';
   end if;
 
-  if new.agreed_amount <= 0 then
-    raise exception 'assignment agreed amount must be greater than zero';
+  -- A leaf that leaves draft / proposed must say what makes a submission acceptable.
+  if v_is_leaf
+     and new.status in ('confirmed', 'in_progress', 'completed')
+     and (new.acceptance_criteria is null or btrim(new.acceptance_criteria) = '') then
+    raise exception 'leaf package % needs acceptance criteria before it is %', new.id, new.status
+      using errcode = '23514';
   end if;
 
   return new;
 end;
 $$;
 
-create trigger work_assignment_guard
-before insert or update of work_package_id, agreed_amount on public.assignments
-for each row execute function public.work_guard_assignment();
+drop trigger if exists trg_guard_package_structure on public.work_packages;
+create trigger trg_guard_package_structure
+  before insert or update on public.work_packages
+  for each row execute function public.guard_package_structure();
 
-create or replace function public.work_guard_milestone_budget(p_milestone_id uuid)
-returns void
+-- Requirements attach to leaves only.
+create or replace function public.require_leaf_package()
+returns trigger
 language plpgsql
+set search_path = ''
+as $$
+begin
+  if exists (select 1 from public.work_packages c where c.parent_id = new.work_package_id) then
+    raise exception 'package % is a container; requirements attach to leaf packages only', new.work_package_id
+      using errcode = '23514';
+  end if;
+  return new;
+end;
+$$;
+
+do $$
+declare
+  t text;
+begin
+  foreach t in array array['work_package_capabilities', 'work_package_languages']
+  loop
+    execute format('drop trigger if exists %I on public.%I', 'trg_leaf_only_' || t, t);
+    execute format(
+      'create trigger %I before insert on public.%I for each row execute function public.require_leaf_package()',
+      'trg_leaf_only_' || t,
+      t
+    );
+  end loop;
+end;
+$$;
+
+/* ------------------------------------------------------------------ */
+/* 3. Assignments                                                      */
+/* ------------------------------------------------------------------ */
+
+create or replace function public.guard_assignment()
+returns trigger
+language plpgsql
+set search_path = ''
 as $$
 declare
-  v_budget numeric;
-  v_committed numeric;
+  v_milestone uuid;
+  v_pkg_status text;
+  v_budget bigint;
+  v_currency text;
+  v_committed bigint;
 begin
-  select budget_amount into v_budget
-  from public.milestones
-  where id = p_milestone_id;
-
-  if v_budget is null then
-    return;
+  if tg_op = 'UPDATE' then
+    if old.status in ('completed', 'declined', 'withdrawn', 'terminated') then
+      raise exception 'assignment % is % and cannot change', old.id, old.status using errcode = '23514';
+    end if;
+    if new.work_package_id <> old.work_package_id or new.worker_id <> old.worker_id then
+      raise exception 'the package and worker of assignment % cannot change', old.id using errcode = '23514';
+    end if;
   end if;
 
-  select coalesce(sum(a.agreed_amount), 0)
-    into v_committed
+  select p.milestone_id, p.status into v_milestone, v_pkg_status
+  from public.work_packages p
+  where p.id = new.work_package_id;
+
+  if tg_op = 'INSERT' then
+    if exists (select 1 from public.work_packages c where c.parent_id = new.work_package_id) then
+      raise exception 'package % is a container; only leaf packages can be assigned', new.work_package_id
+        using errcode = '23514';
+    end if;
+    if v_pkg_status not in ('confirmed', 'in_progress') then
+      raise exception 'package % is %; it must be confirmed before it can be assigned', new.work_package_id, v_pkg_status
+        using errcode = '23514';
+    end if;
+    if v_milestone is null then
+      raise exception 'package % must belong to a milestone before it can be assigned', new.work_package_id
+        using errcode = '23514';
+    end if;
+  end if;
+
+  -- Keep committed amounts within the milestone budget. The milestone row is locked so two
+  -- concurrent offers cannot both fit into the same remaining budget.
+  if new.status in ('offered', 'accepted', 'active', 'completed')
+     and (tg_op = 'INSERT' or new.agreed_amount is distinct from old.agreed_amount) then
+    select m.budget_amount, m.currency into v_budget, v_currency
+    from public.milestones m
+    where m.id = v_milestone
+    for update;
+
+    if new.currency <> v_currency then
+      raise exception 'assignment currency % does not match milestone currency %', new.currency, v_currency
+        using errcode = '23514';
+    end if;
+
+    select coalesce(sum(a.agreed_amount), 0) into v_committed
+    from public.assignments a
+    join public.work_packages p on p.id = a.work_package_id
+    where p.milestone_id = v_milestone
+      and a.id <> new.id
+      and a.status in ('offered', 'accepted', 'active', 'completed');
+
+    if v_committed + new.agreed_amount > v_budget then
+      raise exception 'milestone budget exceeded: % committed + % requested > % budget',
+        v_committed, new.agreed_amount, v_budget
+        using errcode = '23514';
+    end if;
+  end if;
+
+  return new;
+end;
+$$;
+
+drop trigger if exists trg_guard_assignment on public.assignments;
+create trigger trg_guard_assignment
+  before insert or update on public.assignments
+  for each row execute function public.guard_assignment();
+
+-- Lowering a milestone budget (or changing its currency) must not strand committed assignments.
+create or replace function public.guard_milestone_budget()
+returns trigger
+language plpgsql
+set search_path = ''
+as $$
+declare
+  v_committed bigint;
+begin
+  select coalesce(sum(a.agreed_amount), 0) into v_committed
   from public.assignments a
-  join public.milestone_packages mp on mp.work_package_id = a.work_package_id
-  where mp.milestone_id = p_milestone_id
+  join public.work_packages p on p.id = a.work_package_id
+  where p.milestone_id = new.id
     and a.status in ('offered', 'accepted', 'active', 'completed');
 
-  if v_committed > v_budget then
-    raise exception
-      'milestone % budget % is below committed assignment amount %',
-      p_milestone_id, v_budget, v_committed;
+  if new.currency is distinct from old.currency and v_committed > 0 then
+    raise exception 'milestone % currency cannot change once assignments are committed', new.id
+      using errcode = '23514';
   end if;
-end;
-$$;
-
-create or replace function public.work_check_milestone_budget_from_milestone()
-returns trigger
-language plpgsql
-as $$
-begin
-  perform public.work_guard_milestone_budget(new.id);
+  if new.budget_amount < v_committed then
+    raise exception 'milestone % budget % is below the % already committed', new.id, new.budget_amount, v_committed
+      using errcode = '23514';
+  end if;
   return new;
 end;
 $$;
 
-create constraint trigger work_milestone_budget_guard
-after insert or update of budget_amount on public.milestones
-deferrable initially deferred
-for each row execute function public.work_check_milestone_budget_from_milestone();
+drop trigger if exists trg_guard_milestone_budget on public.milestones;
+create trigger trg_guard_milestone_budget
+  before update of budget_amount, currency on public.milestones
+  for each row execute function public.guard_milestone_budget();
 
-create or replace function public.work_check_milestone_budget_from_package_link()
+/* ------------------------------------------------------------------ */
+/* 4. Submissions and acceptances                                      */
+/* ------------------------------------------------------------------ */
+
+create or replace function public.guard_submission()
 returns trigger
 language plpgsql
+set search_path = ''
 as $$
+declare
+  v_status text;
+  v_prior integer;
+  v_unreviewed integer;
 begin
-  if tg_op = 'DELETE' then
-    perform public.work_guard_milestone_budget(old.milestone_id);
-  else
-    perform public.work_guard_milestone_budget(new.milestone_id);
-    if tg_op = 'UPDATE' and new.milestone_id is distinct from old.milestone_id then
-      perform public.work_guard_milestone_budget(old.milestone_id);
+  select a.status into v_status
+  from public.assignments a
+  where a.id = new.assignment_id
+  for update;
+
+  if v_status is distinct from 'active' then
+    raise exception 'assignment % is %; submissions require an active assignment', new.assignment_id, v_status
+      using errcode = '23514';
+  end if;
+
+  select count(*) into v_prior from public.submissions s where s.assignment_id = new.assignment_id;
+  if new.version <> v_prior + 1 then
+    raise exception 'the next submission version for assignment % must be %', new.assignment_id, v_prior + 1
+      using errcode = '23514';
+  end if;
+
+  select count(*) into v_unreviewed
+  from public.submissions s
+  where s.assignment_id = new.assignment_id
+    and not exists (select 1 from public.acceptances ac where ac.submission_id = s.id);
+  if v_unreviewed > 0 then
+    raise exception 'assignment % has a submission still awaiting review', new.assignment_id
+      using errcode = '23514';
+  end if;
+
+  return new;
+end;
+$$;
+
+drop trigger if exists trg_guard_submission on public.submissions;
+create trigger trg_guard_submission
+  before insert on public.submissions
+  for each row execute function public.guard_submission();
+
+create or replace function public.guard_acceptance()
+returns trigger
+language plpgsql
+set search_path = ''
+as $$
+declare
+  v_assignment uuid;
+  v_status text;
+  v_org uuid;
+begin
+  select s.assignment_id into v_assignment from public.submissions s where s.id = new.submission_id;
+
+  select a.status into v_status
+  from public.assignments a
+  where a.id = v_assignment
+  for update;
+
+  if v_status is distinct from 'active' then
+    raise exception 'assignment % is %; only an active assignment can receive a decision', v_assignment, v_status
+      using errcode = '23514';
+  end if;
+
+  if new.decision = 'accepted'
+     and exists (
+       select 1
+       from public.acceptances ac
+       join public.submissions s on s.id = ac.submission_id
+       where s.assignment_id = v_assignment and ac.decision = 'accepted'
+     ) then
+    raise exception 'assignment % already has an accepted submission', v_assignment using errcode = '23514';
+  end if;
+
+  -- Only a member of the organization that owns the request may decide (null = system decision).
+  if new.decided_by is not null then
+    select r.organization_id into v_org
+    from public.assignments a
+    join public.work_packages p on p.id = a.work_package_id
+    join public.work_requests r on r.id = p.work_request_id
+    where a.id = v_assignment;
+
+    if not exists (
+      select 1 from public.organization_members m
+      where m.organization_id = v_org and m.profile_id = new.decided_by
+    ) then
+      raise exception 'profile % is not a member of the organization that owns this work', new.decided_by
+        using errcode = '23514';
     end if;
   end if;
-  if tg_op = 'DELETE' then
-    return old;
-  end if;
+
   return new;
 end;
 $$;
 
-create constraint trigger work_milestone_package_budget_guard
-after insert or update or delete on public.milestone_packages
-deferrable initially deferred
-for each row execute function public.work_check_milestone_budget_from_package_link();
+drop trigger if exists trg_guard_acceptance on public.acceptances;
+create trigger trg_guard_acceptance
+  before insert on public.acceptances
+  for each row execute function public.guard_acceptance();
 
-create or replace function public.work_check_milestone_budget_from_assignment()
-returns trigger
-language plpgsql
-as $$
+do $$
 declare
-  v_package_id uuid;
+  t text;
 begin
-  if tg_op = 'DELETE' then
-    v_package_id := old.work_package_id;
-  else
-    v_package_id := new.work_package_id;
-  end if;
-
-  perform public.work_guard_milestone_budget(mp.milestone_id)
-  from public.milestone_packages mp
-  where mp.work_package_id = v_package_id;
-
-  if tg_op = 'UPDATE' and new.work_package_id is distinct from old.work_package_id then
-    perform public.work_guard_milestone_budget(mp.milestone_id)
-    from public.milestone_packages mp
-    where mp.work_package_id = old.work_package_id;
-  end if;
-
-  if tg_op = 'DELETE' then
-    return old;
-  end if;
-  return new;
+  foreach t in array array['submissions', 'acceptances']
+  loop
+    execute format('drop trigger if exists %I on public.%I', 'trg_append_only_' || t, t);
+    execute format(
+      'create trigger %I before update or delete on public.%I for each row execute function public.forbid_mutation()',
+      'trg_append_only_' || t,
+      t
+    );
+  end loop;
 end;
 $$;
 
-create constraint trigger work_assignment_budget_guard
-after insert or update of work_package_id, agreed_amount, status or delete on public.assignments
- deferrable initially deferred
-for each row execute function public.work_check_milestone_budget_from_assignment();
+/* ------------------------------------------------------------------ */
+/* 5. Re-apply the idempotent blocks to the new tables                 */
+/* ------------------------------------------------------------------ */
 
--- A submission is tied to an assignment and therefore to a leaf package. This
--- trigger also prevents a submission against a non-executable or non-active
--- assignment.
-create or replace function public.work_guard_submission()
-returns trigger
-language plpgsql
-as $$
+do $$
 declare
-  v_package_id uuid;
-  v_status text;
+  r record;
 begin
-  select a.work_package_id, a.status
-    into v_package_id, v_status
-  from public.assignments a
-  where a.id = new.assignment_id;
-
-  if v_package_id is null then
-    raise exception 'submission requires a valid assignment';
-  end if;
-
-  if not public.work_is_leaf(v_package_id) then
-    raise exception 'submissions may only attach to leaf work packages';
-  end if;
-
-  if v_status not in ('accepted', 'active') then
-    raise exception 'submissions require an accepted or active assignment, got %', v_status;
-  end if;
-
-  return new;
+  for r in
+    select table_name
+    from information_schema.columns
+    where table_schema = 'public' and column_name = 'updated_at'
+  loop
+    execute format('drop trigger if exists %I on public.%I', 'trg_touch_' || r.table_name, r.table_name);
+    execute format(
+      'create trigger %I before update on public.%I for each row execute function public.touch_updated_at()',
+      'trg_touch_' || r.table_name,
+      r.table_name
+    );
+  end loop;
 end;
 $$;
 
-create trigger work_submission_guard
-before insert on public.submissions
-for each row execute function public.work_guard_submission();
-
--- Submissions are append-only historical records. A new attempt creates a new
--- version instead of mutating or deleting an existing submission.
-create or replace function public.work_guard_submission_immutable()
-returns trigger
-language plpgsql
-as $$
-begin
-  raise exception 'submissions are immutable; create a new version instead';
-end;
-$$;
-
-create trigger work_submission_immutable_guard
-before update or delete on public.submissions
-for each row execute function public.work_guard_submission_immutable();
-
--- Acceptance decisions are also append-only. A later review is another row.
-create or replace function public.work_guard_acceptance_immutable()
-returns trigger
-language plpgsql
-as $$
-begin
-  raise exception 'acceptance decisions are immutable; create a new decision instead';
-end;
-$$;
-
-create trigger work_acceptance_immutable_guard
-before update or delete on public.acceptances
-for each row execute function public.work_guard_acceptance_immutable();
-
--- Currency should be consistent across a milestone and its assignment
--- commitments. Payments remains the money owner, but Work owns this agreement.
-create or replace function public.work_guard_assignment_currency()
-returns trigger
-language plpgsql
-as $$
+do $$
 declare
-  v_milestone_currency text;
+  r record;
 begin
-  select m.currency
-    into v_milestone_currency
-  from public.milestones m
-  join public.milestone_packages mp on mp.milestone_id = m.id
-  where mp.work_package_id = new.work_package_id
-  limit 1;
-
-  if v_milestone_currency is not null and upper(v_milestone_currency) <> upper(new.currency) then
-    raise exception 'assignment currency % does not match milestone currency %', new.currency, v_milestone_currency;
-  end if;
-
-  return new;
+  for r in select tablename from pg_tables where schemaname = 'public'
+  loop
+    execute format('alter table public.%I enable row level security', r.tablename);
+  end loop;
 end;
 $$;
-
-create trigger work_assignment_currency_guard
-before insert or update of work_package_id, currency on public.assignments
-for each row execute function public.work_guard_assignment_currency();
-
--- Work receives this event from Payments and updates the operational milestone
--- state through an application handler. No direct FK dependency is created.
