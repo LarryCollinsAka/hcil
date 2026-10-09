@@ -56,7 +56,7 @@ function HeroVisual({ v }: { v: HeroProps["visual"] }) {
           </ul>
         </div>
 
-        {/* 3. A match with its evidence, and the accepted milestone */}
+        {/* 3. A context-specific match and package-level outcome */}
         <div className="rounded-3xl border border-green-950/10 bg-white/80 p-5 text-left shadow-[0_30px_80px_-34px_rgba(0,22,17,0.4)] backdrop-blur motion-safe:animate-float-slower md:mt-6">
           <div className="flex items-center gap-2">
             <StepBadge n={3} />
@@ -85,8 +85,8 @@ function HeroVisual({ v }: { v: HeroProps["visual"] }) {
           <div className="mt-5 flex items-start gap-2.5 rounded-2xl bg-green-600 p-3 text-white">
             <Icon name="check" className="mt-0.5 size-4 shrink-0" />
             <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-green-100">{v.milestoneLabel}</p>
-              <p className="text-sm font-semibold">{v.milestoneText}</p>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-green-100">{v.packageOutcomeLabel}</p>
+              <p className="text-sm font-semibold">{v.packageOutcomeText}</p>
             </div>
           </div>
         </div>

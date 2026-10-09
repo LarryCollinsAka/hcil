@@ -5,11 +5,12 @@ import type { Audience, HomeBlock } from "@/content/types";
 
 type Props = Extract<HomeBlock, { type: "audiences" }>["props"];
 
-function Card({ audience, tone }: { audience: Audience; tone: "gold" | "green" }) {
+function Card({ audience, tone, id }: { audience: Audience; tone: "gold" | "green"; id: string }) {
   const gold = tone === "gold";
   return (
     <article
-      className={`flex flex-col rounded-[2rem] p-8 sm:p-10 ${
+      id={id}
+      className={`scroll-mt-28 flex flex-col rounded-[2rem] p-8 sm:p-10 ${
         gold ? "bg-gold-500 text-green-950" : "bg-green-900 text-gold-50 ring-1 ring-gold-500/20"
       }`}
     >
@@ -47,8 +48,8 @@ export function Audiences({ id, employers, talent }: Props) {
   return (
     <section id={id} className="scroll-mt-24 pb-24 pt-24 sm:pb-28 sm:pt-28">
       <div className={`${container} grid gap-5 lg:grid-cols-2`}>
-        <Card audience={employers} tone="gold" />
-        <Card audience={talent} tone="green" />
+        <Card id="for-companies" audience={employers} tone="gold" />
+        <Card id="for-talent" audience={talent} tone="green" />
       </div>
     </section>
   );

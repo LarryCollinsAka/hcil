@@ -18,7 +18,7 @@ export function Header({ locale, copy }: { locale: Locale; copy: SiteCopy }) {
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 rounded-full border border-green-950/10 bg-gold-50/85 py-2 pl-4 pr-2 shadow-[0_10px_34px_-14px_rgba(0,22,17,0.3)] backdrop-blur-xl">
         <Logo locale={locale} />
 
-        <nav aria-label="Primary" className="hidden items-center md:flex">
+        <nav aria-label={copy.primaryNav} className="hidden items-center md:flex">
           {links.map((link) => (
             <a
               key={link.href}
@@ -31,15 +31,9 @@ export function Header({ locale, copy }: { locale: Locale; copy: SiteCopy }) {
         </nav>
 
         <div className="flex items-center gap-1.5">
-          <LocaleSwitcher locale={locale} />
+          <LocaleSwitcher locale={locale} label={copy.footer.language} />
           <Link
-            href={href(locale, "/sign-in")}
-            className="hidden rounded-full px-3.5 py-2 text-sm font-medium text-green-900 transition hover:bg-gold-200/60 sm:inline-block"
-          >
-            {copy.signIn}
-          </Link>
-          <Link
-            href={href(locale, "/get-started")}
+            href={href(locale, "#audiences")}
             className="hidden rounded-full bg-green-950 px-4 py-2 text-sm font-semibold text-gold-100 transition hover:bg-green-800 sm:inline-block"
           >
             {copy.getStarted}
@@ -60,11 +54,8 @@ export function Header({ locale, copy }: { locale: Locale; copy: SiteCopy }) {
                   {link.label}
                 </a>
               ))}
-              <div className="mt-1 grid gap-2 border-t border-green-950/10 p-2 pt-3">
-                <Link href={href(locale, "/sign-in")} className="rounded-full border border-green-950/20 px-4 py-2.5 text-center text-sm font-semibold">
-                  {copy.signIn}
-                </Link>
-                <Link href={href(locale, "/get-started")} className="rounded-full bg-green-950 px-4 py-2.5 text-center text-sm font-semibold text-gold-100">
+              <div className="mt-1 border-t border-green-950/10 p-2 pt-3">
+                <Link href={href(locale, "#audiences")} className="block rounded-full bg-green-950 px-4 py-2.5 text-center text-sm font-semibold text-gold-100">
                   {copy.getStarted}
                 </Link>
               </div>

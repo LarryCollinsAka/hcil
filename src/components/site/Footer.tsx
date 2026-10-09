@@ -24,7 +24,7 @@ export function Footer({ locale, copy }: { locale: Locale; copy: SiteCopy }) {
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-gold-100/70">{copy.footer.tagline}</p>
           </div>
 
-          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
+          <div className="grid grid-cols-2 gap-8">
             {copy.footer.groups.map((group) => (
               <div key={group.title}>
                 <h3 className="text-xs font-semibold uppercase tracking-[0.14em] text-gold-400">{group.title}</h3>
@@ -54,7 +54,7 @@ export function Footer({ locale, copy }: { locale: Locale; copy: SiteCopy }) {
           </p>
           <div className="flex items-center gap-3">
             <span>{copy.footer.language}</span>
-            <LocaleSwitcher locale={locale} onDark />
+            <LocaleSwitcher locale={locale} onDark label={copy.footer.language} />
           </div>
         </div>
       </div>

@@ -4,7 +4,7 @@ import { BRAND } from "@/config/brand";
 export type SiteCopy = {
   skip: string;
   menu: string;
-  signIn: string;
+  primaryNav: string;
   getStarted: string;
   nav: { how: string; principles: string; audiences: string; faq: string };
   footer: {
@@ -18,33 +18,26 @@ export type SiteCopy = {
 const en: SiteCopy = {
   skip: "Skip to content",
   menu: "Menu",
-  signIn: "Sign in",
-  getStarted: "Get started",
+  primaryNav: "Primary navigation",
+  getStarted: "Choose your path",
   nav: { how: "How it works", principles: "Principles", audiences: "Companies & talent", faq: "FAQ" },
   footer: {
     tagline: "Work first. Capability, in context.",
     groups: [
       {
-        title: "Product",
+        title: "Explore",
         links: [
           { label: "How it works", href: "#how" },
+          { label: "Companies", href: "#for-companies" },
+          { label: "Talent", href: "#for-talent" },
+        ],
+      },
+      {
+        title: "Our approach",
+        links: [
           { label: "Principles", href: "#principles" },
+          { label: "Languages", href: "#languages" },
           { label: "FAQ", href: "#faq" },
-        ],
-      },
-      {
-        title: "Community",
-        links: [
-          { label: "Blog", href: "/blog" },
-          { label: "Forum", href: "/forum" },
-          { label: "About", href: "/about" },
-        ],
-      },
-      {
-        title: "Legal",
-        links: [
-          { label: "Privacy", href: "/privacy" },
-          { label: "Terms", href: "/terms" },
         ],
       },
     ],
@@ -56,33 +49,26 @@ const en: SiteCopy = {
 const fr: SiteCopy = {
   skip: "Aller au contenu",
   menu: "Menu",
-  signIn: "Connexion",
-  getStarted: "Commencer",
+  primaryNav: "Navigation principale",
+  getStarted: "Choisir un parcours",
   nav: { how: "Comment ça marche", principles: "Principes", audiences: "Entreprises et talents", faq: "FAQ" },
   footer: {
     tagline: "Le travail d’abord. La compétence, en contexte.",
     groups: [
       {
-        title: "Produit",
+        title: "Explorer",
         links: [
           { label: "Comment ça marche", href: "#how" },
+          { label: "Entreprises", href: "#for-companies" },
+          { label: "Talents", href: "#for-talent" },
+        ],
+      },
+      {
+        title: "Notre approche",
+        links: [
           { label: "Principes", href: "#principles" },
+          { label: "Langues", href: "#languages" },
           { label: "FAQ", href: "#faq" },
-        ],
-      },
-      {
-        title: "Communauté",
-        links: [
-          { label: "Blog", href: "/blog" },
-          { label: "Forum", href: "/forum" },
-          { label: "À propos", href: "/about" },
-        ],
-      },
-      {
-        title: "Légal",
-        links: [
-          { label: "Confidentialité", href: "/privacy" },
-          { label: "Conditions d’utilisation", href: "/terms" },
         ],
       },
     ],
@@ -102,11 +88,11 @@ export function metaFor(locale: Locale): { title: string; description: string } 
     ? {
         title: `${BRAND.name} : recrutez pour le travail, pas pour l’intitulé du poste`,
         description:
-          "Décrivez le problème à résoudre. Nous le transformons en lots de travail clairs, associons les personnes selon leurs compétences et leurs langues, et payons à chaque jalon accepté.",
+          "Décrivez le résultat recherché. HCIL structure le travail en lots clairs, relie les compétences aux preuves et conçoit un paiement lié à l’acceptation de chaque lot attribué.",
       }
     : {
         title: `${BRAND.name}: hire for the work, not the job title`,
         description:
-          "Describe the problem you need solved. We turn it into clear work packages, match people on the capabilities and languages the work needs, and pay on accepted milestones.",
+          "Describe the outcome you need. HCIL structures work into clear packages, connects capabilities to evidence, and is designed to link each contributor’s payout to acceptance of their assigned package.",
       };
 }

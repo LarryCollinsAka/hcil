@@ -15,8 +15,8 @@ export type HeroVisual = {
   matchRole: string;
   confidenceLabel: string;
   confidence: number; // 0..1
-  milestoneLabel: string;
-  milestoneText: string;
+  packageOutcomeLabel: string;
+  packageOutcomeText: string;
 };
 
 export type Audience = { tag: string; title: string; items: string[]; cta: Cta };
@@ -26,7 +26,7 @@ export type HomeBlock =
       type: "hero";
       props: { eyebrow: string; title: string; subtitle: string; primary: Cta; secondary: Cta; note: string; visual: HeroVisual };
     }
-  | { type: "highlights"; props: { items: { value: string; label: string }[] } }
+  | { type: "highlights"; props: { ariaLabel: string; items: { title: string; text: string }[] } }
   | { type: "steps"; props: { id: string; title: string; subtitle: string; items: { title: string; text: string }[] } }
   | {
       type: "principles";
@@ -40,7 +40,7 @@ export type HomeBlock =
   | { type: "audiences"; props: { id: string; employers: Audience; talent: Audience } }
   | {
       type: "languages";
-      props: { title: string; subtitle: string; live: string[]; soonLabel: string; soon: string[] };
+      props: { id: string; title: string; subtitle: string; live: string[]; liveLabel: string; soonLabel: string; soon: string[] };
     }
   | { type: "faq"; props: { id: string; title: string; items: { q: string; a: string }[] } }
   | { type: "cta"; props: { title: string; text: string; primary: Cta; secondary: Cta } };

@@ -14,10 +14,10 @@ function en(): HomeBlock[] {
         eyebrow: "Work-first talent platform for Cameroon and beyond",
         title: "Hire for the work, not the job title.",
         subtitle:
-          "Describe the problem you need solved. We turn it into clear work packages, match people on the capabilities and languages the work really needs, and release payment as milestones are accepted.",
-        primary: { label: "Hire for a project", href: href(l, "/get-started?as=employer") },
-        secondary: { label: "Find work", href: href(l, "/get-started?as=talent") },
-        note: "Early access · English & Français · Built mobile-first",
+          "Describe the outcome you need. HCIL is being designed to structure it into clear work packages, connect requirements to demonstrated capabilities, and release each contributor’s agreed payout when their own package is accepted.",
+        primary: { label: "I’m hiring", href: href(l, "#for-companies") },
+        secondary: { label: "I’m looking for work", href: href(l, "#for-talent") },
+        note: "Early-access preview · Homepage in English and French · Core workflows are in development",
         visual: {
           illustrative: "Illustrative example",
           requestLabel: "Your request",
@@ -40,19 +40,20 @@ function en(): HomeBlock[] {
           matchRole: "Business analyst · Yaoundé",
           confidenceLabel: "Evidence confidence",
           confidence: 0.82,
-          milestoneLabel: "Milestone",
-          milestoneText: "Accepted · XAF 250,000 released",
+          packageOutcomeLabel: "Package outcome",
+          packageOutcomeText: "Accepted · payout follows this package’s agreement",
         },
       },
     },
     {
       type: "highlights",
       props: {
+        ariaLabel: "HCIL product commitments",
         items: [
-          { value: "0", label: "universal talent scores" },
-          { value: "4", label: "language skills assessed separately: read, write, listen, speak" },
-          { value: "5", label: "capability levels, each backed by evidence" },
-          { value: "XAF", label: "budgets and payouts in local currency" },
+          { title: "Outcome-first", text: "Start with the business result, not a job title." },
+          { title: "Evidence-backed", text: "Connect capability claims to relevant evidence." },
+          { title: "Composable teams", text: "Combine complementary capabilities when needed." },
+          { title: "Package-level payout", text: "Milestones group work; each contributor’s payout follows acceptance of their own package." },
         ],
       },
     },
@@ -74,7 +75,7 @@ function en(): HomeBlock[] {
           },
           {
             title: "Fund, deliver, accept",
-            text: "Commit a budget per milestone. Workers submit, you accept or request a revision, and payment follows acceptance.",
+            text: "Fund a milestone before work starts. Review each submission against its package criteria; the intended payout trigger is acceptance of that contributor’s assigned package.",
           },
           {
             title: "Build proof",
@@ -103,12 +104,12 @@ function en(): HomeBlock[] {
           {
             icon: "shield",
             title: "Proof over claims",
-            text: "Every level traces back to an assessment or accepted work. Skills people only claim are shown as unverified.",
+            text: "When a capability is marked verified, its record is intended to link back to an assessment or accepted work. Self-reported skills remain distinct from verified evidence.",
           },
           {
             icon: "coins",
             title: "Paid for outcomes",
-            text: "Budgets are committed per milestone and payment follows accepted deliverables, so nobody waits on a teammate.",
+            text: "Milestones group packages; each contributor’s agreed payout is designed to follow acceptance of their own package, not a teammate’s progress.",
           },
         ],
       },
@@ -124,9 +125,9 @@ function en(): HomeBlock[] {
             "Describe the problem; we structure it with you",
             "Staff each package with the right capabilities and languages",
             "Assemble micro-teams when one person can’t cover it all",
-            "Pay when you accept the work",
+            "Each package has explicit acceptance criteria",
           ],
-          cta: { label: "Post your first project", href: href(l, "/get-started?as=employer") },
+          cta: { label: "See how projects work", href: href(l, "#how") },
         },
         talent: {
           tag: "For talent",
@@ -135,19 +136,21 @@ function en(): HomeBlock[] {
             "Take assessments in the language you work best in",
             "Build a record of verified capabilities, skill by skill",
             "Get matched to work that fits, remote or on-site",
-            "Earn on every accepted milestone",
+            "Your agreed payout follows acceptance of your assigned package",
           ],
-          cta: { label: "Create your profile", href: href(l, "/get-started?as=talent") },
+          cta: { label: "How capability is verified", href: href(l, "#principles") },
         },
       },
     },
     {
       type: "languages",
       props: {
+        id: "languages",
         title: "Made for a multilingual market",
-        subtitle: "English and French today, with more African languages planned.",
+        subtitle: "The homepage is available in English and French. Wider language support is planned feature by feature.",
+        liveLabel: "Homepage languages",
         live: ["English", "Français"],
-        soonLabel: "Coming next",
+        soonLabel: "Languages being considered for future support",
         soon: ["Pidgin", "Ewondo", "Fulfulde", "Wolof", "Swahili", "Hausa", "Arabic"],
       },
     },
@@ -159,7 +162,7 @@ function en(): HomeBlock[] {
         items: [
           {
             q: "How are people verified?",
-            a: "Through assessments and accepted work. Each capability has a level and a confidence that grows with evidence. Skills people only claim are marked unverified.",
+            a: "The intended model uses assessments and accepted work as evidence. Self-reported skills will remain distinct from verified capability records.",
           },
           {
             q: "Do I need a degree to get work?",
@@ -167,15 +170,15 @@ function en(): HomeBlock[] {
           },
           {
             q: "Which languages are supported?",
-            a: "English and French today. Reading, writing, listening and speaking are assessed separately, and more languages are planned.",
+            a: "The homepage is available in English and French. Broader language support for platform features is planned and will be introduced feature by feature.",
           },
           {
             q: "How does pricing work?",
-            a: "You agree a budget per milestone before work starts. Payment follows accepted deliverables.",
+            a: "The intended model funds work by milestone, while each contributor’s agreed payout follows acceptance of their own assigned package. Payment processing is not live in this early-access preview.",
           },
           {
             q: "Is it live yet?",
-            a: "We’re in early access. Join the list and we’ll invite you as capacity opens up.",
+            a: "This is an early-access preview. Work intake, matching, contracts and payment are still being built; the examples on this page are illustrative, not live transactions.",
           },
         ],
       },
@@ -184,9 +187,9 @@ function en(): HomeBlock[] {
       type: "cta",
       props: {
         title: "Have work that needs doing?",
-        text: "Tell us the outcome. We’ll help you turn it into work people can deliver.",
-        primary: { label: "Hire for a project", href: href(l, "/get-started?as=employer") },
-        secondary: { label: "Find work", href: href(l, "/get-started?as=talent") },
+        text: "HCIL is in development. Explore the intended paths for organizations and talent while the first work-delivery features are being built.",
+        primary: { label: "I’m hiring", href: href(l, "#for-companies") },
+        secondary: { label: "I’m looking for work", href: href(l, "#for-talent") },
       },
     },
   ];
@@ -198,13 +201,13 @@ function fr(): HomeBlock[] {
     {
       type: "hero",
       props: {
-        eyebrow: "La plateforme de talents centrée sur le travail, du Cameroun au monde",
+        eyebrow: "Une plateforme centrée sur le travail, du Cameroun au monde",
         title: "Recrutez pour le travail, pas pour l’intitulé du poste.",
         subtitle:
-          "Décrivez le problème à résoudre. Nous le transformons en lots de travail clairs, associons les personnes selon les compétences et les langues réellement nécessaires, et déclenchons le paiement à chaque jalon accepté.",
-        primary: { label: "Lancer un projet", href: href(l, "/get-started?as=employer") },
-        secondary: { label: "Trouver du travail", href: href(l, "/get-started?as=talent") },
-        note: "Accès anticipé · English & Français · Pensé pour le mobile",
+          "Décrivez le résultat recherché. HCIL est conçu pour le structurer en lots de travail clairs, relier les exigences aux compétences démontrées et déclencher le paiement convenu de chaque contributeur lorsque son propre lot est accepté.",
+        primary: { label: "Je recrute", href: href(l, "#for-companies") },
+        secondary: { label: "Je cherche du travail", href: href(l, "#for-talent") },
+        note: "Aperçu en accès anticipé · Site en français et en anglais · Les fonctionnalités principales sont en développement",
         visual: {
           illustrative: "Exemple illustratif",
           requestLabel: "Votre demande",
@@ -227,19 +230,20 @@ function fr(): HomeBlock[] {
           matchRole: "Analyste d’affaires · Yaoundé",
           confidenceLabel: "Confiance dans les preuves",
           confidence: 0.82,
-          milestoneLabel: "Jalon",
-          milestoneText: "Accepté · 250 000 XAF versés",
+          packageOutcomeLabel: "Résultat du lot",
+          packageOutcomeText: "Accepté · paiement selon l’accord de ce lot",
         },
       },
     },
     {
       type: "highlights",
       props: {
+        ariaLabel: "Les engagements de HCIL",
         items: [
-          { value: "0", label: "score de talent universel" },
-          { value: "4", label: "compétences linguistiques évaluées séparément : lire, écrire, écouter, parler" },
-          { value: "5", label: "niveaux de compétence, chacun appuyé par des preuves" },
-          { value: "XAF", label: "budgets et paiements en monnaie locale" },
+          { title: "Résultat d’abord", text: "Partir du résultat attendu, pas d’un intitulé de poste." },
+          { title: "Fondé sur des preuves", text: "Relier les compétences déclarées aux preuves pertinentes." },
+          { title: "Équipes modulaires", text: "Combiner des compétences complémentaires lorsque nécessaire." },
+          { title: "Paiement par lot", text: "Les jalons regroupent le travail ; chaque contributeur est payé selon l’acceptation de son propre lot." },
         ],
       },
     },
@@ -264,7 +268,7 @@ function fr(): HomeBlock[] {
           },
           {
             title: "Financez, livrez, acceptez",
-            text: "Engagez un budget par jalon. Les travailleurs livrent, vous acceptez ou demandez une révision, et le paiement suit l’acceptation.",
+            text: "Financez un jalon avant le début du travail. Évaluez chaque livraison selon les critères de son lot ; le paiement prévu est déclenché par l’acceptation du lot attribué à chaque contributeur.",
           },
           {
             title: "Construisez la preuve",
@@ -293,12 +297,12 @@ function fr(): HomeBlock[] {
           {
             icon: "shield",
             title: "Des preuves, pas des promesses",
-            text: "Chaque niveau remonte à une évaluation ou à un travail accepté. Les compétences simplement déclarées sont signalées comme non vérifiées.",
+            text: "Lorsqu’une compétence est marquée comme vérifiée, son dossier doit renvoyer à une évaluation ou à un travail accepté. Les compétences simplement déclarées restent distinctes des preuves vérifiées.",
           },
           {
             icon: "coins",
             title: "Payé pour les résultats",
-            text: "Les budgets sont engagés par jalon et le paiement suit les livrables acceptés : personne n’attend un coéquipier.",
+            text: "Les jalons regroupent les lots ; le paiement convenu de chaque contributeur doit suivre l’acceptation de son propre lot, sans dépendre de l’avancement d’un coéquipier.",
           },
         ],
       },
@@ -314,9 +318,9 @@ function fr(): HomeBlock[] {
             "Décrivez le problème ; nous le structurons avec vous",
             "Affectez chaque lot aux bonnes compétences et langues",
             "Formez des micro-équipes quand une seule personne ne suffit pas",
-            "Payez quand vous acceptez le travail",
+            "Chaque lot possède ses propres critères d’acceptation",
           ],
-          cta: { label: "Publier votre premier projet", href: href(l, "/get-started?as=employer") },
+          cta: { label: "Voir le déroulement d’un projet", href: href(l, "#how") },
         },
         talent: {
           tag: "Pour les talents",
@@ -325,19 +329,21 @@ function fr(): HomeBlock[] {
             "Passez les évaluations dans la langue où vous êtes le plus à l’aise",
             "Constituez un dossier de compétences vérifiées, une par une",
             "Soyez associé à du travail adapté, à distance ou sur site",
-            "Gagnez à chaque jalon accepté",
+            "Votre paiement convenu suit l’acceptation de votre lot attribué",
           ],
-          cta: { label: "Créer mon profil", href: href(l, "/get-started?as=talent") },
+          cta: { label: "Comment les compétences sont vérifiées", href: href(l, "#principles") },
         },
       },
     },
     {
       type: "languages",
       props: {
+        id: "languages",
         title: "Pensé pour un marché multilingue",
-        subtitle: "Anglais et français aujourd’hui, d’autres langues africaines à venir.",
+        subtitle: "Le site est disponible en français et en anglais. La prise en charge d’autres langues sera développée fonctionnalité par fonctionnalité.",
+        liveLabel: "Langues du site",
         live: ["Français", "English"],
-        soonLabel: "Prochainement",
+        soonLabel: "Langues envisagées pour une prise en charge future",
         soon: ["Pidgin", "Ewondo", "Fulfulde", "Wolof", "Swahili", "Haoussa", "Arabe"],
       },
     },
@@ -349,7 +355,7 @@ function fr(): HomeBlock[] {
         items: [
           {
             q: "Comment les personnes sont-elles vérifiées ?",
-            a: "Par des évaluations et du travail accepté. Chaque compétence a un niveau et un indice de confiance qui augmente avec les preuves. Les compétences simplement déclarées sont marquées comme non vérifiées.",
+            a: "Le modèle prévu s’appuie sur des évaluations et des travaux acceptés. Les compétences simplement déclarées resteront distinctes des dossiers de compétences vérifiées.",
           },
           {
             q: "Faut-il un diplôme pour trouver du travail ?",
@@ -357,15 +363,15 @@ function fr(): HomeBlock[] {
           },
           {
             q: "Quelles langues sont prises en charge ?",
-            a: "L’anglais et le français aujourd’hui. La lecture, l’écriture, l’écoute et l’expression orale sont évaluées séparément, et d’autres langues sont prévues.",
+            a: "Le site est disponible en français et en anglais. La prise en charge linguistique des fonctionnalités sera élargie progressivement, fonctionnalité par fonctionnalité.",
           },
           {
             q: "Comment fonctionne la tarification ?",
-            a: "Vous convenez d’un budget par jalon avant le début du travail. Le paiement suit les livrables acceptés.",
+            a: "Le modèle prévu finance le travail par jalon, tandis que le paiement convenu de chaque contributeur suit l’acceptation de son propre lot. Le traitement des paiements n’est pas encore actif dans cet aperçu en accès anticipé.",
           },
           {
             q: "Est-ce déjà disponible ?",
-            a: "Nous sommes en accès anticipé. Inscrivez-vous et nous vous inviterons à mesure que la capacité augmente.",
+            a: "Ce site est un aperçu en accès anticipé. La saisie des besoins, l’association, les contrats et les paiements sont encore en développement ; les exemples de cette page sont illustratifs et ne correspondent pas à des transactions réelles.",
           },
         ],
       },
@@ -374,9 +380,9 @@ function fr(): HomeBlock[] {
       type: "cta",
       props: {
         title: "Du travail à faire aboutir ?",
-        text: "Dites-nous le résultat attendu. Nous vous aidons à le transformer en travail que des personnes peuvent livrer.",
-        primary: { label: "Lancer un projet", href: href(l, "/get-started?as=employer") },
-        secondary: { label: "Trouver du travail", href: href(l, "/get-started?as=talent") },
+        text: "HCIL est en développement. Découvrez les parcours prévus pour les entreprises et les talents pendant la construction des premières fonctionnalités de livraison du travail.",
+        primary: { label: "Je recrute", href: href(l, "#for-companies") },
+        secondary: { label: "Je cherche du travail", href: href(l, "#for-talent") },
       },
     },
   ];
