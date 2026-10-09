@@ -10,3 +10,4 @@ export * from "./content";
 export * from "./community";
 export * from "./platform";
 export * from "./capability";
+export * from "./work";
