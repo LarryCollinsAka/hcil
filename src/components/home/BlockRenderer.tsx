@@ -4,6 +4,8 @@ import { Cta } from "./Cta";
 import { Faq } from "./Faq";
 import { Hero } from "./Hero";
 import { Highlights } from "./Highlights";
+import { Intelligence } from "./Intelligence";
+import { Journal } from "./Journal";
 import { Languages } from "./Languages";
 import { Principles } from "./Principles";
 import { Steps } from "./Steps";
@@ -21,12 +23,16 @@ export function BlockRenderer({ blocks }: { blocks: HomeBlock[] }) {
             return <Highlights key={index} {...block.props} />;
           case "steps":
             return <Steps key={index} {...block.props} />;
+          case "intelligence":
+            return <Intelligence key={index} {...block.props} />;
           case "principles":
             return <Principles key={index} {...block.props} />;
           case "audiences":
             return <Audiences key={index} {...block.props} />;
           case "languages":
             return <Languages key={index} {...block.props} />;
+          case "journal":
+            return <Journal key={index} {...block.props} />;
           case "faq":
             return <Faq key={index} {...block.props} />;
           case "cta":

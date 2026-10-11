@@ -85,6 +85,25 @@ function en(): HomeBlock[] {
       },
     },
     {
+      type: "intelligence",
+      props: {
+        id: "intelligence",
+        eyebrow: "Organizational intelligence, by design",
+        title: "An AI that understands the work around the work.",
+        subtitle: "Companies are more than job descriptions. People, teams, documents, decisions, capability evidence and dependencies all shape how work gets done. HCIL is being designed to connect that context before recommending action.",
+        layers: [
+          { tag: "Authoritative records", title: "PostgreSQL", text: "Keeps the official record of organizations, work packages, evidence, approvals and commitments." },
+          { tag: "Connected context", title: "Knowledge graph", text: "Connects people, teams, projects, documents, decisions, capabilities and outcomes so relationships can be traced." },
+          { tag: "Meaning-based retrieval", title: "Qdrant search", text: "Finds relevant descriptions and evidence even when people use different words for similar work." },
+          { tag: "Plan and coordinate", title: "AI orchestrator", text: "Uses shared, permission-aware context and controlled tools to clarify needs, propose work and coordinate next steps." },
+        ],
+        flowTitle: "The intended intelligence loop",
+        flow: ["Recall authorized company context", "Connect requirements to evidence", "Propose work or the next action", "Record outcomes and update derived indexes"],
+        statusNote: "Architecture in development. Graph and vector indexes are derived from authoritative records; consequential actions require the relevant rules, permissions and approvals. Illustrative description—not a claim that all components are live.",
+        link: { label: "Explore how HCIL intelligence works", href: href(l, "/about/intelligence") },
+      },
+    },
+    {
       type: "principles",
       props: {
         id: "principles",
@@ -152,6 +171,23 @@ function en(): HomeBlock[] {
         live: ["English", "Français"],
         soonLabel: "Languages being considered for future support",
         soon: ["Pidgin", "Ewondo", "Fulfulde", "Wolof", "Swahili", "Hausa", "Arabic"],
+      },
+    },
+    {
+      type: "journal",
+      props: {
+        id: "journal",
+        eyebrow: "From the HCIL journal",
+        title: "Ideas for a better way to work.",
+        subtitle: "Notes on capability-in-context, work design and the intelligence behind HCIL. These sample articles are editorial previews.",
+        items: [
+          { slug: "capability-in-context", href: href(l, "/blog/capability-in-context"), category: "HCIL principles", title: "Why capability needs context", excerpt: "A skill label alone cannot tell us whether someone can deliver a particular outcome under specific conditions." },
+          { slug: "a-knowledge-graph-for-organizations", href: href(l, "/blog/a-knowledge-graph-for-organizations"), category: "AI architecture", title: "Why organizations need a knowledge graph", excerpt: "Semantic search finds related information; a graph helps connect the people, decisions, projects and evidence." },
+          { slug: "snd30-and-human-capital", href: href(l, "/blog/snd30-and-human-capital"), category: "Development context", title: "HCIL and Cameroon’s development priorities", excerpt: "Explore a potential contribution to human-capital and employment goals without overstating impact." },
+        ],
+        link: { label: "Read all articles", href: href(l, "/blog") },
+        readLabel: "Read article",
+        previewNote: "Editorial preview: sample articles; review sources before official publication.",
       },
     },
     {
@@ -278,6 +314,25 @@ function fr(): HomeBlock[] {
       },
     },
     {
+      type: "intelligence",
+      props: {
+        id: "intelligence",
+        eyebrow: "L’intelligence organisationnelle, dès la conception",
+        title: "Une IA qui comprend le travail et son contexte.",
+        subtitle: "Une entreprise ne se résume pas à des fiches de poste. Les personnes, les équipes, les documents, les décisions, les preuves de compétences et les dépendances influencent l’exécution du travail. HCIL est conçu pour relier ce contexte avant de proposer une action.",
+        layers: [
+          { tag: "Données de référence", title: "PostgreSQL", text: "Conserve les données de référence sur les organisations, les lots de travail, les preuves, les validations et les engagements." },
+          { tag: "Contexte connecté", title: "Graphe de connaissances", text: "Relie les personnes, équipes, projets, documents, décisions, compétences et résultats pour rendre les relations traçables." },
+          { tag: "Recherche par le sens", title: "Recherche Qdrant", text: "Retrouve des descriptions et des preuves pertinentes même lorsque les termes employés diffèrent." },
+          { tag: "Planifier et coordonner", title: "Orchestrateur IA", text: "Utilise un contexte partagé soumis aux permissions et des outils contrôlés pour clarifier les besoins, proposer du travail et coordonner les étapes suivantes." },
+        ],
+        flowTitle: "La boucle d’intelligence prévue",
+        flow: ["Retrouver le contexte autorisé", "Relier les exigences aux preuves", "Proposer le travail ou l’action suivante", "Enregistrer les résultats et actualiser les index dérivés"],
+        statusNote: "Architecture en cours de développement. Les index du graphe et les vecteurs sont dérivés des données de référence ; les actions importantes nécessitent les règles, permissions et validations adaptées. Description illustrative, pas une affirmation que tous les composants sont déjà actifs.",
+        link: { label: "Comprendre l’intelligence HCIL", href: href(l, "/about/intelligence") },
+      },
+    },
+    {
       type: "principles",
       props: {
         id: "principles",
@@ -345,6 +400,23 @@ function fr(): HomeBlock[] {
         live: ["Français", "English"],
         soonLabel: "Langues envisagées pour une prise en charge future",
         soon: ["Pidgin", "Ewondo", "Fulfulde", "Wolof", "Swahili", "Haoussa", "Arabe"],
+      },
+    },
+    {
+      type: "journal",
+      props: {
+        id: "journal",
+        eyebrow: "Le journal HCIL",
+        title: "Des idées pour mieux organiser le travail.",
+        subtitle: "Des notes sur les compétences en contexte, l’organisation du travail et l’intelligence qui sous-tend HCIL. Ces articles sont des aperçus éditoriaux.",
+        items: [
+          { slug: "capability-in-context", href: href(l, "/blog/capability-in-context"), category: "Principes HCIL", title: "Pourquoi une compétence doit être comprise en contexte", excerpt: "Une étiquette de compétence ne suffit pas à prouver qu’une personne peut livrer un résultat dans des conditions précises." },
+          { slug: "a-knowledge-graph-for-organizations", href: href(l, "/blog/a-knowledge-graph-for-organizations"), category: "Architecture IA", title: "Pourquoi les organisations ont besoin d’un graphe", excerpt: "La recherche sémantique trouve des contenus ; le graphe relie les personnes, décisions, projets et preuves." },
+          { slug: "snd30-and-human-capital", href: href(l, "/blog/snd30-and-human-capital"), category: "Contexte de développement", title: "HCIL et les priorités de développement du Cameroun", excerpt: "Explorer une contribution possible aux objectifs de capital humain et d’emploi sans exagérer l’impact." },
+        ],
+        link: { label: "Lire tous les articles", href: href(l, "/blog") },
+        readLabel: "Lire l’article",
+        previewNote: "Aperçu éditorial : articles de démonstration ; vérifier les sources avant publication officielle.",
       },
     },
     {

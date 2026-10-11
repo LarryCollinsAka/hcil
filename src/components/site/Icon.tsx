@@ -6,6 +6,14 @@ export type IconName =
   | "languages"
   | "shield"
   | "coins"
+  | "database"
+  | "network"
+  | "search"
+  | "brain"
+  | "file"
+  | "users"
+  | "book"
+  | "shield-check"
   | "plus"
   | "menu"
   | "close";
@@ -66,6 +74,65 @@ export function Icon({ name, className }: { name: IconName; className?: string }
         <svg {...base} {...stroke}>
           <circle cx="9" cy="9" r="5" />
           <path d="M15.2 9.3A5 5 0 1 1 9.3 15.2" />
+        </svg>
+      );
+    case "database":
+      return (
+        <svg {...base} {...stroke}>
+          <ellipse cx="12" cy="5" rx="8" ry="3" />
+          <path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5" />
+          <path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3" />
+        </svg>
+      );
+    case "network":
+      return (
+        <svg {...base} {...stroke}>
+          <circle cx="12" cy="5" r="2.5" />
+          <circle cx="5" cy="18" r="2.5" />
+          <circle cx="19" cy="18" r="2.5" />
+          <path d="m10.8 7.2-4.6 8.6M13.2 7.2l4.6 8.6M7.5 18h9" />
+        </svg>
+      );
+    case "search":
+      return (
+        <svg {...base} {...stroke}>
+          <circle cx="10.8" cy="10.8" r="6.5" />
+          <path d="m16 16 4.5 4.5" />
+        </svg>
+      );
+    case "brain":
+      return (
+        <svg {...base} {...stroke}>
+          <path d="M12 5.2a3.4 3.4 0 0 0-6.6-.7A3.7 3.7 0 0 0 4.2 11a3.6 3.6 0 0 0 2.2 6.5A3.5 3.5 0 0 0 12 20V5.2Z" />
+          <path d="M12 5.2a3.4 3.4 0 0 1 6.6-.7A3.7 3.7 0 0 1 19.8 11a3.6 3.6 0 0 1-2.2 6.5A3.5 3.5 0 0 1 12 20M8 8.5h2M7 14h3M14 8.5h2M14 14h3" />
+        </svg>
+      );
+    case "file":
+      return (
+        <svg {...base} {...stroke}>
+          <path d="M6 3h8l4 4v14H6z" />
+          <path d="M14 3v5h5M9 13h6M9 17h6" />
+        </svg>
+      );
+    case "users":
+      return (
+        <svg {...base} {...stroke}>
+          <circle cx="9" cy="8" r="3" />
+          <path d="M3.5 20v-1.4A5.5 5.5 0 0 1 9 13h0a5.5 5.5 0 0 1 5.5 5.6V20M16 5.5a3 3 0 0 1 0 5.8M17 13.5a5 5 0 0 1 3.5 4.8V20" />
+        </svg>
+      );
+    case "book":
+      return (
+        <svg {...base} {...stroke}>
+          <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v17H6.5A2.5 2.5 0 0 0 4 22z" />
+          <path d="M4 5.5v14A2.5 2.5 0 0 1 6.5 17H20M8 7h8M8 11h8" />
+        </svg>
+      );
+    case "shield-check":
+      return (
+        <svg {...base} {...stroke}>
+          <path d="m12 3 8 3v6c0 4.5-3.2 7.8-8 9-4.8-1.2-8-4.5-8-9V6l8-3Z" />
+          <path d="m8 12 2.5 2.5L16 9" />
         </svg>
       );
     case "plus":

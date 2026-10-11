@@ -29,6 +29,20 @@ export type HomeBlock =
   | { type: "highlights"; props: { ariaLabel: string; items: { title: string; text: string }[] } }
   | { type: "steps"; props: { id: string; title: string; subtitle: string; items: { title: string; text: string }[] } }
   | {
+      type: "intelligence";
+      props: {
+        id: string;
+        eyebrow: string;
+        title: string;
+        subtitle: string;
+        layers: { tag: string; title: string; text: string }[];
+        flowTitle: string;
+        flow: string[];
+        statusNote: string;
+        link: Cta;
+      };
+    }
+  | {
       type: "principles";
       props: {
         id: string;
@@ -41,6 +55,19 @@ export type HomeBlock =
   | {
       type: "languages";
       props: { id: string; title: string; subtitle: string; live: string[]; liveLabel: string; soonLabel: string; soon: string[] };
+    }
+  | {
+      type: "journal";
+      props: {
+        id: string;
+        eyebrow: string;
+        title: string;
+        subtitle: string;
+        items: { slug: string; href: string; category: string; title: string; excerpt: string }[];
+        link: Cta;
+        readLabel: string;
+        previewNote: string;
+      };
     }
   | { type: "faq"; props: { id: string; title: string; items: { q: string; a: string }[] } }
   | { type: "cta"; props: { title: string; text: string; primary: Cta; secondary: Cta } };

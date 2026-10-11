@@ -6,7 +6,8 @@ export type SiteCopy = {
   menu: string;
   primaryNav: string;
   getStarted: string;
-  nav: { how: string; principles: string; audiences: string; faq: string };
+  nav: { how: string; principles: string; audiences: string; faq: string; about: string; blog: string };
+  aboutMenu: { overview: string; mission: string; intelligence: string; policy: string; trust: string };
   footer: {
     tagline: string;
     groups: { title: string; links: { label: string; href: string }[] }[];
@@ -20,24 +21,34 @@ const en: SiteCopy = {
   menu: "Menu",
   primaryNav: "Primary navigation",
   getStarted: "Choose your path",
-  nav: { how: "How it works", principles: "Principles", audiences: "Companies & talent", faq: "FAQ" },
+  nav: { how: "How it works", principles: "Principles", audiences: "Companies & talent", faq: "FAQ", about: "About HCIL", blog: "Blog" },
+  aboutMenu: { overview: "Overview", mission: "Mission & approach", intelligence: "How intelligence works", policy: "Policy alignment", trust: "Trust & governance" },
   footer: {
     tagline: "Work first. Capability, in context.",
     groups: [
       {
         title: "Explore",
         links: [
-          { label: "How it works", href: "#how" },
-          { label: "Companies", href: "#for-companies" },
-          { label: "Talent", href: "#for-talent" },
+          { label: "How it works", href: "/#how" },
+          { label: "Companies", href: "/#for-companies" },
+          { label: "Talent", href: "/#for-talent" },
         ],
       },
       {
-        title: "Our approach",
+        title: "About HCIL",
         links: [
-          { label: "Principles", href: "#principles" },
-          { label: "Languages", href: "#languages" },
-          { label: "FAQ", href: "#faq" },
+          { label: "Overview", href: "/about" },
+          { label: "How intelligence works", href: "/about/intelligence" },
+          { label: "Policy alignment", href: "/about/policy-alignment" },
+          { label: "Trust & governance", href: "/about/trust" },
+        ],
+      },
+      {
+        title: "Resources",
+        links: [
+          { label: "Blog", href: "/blog" },
+          { label: "Principles", href: "/#principles" },
+          { label: "FAQ", href: "/#faq" },
         ],
       },
     ],
@@ -51,24 +62,34 @@ const fr: SiteCopy = {
   menu: "Menu",
   primaryNav: "Navigation principale",
   getStarted: "Choisir un parcours",
-  nav: { how: "Comment ça marche", principles: "Principes", audiences: "Entreprises et talents", faq: "FAQ" },
+  nav: { how: "Comment ça marche", principles: "Principes", audiences: "Entreprises et talents", faq: "FAQ", about: "À propos de HCIL", blog: "Blog" },
+  aboutMenu: { overview: "Vue d’ensemble", mission: "Mission et approche", intelligence: "Fonctionnement de l’intelligence", policy: "Cadres de référence", trust: "Confiance et gouvernance" },
   footer: {
     tagline: "Le travail d’abord. La compétence, en contexte.",
     groups: [
       {
         title: "Explorer",
         links: [
-          { label: "Comment ça marche", href: "#how" },
-          { label: "Entreprises", href: "#for-companies" },
-          { label: "Talents", href: "#for-talent" },
+          { label: "Comment ça marche", href: "/#how" },
+          { label: "Entreprises", href: "/#for-companies" },
+          { label: "Talents", href: "/#for-talent" },
         ],
       },
       {
-        title: "Notre approche",
+        title: "À propos de HCIL",
         links: [
-          { label: "Principes", href: "#principles" },
-          { label: "Langues", href: "#languages" },
-          { label: "FAQ", href: "#faq" },
+          { label: "Vue d’ensemble", href: "/about" },
+          { label: "Fonctionnement de l’intelligence", href: "/about/intelligence" },
+          { label: "Cadres de référence", href: "/about/policy-alignment" },
+          { label: "Confiance et gouvernance", href: "/about/trust" },
+        ],
+      },
+      {
+        title: "Ressources",
+        links: [
+          { label: "Blog", href: "/blog" },
+          { label: "Principes", href: "/#principles" },
+          { label: "FAQ", href: "/#faq" },
         ],
       },
     ],
