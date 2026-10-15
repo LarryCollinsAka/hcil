@@ -1,0 +1,2 @@
+ALTER TABLE "access_role_permissions" DROP CONSTRAINT "access_role_permissions_pk";--> statement-breakpoint
+ALTER TABLE "access_role_permissions" ADD CONSTRAINT "access_role_permissions_role_id_permission_id_pk" PRIMARY KEY("role_id","permission_id");

@@ -12,12 +12,13 @@ export default async function WorkspacePage({
   searchParams,
 }: {
   params: Promise<{ locale: string }>;
-  searchParams?: Promise<{ welcome?: string; error?: string; "password-updated"?: string }>;
+  searchParams?: Promise<{ welcome?: string; error?: string; "password-updated"?: string; portal?: string }>;
 }) {
   const { locale } = await params;
   if (!isLocale(locale)) return null;
   const fr = locale === "fr";
   const query = await searchParams;
+  const selectedPortal = query?.portal === "talent" || query?.portal === "business" || query?.portal === "agency" ? query.portal : null;
   const principal = await requireAuthenticatedPrincipal(locale);
   const [profile] = await db.select({ fullName: profiles.fullName, email: profiles.email }).from(profiles).where(eq(profiles.id, principal.id)).limit(1);
   const [worker] = await db.select({ profileId: workerProfiles.profileId }).from(workerProfiles).where(eq(workerProfiles.profileId, principal.id)).limit(1);
@@ -48,6 +49,7 @@ export default async function WorkspacePage({
         </div>
       </div>
 
+      {selectedPortal ? <p className="mt-6 rounded-2xl border border-green-700/15 bg-white px-4 py-3 text-sm leading-6 text-green-950/75">{fr ? `Vous êtes entré par le portail ${selectedPortal === "talent" ? "talent" : selectedPortal === "business" ? "entreprise" : "agence"}. Le portail choisi ne confère pas de permissions : les accès disponibles dépendent des profils et rôles réellement attribués à votre compte.` : `You entered through the ${selectedPortal} portal. Portal selection does not grant permissions; available access depends on the profiles and roles actually assigned to your account.`}</p> : null}
       {query?.welcome === "1" ? <p role="status" className="mt-6 rounded-2xl border border-green-700/20 bg-green-50 px-4 py-3 text-sm text-green-900">{fr ? "Votre inscription est terminée. Vous pouvez commencer à configurer votre espace." : "Your registration is complete. You can begin setting up your workspace."}</p> : null}
       {query?.["password-updated"] === "1" ? <p role="status" className="mt-6 rounded-2xl border border-green-700/20 bg-green-50 px-4 py-3 text-sm text-green-900">{fr ? "Votre mot de passe a été mis à jour." : "Your password has been updated."}</p> : null}
       {query?.error === "forbidden" ? <p role="alert" className="mt-6 rounded-2xl border border-red-600/20 bg-red-50 px-4 py-3 text-sm text-red-800">{fr ? "Vous n’avez pas l’autorisation d’accéder à cette ressource." : "You do not have permission to access that resource."}</p> : null}

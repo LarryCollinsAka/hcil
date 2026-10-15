@@ -57,7 +57,7 @@ export async function provisionAccountForUser(user: User, fallbackLocale: Locale
   const accountType = ACCOUNT_TYPES.has(accountTypeRaw) ? accountTypeRaw : "talent";
   const organizationName = asText(metadata.organization_name, 160);
   let organizationTypeRaw = asText(metadata.organization_type, 48) ?? "employer";
-  if (accountType === "agency") organizationTypeRaw = "staffing_agency";
+  // The agency portal permits only the allow-listed agency types validated at signup.
   const organizationType = ORGANIZATION_TYPES.has(organizationTypeRaw) ? organizationTypeRaw : "employer";
 
   await db.transaction(async (tx) => {
