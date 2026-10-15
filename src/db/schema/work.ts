@@ -115,7 +115,7 @@ export const workRequests = pgTable(
     index("work_requests_creator_idx").on(t.createdBy),
     valuesIn("work_requests_status_ck", t.status, REQUEST_STATUSES),
   ],
-);
+).enableRLS();
 
 /* ------------------------------------------------------------------ */
 /* Milestones: funding and progress checkpoints over leaf packages     */
@@ -155,7 +155,7 @@ export const milestones = pgTable(
     check("milestones_currency_ck", sql`${t.currency} ~ '^[A-Z]{3}$'`),
     valuesIn("milestones_status_ck", t.status, MILESTONE_STATUSES),
   ],
-);
+).enableRLS();
 
 /* ------------------------------------------------------------------ */
 /* Packages                                                            */
@@ -223,7 +223,7 @@ export const workPackages = pgTable(
     valuesIn("work_packages_status_ck", t.status, PACKAGE_STATUSES),
     valuesIn("work_packages_origin_ck", t.origin, PACKAGE_ORIGINS),
   ],
-);
+).enableRLS();
 
 /* ------------------------------------------------------------------ */
 /* Requirements (what the package needs; matching interprets them)     */
@@ -264,7 +264,7 @@ export const workPackageCapabilities = pgTable(
       sql`${t.requiredConfidence} is null or ${t.requiredConfidence} between 0 and 1`,
     ),
   ],
-);
+).enableRLS();
 
 // One row per modality, mirroring worker_language_proficiency. Levels 1..6 = A1..C2.
 export const workPackageLanguages = pgTable(
@@ -298,7 +298,7 @@ export const workPackageLanguages = pgTable(
       sql`${t.weight} > 0 and ${t.weight} <= 1`,
     ),
   ],
-);
+).enableRLS();
 
 /* ------------------------------------------------------------------ */
 /* Assignments: the commitment between a worker and a leaf package     */
@@ -355,7 +355,7 @@ export const assignments = pgTable(
       sql`${t.status} in ('offered', 'accepted', 'active') or ${t.endedAt} is not null`,
     ),
   ],
-);
+).enableRLS();
 
 /* ------------------------------------------------------------------ */
 /* Submissions and acceptances (append-only)                           */
@@ -391,7 +391,7 @@ export const submissions = pgTable(
       sql`${t.externalUrl} is null or ${t.externalUrl} ~ '^https?://'`,
     ),
   ],
-);
+).enableRLS();
 
 // Exactly one decision per submission. A revision request leads to a NEW submission.
 // decided_by is an organization member of the request's organization, or null for a system decision.
@@ -419,4 +419,4 @@ export const acceptances = pgTable(
       sql`${t.quality} is null or ${t.quality} between 0 and 1`,
     ),
   ],
-);
+).enableRLS();

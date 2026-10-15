@@ -15,8 +15,9 @@
 //    let you read other workers' records; membership does not grant org permissions by itself.
 //    Authorization chain: authenticated user -> profile -> relationship -> role/policy -> permission.
 //  - Two different scopes of authority, never merged:
-//      organization_members.role = authority INSIDE one organization (owner / admin / member)
-//      staff_roles               = authority over the PLATFORM (content, moderation, admin)
+//      user_role_assignments     = authoritative permission-bearing role assignments, scoped to platform/org
+//      organization_members      = membership relationship; legacy role is retained for compatibility only
+//      staff_roles               = legacy table; new authorization must use the RBAC tables
 //  - No generic "actor" supertable and no polymorphic actor_id. Every table that needs a person
 //    points at profiles; every table that needs an organization points at organizations. Work
 //    records carry both: organization_id (who owns the work) and created_by (which human did it).
@@ -39,7 +40,7 @@ import {
 import { createdAt, updatedAt } from "./_shared";
 import { platformLocales } from "./reference";
 
-// Code branches on these, so they are enums (unlike taxonomy vocabularies).
+// Legacy compatibility enums for existing memberships and staff rows. New authorization uses data-driven RBAC.
 export const staffRole = pgEnum("staff_role", ["admin", "editor", "moderator"]);
 export const orgMemberRole = pgEnum("org_member_role", [
   "owner",
@@ -75,7 +76,7 @@ export const profiles = pgTable(
       sql`${t.phone} is null or ${t.phone} ~ '^\\+[1-9][0-9]{6,14}$'`,
     ),
   ],
-);
+).enableRLS();
 
 // Platform-wide staff powers. Separate from marketplace participation: an admin may also be a worker.
 export const staffRoles = pgTable(
@@ -91,7 +92,7 @@ export const staffRoles = pgTable(
     createdAt: createdAt(),
   },
   (t) => [primaryKey({ columns: [t.profileId, t.role] })],
-);
+).enableRLS();
 
 export const organizations = pgTable(
   "organizations",
@@ -99,14 +100,19 @@ export const organizations = pgTable(
     id: uuid("id").primaryKey().defaultRandom(),
     name: text("name").notNull(),
     industry: text("industry"),
+    organizationType: text("organization_type").notNull().default("employer"),
     countryCode: text("country_code").notNull().default("CM"), // ISO 3166-1 alpha-2
     createdAt: createdAt(),
     updatedAt: updatedAt(),
   },
   (t) => [
     check("organizations_country_ck", sql`${t.countryCode} ~ '^[A-Z]{2}$'`),
+    check(
+      "organizations_type_ck",
+      sql`${t.organizationType} in ('employer', 'staffing_agency', 'recruitment_agency', 'ngo', 'public_sector', 'educational_institution', 'artisan_association', 'cooperative', 'other')`,
+    ),
   ],
-);
+).enableRLS();
 
 // Person <-> organization, with authority scoped to that organization.
 // Invariant (enforced by trigger in custom-migrations/0001_*.sql): an organization always keeps
@@ -127,7 +133,62 @@ export const organizationMembers = pgTable(
     primaryKey({ columns: [t.organizationId, t.profileId] }),
     index("organization_members_profile_idx").on(t.profileId), // "which organizations am I in?"
   ],
-);
+).enableRLS();
+
+// Agency representation is a separate, explicit relationship: agency membership alone never
+// grants authority over a talent. Active representation requires consent from the talent and an
+// allow-listed set of scopes; the service layer must check the requested scope on every action.
+export const agencyRepresentations = pgTable(
+  "agency_representations",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    agencyOrganizationId: uuid("agency_organization_id")
+      .notNull()
+      .references(() => organizations.id, { onDelete: "restrict" }),
+    talentProfileId: uuid("talent_profile_id")
+      .notNull()
+      .references(() => profiles.id, { onDelete: "restrict" }),
+    status: text("status").notNull().default("pending_consent"),
+    scopes: text("scopes").array().notNull().default(sql`ARRAY[]::text[]`),
+    requestedBy: uuid("requested_by")
+      .notNull()
+      .references(() => profiles.id, { onDelete: "restrict" }),
+    requestedAt: timestamp("requested_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    consentedBy: uuid("consented_by").references(() => profiles.id, {
+      onDelete: "restrict",
+    }),
+    consentedAt: timestamp("consented_at", { withTimezone: true }),
+    consentExpiresAt: timestamp("consent_expires_at", { withTimezone: true }),
+    revokedAt: timestamp("revoked_at", { withTimezone: true }),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [
+    check(
+      "agency_representations_status_ck",
+      sql`${t.status} in ('pending_consent', 'active', 'suspended', 'revoked', 'expired')`,
+    ),
+    check(
+      "agency_representations_scopes_ck",
+      sql`${t.scopes} <@ ARRAY['view_profile', 'view_private_evidence', 'manage_availability', 'submit_proposals', 'negotiate_terms', 'accept_assignments']::text[]`,
+    ),
+    check(
+      "agency_representations_consent_ck",
+      sql`${t.status} <> 'active' or (${t.consentedBy} is not null and ${t.consentedBy} = ${t.talentProfileId} and ${t.consentedAt} is not null and cardinality(${t.scopes}) > 0 and (${t.consentExpiresAt} is null or ${t.consentExpiresAt} > ${t.consentedAt}))`,
+    ),
+    check(
+      "agency_representations_revoked_ck",
+      sql`${t.status} <> 'revoked' or ${t.revokedAt} is not null`,
+    ),
+    uniqueIndex("agency_representations_open_uq")
+      .on(t.agencyOrganizationId, t.talentProfileId)
+      .where(sql`${t.status} in ('pending_consent', 'active', 'suspended')`),
+    index("agency_representations_talent_idx").on(t.talentProfileId, t.status),
+    index("agency_representations_agency_idx").on(t.agencyOrganizationId, t.status),
+  ],
+).enableRLS();
 
 // Having a row here is what makes a person a worker. 1:1 with profiles.
 export const workerProfiles = pgTable(
@@ -160,4 +221,4 @@ export const workerProfiles = pgTable(
       sql`${t.minHourlyRate} is null or ${t.minHourlyRate} >= 0`,
     ),
   ],
-);
+).enableRLS();

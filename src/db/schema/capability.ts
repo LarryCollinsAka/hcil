@@ -123,7 +123,7 @@ export const evidence = pgTable(
       sql`${t.kind} <> 'admin_adjustment' or ${t.description} is not null`,
     ),
   ],
-);
+).enableRLS();
 
 export const evidenceCapabilities = pgTable(
   "evidence_capabilities",
@@ -164,7 +164,7 @@ export const evidenceCapabilities = pgTable(
       sql`${t.weight} > 0 and ${t.weight} <= 1`,
     ),
   ],
-);
+).enableRLS();
 
 export const evidenceLanguages = pgTable(
   "evidence_languages",
@@ -202,7 +202,7 @@ export const evidenceLanguages = pgTable(
       sql`${t.weight} > 0 and ${t.weight} <= 1`,
     ),
   ],
-);
+).enableRLS();
 
 // A retraction ignores the evidence in projections. The evidence row itself never changes.
 export const evidenceRetractions = pgTable("evidence_retractions", {
@@ -214,7 +214,7 @@ export const evidenceRetractions = pgTable("evidence_retractions", {
     onDelete: "restrict",
   }),
   retractedAt: ts("retracted_at").notNull().defaultNow(),
-});
+}).enableRLS();
 
 /* ------------------------------------------------------------------ */
 /* Projections (rebuildable from evidence; written only by the projector) */
@@ -246,7 +246,7 @@ export const workerCapabilities = pgTable(
     ),
     check("worker_capabilities_count_ck", sql`${t.evidenceCount} >= 1`),
   ],
-);
+).enableRLS();
 
 // Declared facts about a worker's relationship to a language. Levels live in the table below.
 export const workerLanguages = pgTable(
@@ -273,7 +273,7 @@ export const workerLanguages = pgTable(
       "learned",
     ]),
   ],
-);
+).enableRLS();
 
 export const workerLanguageProficiency = pgTable(
   "worker_language_proficiency",
@@ -311,7 +311,7 @@ export const workerLanguageProficiency = pgTable(
     ),
     check("worker_language_proficiency_count_ck", sql`${t.evidenceCount} >= 1`),
   ],
-);
+).enableRLS();
 
 /* ------------------------------------------------------------------ */
 /* Assessments                                                         */
@@ -334,7 +334,7 @@ export const assessments = pgTable(
     valuesIn("assessments_kind_ck", t.kind, ASSESSMENT_KINDS),
     valuesIn("assessments_status_ck", t.status, ["active", "retired"]),
   ],
-);
+).enableRLS();
 
 // Immutable once published (trigger). What an assessment measures is declared per version.
 export const assessmentVersions = pgTable(
@@ -371,7 +371,7 @@ export const assessmentVersions = pgTable(
       sql`${t.status} = 'draft' or ${t.publishedAt} is not null`,
     ),
   ],
-);
+).enableRLS();
 
 // Delivery-language content. One version, many languages, so calibration is not split by copy.
 export const assessmentTranslations = pgTable(
@@ -399,7 +399,7 @@ export const assessmentTranslations = pgTable(
       "published",
     ]),
   ],
-);
+).enableRLS();
 
 export const assessmentCapabilities = pgTable(
   "assessment_capabilities",
@@ -423,7 +423,7 @@ export const assessmentCapabilities = pgTable(
     ),
     check("assessment_capabilities_weight_ck", sql`${t.weight} > 0`),
   ],
-);
+).enableRLS();
 
 // For language tests: which language modalities a version measures.
 export const assessmentLangTargets = pgTable(
@@ -449,7 +449,7 @@ export const assessmentLangTargets = pgTable(
     ),
     check("assessment_lang_targets_weight_ck", sql`${t.weight} > 0`),
   ],
-);
+).enableRLS();
 
 export const assessmentAttempts = pgTable(
   "assessment_attempts",
@@ -495,7 +495,7 @@ export const assessmentAttempts = pgTable(
       sql`${t.status} <> 'scored' or (${t.scoredAt} is not null and ${t.evidenceId} is not null)`,
     ),
   ],
-);
+).enableRLS();
 
 export const assessmentResults = pgTable(
   "assessment_results",
@@ -519,7 +519,7 @@ export const assessmentResults = pgTable(
       sql`${t.demonstratedLevel} between 0 and 5`,
     ),
   ],
-);
+).enableRLS();
 
 export const assessmentLangResults = pgTable(
   "assessment_lang_results",
@@ -548,4 +548,4 @@ export const assessmentLangResults = pgTable(
       sql`${t.demonstratedLevel} between 0 and 6`,
     ),
   ],
-);
+).enableRLS();

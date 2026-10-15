@@ -71,7 +71,7 @@ export const outboxEvents = pgTable(
       sql`not (${t.processedAt} is not null and ${t.deadAt} is not null)`,
     ),
   ],
-);
+).enableRLS();
 
 // One row per (handler, event) that has completed, so a retried event never repeats finished work.
 export const processedEvents = pgTable(
@@ -86,4 +86,4 @@ export const processedEvents = pgTable(
       .defaultNow(),
   },
   (t) => [primaryKey({ columns: [t.handler, t.eventId] })],
-);
+).enableRLS();

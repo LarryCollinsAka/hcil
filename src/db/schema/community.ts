@@ -62,7 +62,7 @@ export const forumCategories = pgTable(
     uniqueIndex("forum_categories_key_uq").on(t.key),
     slugFormat("forum_categories_key_ck", t.key),
   ],
-);
+).enableRLS();
 
 export const forumCategoryTranslations = pgTable(
   "forum_category_translations",
@@ -91,7 +91,7 @@ export const forumCategoryTranslations = pgTable(
       "published",
     ]),
   ],
-);
+).enableRLS();
 
 export const forumThreads = pgTable(
   "forum_threads",
@@ -122,7 +122,7 @@ export const forumThreads = pgTable(
     index("forum_threads_language_idx").on(t.languageId),
     index("forum_threads_author_idx").on(t.authorId),
   ],
-);
+).enableRLS();
 
 // The opening post of a thread is simply its earliest post.
 export const forumPosts = pgTable(
@@ -151,7 +151,7 @@ export const forumPosts = pgTable(
     index("forum_posts_thread_idx").on(t.threadId, t.createdAt),
     index("forum_posts_author_idx").on(t.authorId),
   ],
-);
+).enableRLS();
 
 export const forumReports = pgTable(
   "forum_reports",
@@ -181,4 +181,4 @@ export const forumReports = pgTable(
       "other",
     ]),
   ],
-);
+).enableRLS();

@@ -99,7 +99,14 @@ export function Header({ locale, copy }: { locale: Locale; copy: SiteCopy }) {
         <div className="flex items-center gap-1.5">
           <LocaleSwitcher locale={locale} label={copy.footer.language} />
           <Link
-            href={href(locale, "#audiences")}
+            href={href(locale, "/auth/sign-in")}
+            onClick={closeMenus}
+            className="hidden rounded-full px-3 py-2 text-sm font-semibold text-green-900 transition hover:bg-gold-200/60 sm:inline-block"
+          >
+            {copy.signIn}
+          </Link>
+          <Link
+            href={href(locale, "/auth/sign-up")}
             onClick={closeMenus}
             className="hidden rounded-full bg-green-950 px-4 py-2 text-sm font-semibold text-gold-100 transition hover:bg-green-800 sm:inline-block"
           >
@@ -148,11 +155,18 @@ export function Header({ locale, copy }: { locale: Locale; copy: SiteCopy }) {
                   ))}
                 </div>
               </details>
-              <div className="mt-1 border-t border-green-950/10 p-2 pt-3">
+              <div className="mt-1 grid grid-cols-2 gap-2 border-t border-green-950/10 p-2 pt-3">
                 <Link
-                  href={href(locale, "#audiences")}
+                  href={href(locale, "/auth/sign-in")}
                   onClick={closeMenus}
-                  className="block rounded-full bg-green-950 px-4 py-2.5 text-center text-sm font-semibold text-gold-100"
+                  className="block rounded-full border border-green-950/15 px-3 py-2.5 text-center text-sm font-semibold text-green-950"
+                >
+                  {copy.signIn}
+                </Link>
+                <Link
+                  href={href(locale, "/auth/sign-up")}
+                  onClick={closeMenus}
+                  className="block rounded-full bg-green-950 px-3 py-2.5 text-center text-sm font-semibold text-gold-100"
                 >
                   {copy.getStarted}
                 </Link>

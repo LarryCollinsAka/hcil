@@ -85,7 +85,7 @@ export const languages = pgTable(
       sql`${t.replacedById} is null or (${t.status} = 'deprecated' and ${t.replacedById} <> ${t.id})`,
     ),
   ],
-);
+).enableRLS();
 
 // Rule 4: unique per (alias, language), so one alias may legitimately point at several languages.
 // Accent variants ("Français" / "Francais") are simply separate aliases.
@@ -108,7 +108,7 @@ export const languageAliases = pgTable(
       t.languageId,
     ),
   ],
-);
+).enableRLS();
 
 /* ------------------------------------------------------------------ */
 /* Platform locales (what the UI and site content can be shown in)     */
@@ -165,7 +165,7 @@ export const platformLocales = pgTable(
       sql`${t.fallbackLocaleId} is null or ${t.fallbackLocaleId} <> ${t.id}`,
     ),
   ],
-);
+).enableRLS();
 
 /* ------------------------------------------------------------------ */
 /* Capability taxonomy                                                 */
@@ -200,7 +200,7 @@ export const capabilityDomains = pgTable(
       sql`${t.parentId} is null or ${t.parentId} <> ${t.id}`,
     ),
   ],
-);
+).enableRLS();
 
 export const capabilityDomainTranslations = pgTable(
   "capability_domain_translations",
@@ -223,7 +223,7 @@ export const capabilityDomainTranslations = pgTable(
       "published",
     ]),
   ],
-);
+).enableRLS();
 
 // Capabilities keep a richer lifecycle than languages on purpose: a capability needs semantic
 // review before it becomes canonical, whereas a language registry entry is plain reference data.
@@ -261,7 +261,7 @@ export const capabilities = pgTable(
       sql`${t.replacedById} is null or (${t.status} = 'deprecated' and ${t.replacedById} <> ${t.id})`,
     ),
   ],
-);
+).enableRLS();
 
 // Rule 5. languageId says which language the alias is written in. The same string can mean
 // different things in different languages (false friends such as "formation"), so uniqueness is
@@ -295,7 +295,7 @@ export const capabilityAliases = pgTable(
       .where(sql`${t.languageId} is null`),
     index("capability_aliases_cap_idx").on(t.capabilityId),
   ],
-);
+).enableRLS();
 
 export const capabilityTranslations = pgTable(
   "capability_translations",
@@ -318,7 +318,7 @@ export const capabilityTranslations = pgTable(
       "published",
     ]),
   ],
-);
+).enableRLS();
 
 /* ------------------------------------------------------------------ */
 /* Governance                                                          */
@@ -353,4 +353,4 @@ export const taxonomyAuditLog = pgTable(
       "DELETE",
     ]),
   ],
-);
+).enableRLS();

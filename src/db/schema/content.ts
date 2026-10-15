@@ -54,7 +54,7 @@ export const pages = pgTable(
     uniqueIndex("pages_key_uq").on(t.key),
     slugFormat("pages_key_ck", t.key),
   ],
-);
+).enableRLS();
 
 export const pageTranslations = pgTable(
   "page_translations",
@@ -95,7 +95,7 @@ export const pageTranslations = pgTable(
       sql`${t.status} <> 'published' or ${t.publishedAt} is not null`,
     ),
   ],
-);
+).enableRLS();
 
 /* ------------------------------------------------------------------ */
 /* Blog                                                                */
@@ -114,7 +114,7 @@ export const postCategories = pgTable(
     uniqueIndex("post_categories_key_uq").on(t.key),
     slugFormat("post_categories_key_ck", t.key),
   ],
-);
+).enableRLS();
 
 export const postCategoryTranslations = pgTable(
   "post_category_translations",
@@ -143,7 +143,7 @@ export const postCategoryTranslations = pgTable(
       "published",
     ]),
   ],
-);
+).enableRLS();
 
 export const posts = pgTable(
   "posts",
@@ -169,7 +169,7 @@ export const posts = pgTable(
     index("posts_category_idx").on(t.categoryId),
     index("posts_author_idx").on(t.authorId),
   ],
-);
+).enableRLS();
 
 export const postTranslations = pgTable(
   "post_translations",
@@ -209,4 +209,4 @@ export const postTranslations = pgTable(
       sql`${t.status} <> 'published' or ${t.publishedAt} is not null`,
     ),
   ],
-);
+).enableRLS();

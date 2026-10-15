@@ -6,6 +6,7 @@ export type SiteCopy = {
   menu: string;
   primaryNav: string;
   getStarted: string;
+  signIn: string;
   nav: { how: string; principles: string; audiences: string; faq: string; about: string; blog: string };
   aboutMenu: { overview: string; mission: string; intelligence: string; policy: string; trust: string };
   footer: {
@@ -21,6 +22,7 @@ const en: SiteCopy = {
   menu: "Menu",
   primaryNav: "Primary navigation",
   getStarted: "Choose your path",
+  signIn: "Sign in",
   nav: { how: "How it works", principles: "Principles", audiences: "Companies & talent", faq: "FAQ", about: "About HCIL", blog: "Blog" },
   aboutMenu: { overview: "Overview", mission: "Mission & approach", intelligence: "How intelligence works", policy: "Policy alignment", trust: "Trust & governance" },
   footer: {
@@ -62,6 +64,7 @@ const fr: SiteCopy = {
   menu: "Menu",
   primaryNav: "Navigation principale",
   getStarted: "Choisir un parcours",
+  signIn: "Se connecter",
   nav: { how: "Comment ça marche", principles: "Principes", audiences: "Entreprises et talents", faq: "FAQ", about: "À propos de HCIL", blog: "Blog" },
   aboutMenu: { overview: "Vue d’ensemble", mission: "Mission et approche", intelligence: "Fonctionnement de l’intelligence", policy: "Cadres de référence", trust: "Confiance et gouvernance" },
   footer: {
