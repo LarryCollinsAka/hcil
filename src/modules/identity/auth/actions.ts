@@ -108,7 +108,16 @@ async function signUpForPortal(rawLocale: string, portal: AuthPortal, formData: 
   });
 
   // Keep signup errors generic to avoid leaking whether an address already exists.
-  if (error) redirect(`${signUpPath}?error=signup-failed`);
+  if (error) {
+    console.error("[HCIL signup] Supabase signUp failed:", {
+      message: error.message,
+      status: error.status,
+      name: error.name,
+    });
+
+    redirect(`${signUpPath}?error=signup-failed`);
+  }
+
   if (data.session && data.user) {
     try {
       await provisionAccountForUser(data.user, locale);
