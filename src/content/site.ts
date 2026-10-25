@@ -63,10 +63,10 @@ const fr: SiteCopy = {
   skip: "Aller au contenu",
   menu: "Menu",
   primaryNav: "Navigation principale",
-  getStarted: "Choisir un parcours",
-  signIn: "Se connecter",
-  nav: { how: "Comment ça marche", principles: "Principes", audiences: "Entreprises et talents", faq: "FAQ", about: "À propos de HCIL", blog: "Blog" },
-  aboutMenu: { overview: "Vue d’ensemble", mission: "Mission et approche", intelligence: "Fonctionnement de l’intelligence", policy: "Cadres de référence", trust: "Confiance et gouvernance" },
+  getStarted: "Rejoindre HCIL",
+  signIn: "Connexion",
+  nav: { how: "Les étapes", principles: "Principes", audiences: "Pour qui ?", faq: "FAQ", about: "À propos", blog: "Blog" },
+  aboutMenu: { overview: "Vue d’ensemble", mission: "Mission et approche", intelligence: "Notre intelligence", policy: "Cadres de référence", trust: "Confiance et gouvernance" },
   footer: {
     tagline: "Le travail d’abord. La compétence, en contexte.",
     groups: [
