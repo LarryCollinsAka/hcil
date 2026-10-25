@@ -1,13 +1,11 @@
-# HCIL navigation localization patch
+# HCIL About dropdown fix
 
-Overlay these two files onto the repository:
+## Cause
+The desktop About `<details>` dropdown was closed by `onMouseLeave` on its parent. The dropdown is absolutely positioned below the summary, leaving a small pointer gap; moving the cursor from “About” into the dropdown can trigger `mouseleave` and close the menu before a submenu item can be clicked.
 
-- `src/components/site/Header.tsx`
-- `src/content/site.ts`
+## Apply
+Copy `src/components/site/Header.tsx` into the same path in the HCIL repository, replacing the current file.
 
-Changes:
-- Move the full desktop navigation breakpoint from `lg` to `xl`, keeping the compact/mobile menu active at intermediate widths where French labels would otherwise crowd the header.
-- Prevent desktop labels from wrapping and slightly reduce horizontal padding and label size.
-- Shorten French navigation labels and account actions while retaining the intended meaning.
+The fix removes the premature mouse-leave close. The dropdown remains open until the user selects a link, presses Escape, or navigates to another route (the existing pathname effect closes it).
 
-After applying, run `npm run build` and inspect `/en` and `/fr` at desktop, tablet, and mobile widths. This patch intentionally does not change routes, auth actions, database code, or email configuration. A production build has not been run in this environment.
+Run `npm run build`, then test the desktop About menu in both `/en` and `/fr`.

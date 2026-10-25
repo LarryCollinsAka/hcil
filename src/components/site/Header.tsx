@@ -49,13 +49,13 @@ export function Header({ locale, copy }: { locale: Locale; copy: SiteCopy }) {
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 rounded-full border border-green-950/10 bg-gold-50/90 py-2 pl-4 pr-2 shadow-[0_10px_34px_-14px_rgba(0,22,17,0.3)] backdrop-blur-xl">
         <Logo locale={locale} />
 
-        <nav aria-label={copy.primaryNav} className="hidden items-center gap-0.5 xl:flex">
+        <nav aria-label={copy.primaryNav} className="hidden items-center gap-0.5 lg:flex">
           {anchors.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               onClick={closeMenus}
-              className="whitespace-nowrap rounded-full px-2.5 py-2 text-[13px] font-medium text-green-900 transition hover:bg-gold-200/60 hover:text-green-950"
+              className="rounded-full px-3 py-2 text-sm font-medium text-green-900 transition hover:bg-gold-200/60 hover:text-green-950"
             >
               {link.label}
             </Link>
@@ -63,14 +63,13 @@ export function Header({ locale, copy }: { locale: Locale; copy: SiteCopy }) {
           <Link
             href={href(locale, "/blog")}
             onClick={closeMenus}
-            className="whitespace-nowrap rounded-full px-2.5 py-2 text-[13px] font-medium text-green-900 transition hover:bg-gold-200/60 hover:text-green-950"
+            className="rounded-full px-3 py-2 text-sm font-medium text-green-900 transition hover:bg-gold-200/60 hover:text-green-950"
           >
             {copy.nav.blog}
           </Link>
           <details
             ref={aboutMenuRef}
             className="group relative"
-            onMouseLeave={() => aboutMenuRef.current?.removeAttribute("open")}
             onKeyDown={(event) => {
               if (event.key === "Escape") {
                 aboutMenuRef.current?.removeAttribute("open");
@@ -112,7 +111,7 @@ export function Header({ locale, copy }: { locale: Locale; copy: SiteCopy }) {
           >
             {copy.getStarted}
           </Link>
-          <details ref={mobileMenuRef} className="group relative xl:hidden">
+          <details ref={mobileMenuRef} className="group relative lg:hidden">
             <summary
               aria-label={copy.menu}
               className="grid size-10 list-none place-items-center rounded-full bg-gold-200/60 text-green-950 [&::-webkit-details-marker]:hidden"
