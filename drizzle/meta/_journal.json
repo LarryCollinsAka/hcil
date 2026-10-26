@@ -57,6 +57,13 @@
       "when": 1792033433992,
       "tag": "0007_friendly_patch",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1793001600000,
+      "tag": "0008_infrastructure_outbox",
+      "breakpoints": true
     }
   ]
 }
