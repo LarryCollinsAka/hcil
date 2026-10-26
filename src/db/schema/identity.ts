@@ -199,6 +199,7 @@ export const workerProfiles = pgTable(
       .references(() => profiles.id, { onDelete: "cascade" }),
     headline: text("headline"),
     bio: text("bio"),
+    avatarPath: text("avatar_path"), // private/public storage object path; never store raw image bytes here
     countryCode: text("country_code"),
     city: text("city"),
     availableHoursPerWeek: integer("available_hours_per_week"), // availability windows still to be designed

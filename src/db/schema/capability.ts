@@ -461,6 +461,7 @@ export const assessmentAttempts = pgTable(
     workerId: uuid("worker_id")
       .notNull()
       .references(() => profiles.id, { onDelete: "restrict" }),
+    identityVerificationId: uuid("identity_verification_id"), // enforced by identity-security migration trigger
     // Language the worker took it in (default: their UI language, unless language is what is measured).
     deliveryLanguageId: uuid("delivery_language_id")
       .notNull()

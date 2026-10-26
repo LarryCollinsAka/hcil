@@ -10,3 +10,6 @@ export * from "./platform";
 export * from "./capability";
 export * from "./work";
 export * from "./access";
+
+export * from "./identity-security";
+export * from "./capability-intelligence";
