@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
-import { Footer } from "@/components/site/Footer";
-import { Header } from "@/components/site/Header";
+import { SiteChrome } from "@/components/site/SiteChrome";
 import { BRAND } from "@/config/brand";
 import { getSiteCopy, metaFor } from "@/content/site";
 import { DEFAULT_LOCALE, LOCALES, isLocale } from "@/lib/i18n";
@@ -65,9 +64,7 @@ export default async function LocaleLayout({
         >
           {copy.skip}
         </a>
-        <Header locale={loc} copy={copy} />
-        {children}
-        <Footer locale={loc} copy={copy} />
+        <SiteChrome locale={loc} copy={copy}>{children}</SiteChrome>
       </body>
     </html>
   );

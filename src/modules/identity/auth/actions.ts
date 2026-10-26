@@ -21,6 +21,10 @@ function rawValue(formData: FormData, key: string, maxLength = 1024): string {
   return typeof value === "string" ? value.slice(0, maxLength) : "";
 }
 
+function meetsPasswordPolicy(password: string): boolean {
+  return password.length >= 8 && /\p{L}/u.test(password) && /\p{N}/u.test(password) && /[^\p{L}\p{N}]/u.test(password);
+}
+
 function siteUrl() {
   // Set NEXT_PUBLIC_SITE_URL for production. Never derive auth redirects from an untrusted Host header.
   return (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, "");
@@ -76,7 +80,7 @@ async function signUpForPortal(rawLocale: string, portal: AuthPortal, formData: 
   let organizationType = textValue(formData, "organization_type", 48);
 
   if (!fullName || !email || !password || !confirmPassword) redirect(`${signUpPath}?error=required`);
-  if (password.length < 10) redirect(`${signUpPath}?error=password-short`);
+  if (!meetsPasswordPolicy(password)) redirect(`${signUpPath}?error=password-short`);
   if (password !== confirmPassword) redirect(`${signUpPath}?error=password-mismatch`);
 
   const organizationRequired = portal !== "talent";
@@ -108,16 +112,7 @@ async function signUpForPortal(rawLocale: string, portal: AuthPortal, formData: 
   });
 
   // Keep signup errors generic to avoid leaking whether an address already exists.
-  if (error) {
-    console.error("[HCIL signup] Supabase signUp failed:", {
-      message: error.message,
-      status: error.status,
-      name: error.name,
-    });
-
-    redirect(`${signUpPath}?error=signup-failed`);
-  }
-
+  if (error) redirect(`${signUpPath}?error=signup-failed`);
   if (data.session && data.user) {
     try {
       await provisionAccountForUser(data.user, locale);
@@ -168,7 +163,7 @@ export async function updatePasswordAction(rawLocale: string, formData: FormData
   const password = rawValue(formData, "password", 1024);
   const confirmPassword = rawValue(formData, "confirm_password", 1024);
   const returnSignIn = portal ? authPortalPath(locale, portal, "sign-in") : `/${locale}/auth/sign-in`;
-  if (password.length < 10) redirect(`/${locale}/auth/update-password?error=password-short${portal ? `&portal=${portal}` : ""}`);
+  if (!meetsPasswordPolicy(password)) redirect(`/${locale}/auth/update-password?error=password-short${portal ? `&portal=${portal}` : ""}`);
   if (password !== confirmPassword) redirect(`/${locale}/auth/update-password?error=password-mismatch${portal ? `&portal=${portal}` : ""}`);
 
   const supabase = await createSupabaseServerClient();

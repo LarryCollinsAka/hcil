@@ -13,6 +13,7 @@ import {
   listAssignableRoleDefinitions,
 } from "@/modules/identity/application/role-management";
 import { assignRoleAction, revokeRoleAction } from "@/modules/identity/auth/access-actions";
+import { WorkspaceShell } from "@/components/workspace/WorkspaceShell";
 
 const ERROR_COPY: Record<string, { en: string; fr: string }> = {
   unauthenticated: { en: "Please sign in again.", fr: "Veuillez vous reconnecter." },
@@ -84,7 +85,7 @@ export default async function WorkspaceAccessPage({
   searchParams,
 }: {
   params: Promise<{ locale: string }>;
-  searchParams?: Promise<{ error?: string; success?: string; organization_id?: string }>;
+  searchParams?: Promise<{ error?: string; success?: string; organization_id?: string; portal?: string }>;
 }) {
   const { locale } = await params;
   if (!isLocale(locale)) return null;
@@ -92,6 +93,8 @@ export default async function WorkspaceAccessPage({
   const copy = LABELS[locale];
   const query = await searchParams;
   const principal = await requireAuthenticatedPrincipal(locale);
+  const [profile] = await db.select({ fullName: profiles.fullName, email: profiles.email }).from(profiles).where(eq(profiles.id, principal.id)).limit(1);
+  const portal = query?.portal === "business" || query?.portal === "agency" ? query.portal : "talent";
 
   const platformActorRoles = await getActiveRoleKeys(principal.id);
   const canAssignPlatform = await hasPermission(principal.id, "platform.roles.assign_non_superadmin");
@@ -164,8 +167,9 @@ export default async function WorkspaceAccessPage({
   }
 
   return (
-    <main id="main" className="mx-auto w-full max-w-6xl px-4 py-10 sm:py-14">
-      <Link href={`/${locale}/workspace`} className="text-sm font-semibold text-green-800 underline underline-offset-4">← {copy.back}</Link>
+    <WorkspaceShell locale={locale} portal={portal} fullName={profile?.fullName ?? ""} email={profile?.email ?? principal.email} canManageAccess={true}>
+    <main id="main" className="mx-auto w-full max-w-6xl">
+      <Link href={`/${locale}/workspace?portal=${portal}`} className="text-sm font-semibold text-green-800 underline underline-offset-4">← {copy.back}</Link>
       <header className="mt-6 max-w-3xl">
         <p className="text-xs font-bold uppercase tracking-[0.18em] text-green-700">{copy.eyebrow}</p>
         <h1 className="mt-3 text-3xl font-black tracking-tight text-green-950 sm:text-4xl">{copy.title}</h1>
@@ -248,5 +252,6 @@ export default async function WorkspaceAccessPage({
 
       <aside className="mt-6 rounded-2xl border border-green-950/10 bg-gold-50 p-4 text-sm leading-6 text-green-950/75">{copy.note}</aside>
     </main>
+    </WorkspaceShell>
   );
 }

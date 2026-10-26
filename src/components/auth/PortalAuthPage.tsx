@@ -9,6 +9,7 @@ import {
   signUpTalentAction,
 } from "@/modules/identity/auth/actions";
 import type { Locale } from "@/lib/i18n";
+import { PasswordInput } from "@/components/auth/PasswordInput";
 
 type FormAction = (rawLocale: string, formData: FormData) => Promise<never>;
 const SIGN_IN_ACTIONS: Record<AuthPortal, FormAction> = {
@@ -24,7 +25,7 @@ const SIGN_UP_ACTIONS: Record<AuthPortal, FormAction> = {
 
 const ERRORS: Record<string, Record<Locale, string>> = {
   required: { en: "Complete all required fields.", fr: "Veuillez remplir tous les champs obligatoires." },
-  "password-short": { en: "Use a password with at least 10 characters.", fr: "Utilisez un mot de passe d’au moins 10 caractères." },
+  "password-short": { en: "Use at least 8 characters, including a letter, a number, and a symbol.", fr: "Utilisez au moins 8 caractères, avec une lettre, un chiffre et un symbole." },
   "password-mismatch": { en: "The passwords do not match.", fr: "Les mots de passe ne correspondent pas." },
   "organization-required": { en: "Enter your organization name.", fr: "Saisissez le nom de votre organisation." },
   "invalid-organization-type": { en: "Choose a valid agency type.", fr: "Choisissez un type d’agence valide." },
@@ -107,15 +108,9 @@ export function PortalAuthPage({
             <label htmlFor="email" className={labelClass}>{fr ? "Adresse e-mail" : "Email address"}</label>
             <input id="email" name="email" type="email" required autoComplete="email" maxLength={254} className={fieldClass} />
           </div>
-          <div>
-            <label htmlFor="password" className={labelClass}>{fr ? "Mot de passe" : "Password"}</label>
-            <input id="password" name="password" type="password" required minLength={isSignup ? 10 : undefined} autoComplete={isSignup ? "new-password" : "current-password"} className={fieldClass} />
-          </div>
+          <PasswordInput id="password" name="password" label={fr ? "Mot de passe" : "Password"} locale={locale} autoComplete={isSignup ? "new-password" : "current-password"} showStrength={isSignup} className={fieldClass.replace("px-4", "px-4 pr-20")} />
           {isSignup ? (
-            <div>
-              <label htmlFor="confirm_password" className={labelClass}>{fr ? "Confirmer le mot de passe" : "Confirm password"}</label>
-              <input id="confirm_password" name="confirm_password" type="password" required minLength={10} autoComplete="new-password" className={fieldClass} />
-            </div>
+            <PasswordInput id="confirm_password" name="confirm_password" label={fr ? "Confirmer le mot de passe" : "Confirm password"} locale={locale} confirm className={fieldClass.replace("px-4", "px-4 pr-20")} />
           ) : (
             <div className="text-right"><Link href={`/${locale}/auth/forgot-password?portal=${portal}`} className="text-sm font-semibold text-green-700 underline decoration-green-700/30 underline-offset-4">{fr ? "Mot de passe oublié ?" : "Forgot password?"}</Link></div>
           )}
