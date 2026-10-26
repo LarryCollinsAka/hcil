@@ -6,6 +6,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { hasPermission } from "@/modules/identity/application/authorization";
 import { orchestrateHcilTask } from "@/ai/orchestration/controller";
 import { HCIL_TASK_TYPES, type HcilLanguage } from "@/ai/orchestration/types";
+import { HCIL_AI_EVENT_TYPES, isHcilAiEventType } from "@/ai/events/catalog";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -32,6 +33,9 @@ export async function POST(request: Request) {
     if (!isRecord(body) || typeof body.taskType !== "string" || !HCIL_TASK_TYPES.includes(body.taskType as (typeof HCIL_TASK_TYPES)[number])) {
       return NextResponse.json({ error: "INVALID_TASK_TYPE" }, { status: 400 });
     }
+    if (body.eventType !== undefined && (typeof body.eventType !== "string" || !isHcilAiEventType(body.eventType))) {
+      return NextResponse.json({ error: "INVALID_EVENT_TYPE", allowed: HCIL_AI_EVENT_TYPES }, { status: 400 });
+    }
     if (!("input" in body)) return NextResponse.json({ error: "INPUT_REQUIRED" }, { status: 400 });
     if (body.language !== undefined && body.language !== "en" && body.language !== "fr") {
       return NextResponse.json({ error: "INVALID_LANGUAGE" }, { status: 400 });
@@ -42,6 +46,7 @@ export async function POST(request: Request) {
 
     const result = await orchestrateHcilTask({
       taskType: body.taskType as (typeof HCIL_TASK_TYPES)[number],
+      eventType: body.eventType as import("@/ai/events/catalog").HcilAiEventType | undefined,
       input: body.input,
       language: body.language as HcilLanguage | undefined,
       useFallback: body.useFallback === true,
@@ -54,6 +59,7 @@ export async function POST(request: Request) {
       AI_MODEL_DISABLED: { status: 503, message: "No eligible model is configured for this task." },
       AI_INPUT_TOO_LARGE: { status: 413, message: "Input exceeds the configured size limit." },
       AI_TASK_NOT_ALLOWED: { status: 400, message: "Task type is not allowed." },
+      AI_EVENT_TASK_MISMATCH: { status: 400, message: "The selected event is not compatible with the task type." },
       AI_PROVIDER_RATE_LIMITED: { status: 429, message: "AI provider rate limit reached." },
       AI_PROVIDER_TIMEOUT: { status: 504, message: "AI provider timed out." },
       AI_PROVIDER_UNAVAILABLE: { status: 502, message: "AI provider is temporarily unavailable." },

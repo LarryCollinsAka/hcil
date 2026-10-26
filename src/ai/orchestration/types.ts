@@ -12,6 +12,7 @@ export type HcilModelKey = "nemotron" | "museGlimmer" | "gemma";
 
 export interface HcilTaskRequest {
   taskType: HcilTaskType;
+  eventType?: import("../events/catalog").HcilAiEventType;
   input: unknown;
   language?: HcilLanguage;
   useFallback?: boolean;
@@ -40,4 +41,5 @@ export interface HcilOrchestrationResult {
   warnings: string[];
   traceId: string;
   model: { provider: string; modelId: string; route: string };
+  prompt: { id: string; version: string };
 }
