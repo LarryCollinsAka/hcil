@@ -4,7 +4,11 @@ import { redirect } from "next/navigation";
 import { DEFAULT_LOCALE, isLocale, type Locale } from "@/lib/i18n";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { provisionAccountForUser } from "@/modules/identity/application/provision-account";
-import { authPortalPath, isAuthPortal, type AuthPortal } from "@/modules/identity/auth/portals";
+import {
+  authPortalPath,
+  isAuthPortal,
+  type AuthPortal,
+} from "@/modules/identity/auth/portals";
 
 function localeOrDefault(value: string): Locale {
   return isLocale(value) ? value : DEFAULT_LOCALE;
@@ -22,12 +26,20 @@ function rawValue(formData: FormData, key: string, maxLength = 1024): string {
 }
 
 function meetsPasswordPolicy(password: string): boolean {
-  return password.length >= 8 && /\p{L}/u.test(password) && /\p{N}/u.test(password) && /[^\p{L}\p{N}]/u.test(password);
+  return (
+    password.length >= 8 &&
+    /\p{L}/u.test(password) &&
+    /\p{N}/u.test(password) &&
+    /[^\p{L}\p{N}]/u.test(password)
+  );
 }
 
 function siteUrl() {
   // Set NEXT_PUBLIC_SITE_URL for production. Never derive auth redirects from an untrusted Host header.
-  return (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, "");
+  return (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(
+    /\/$/,
+    "",
+  );
 }
 
 function callbackUrl(locale: Locale, nextPath: string) {
@@ -36,7 +48,11 @@ function callbackUrl(locale: Locale, nextPath: string) {
   return callback.toString();
 }
 
-async function signInForPortal(rawLocale: string, portal: AuthPortal, formData: FormData): Promise<never> {
+async function signInForPortal(
+  rawLocale: string,
+  portal: AuthPortal,
+  formData: FormData,
+): Promise<never> {
   const locale = localeOrDefault(rawLocale);
   const signInPath = authPortalPath(locale, portal, "sign-in");
   const email = textValue(formData, "email", 254).toLowerCase();
@@ -48,7 +64,8 @@ async function signInForPortal(rawLocale: string, portal: AuthPortal, formData: 
   if (error) redirect(`${signInPath}?error=invalid-credentials`);
 
   const { data, error: userError } = await supabase.auth.getUser();
-  if (userError || !data.user) redirect(`${signInPath}?error=invalid-credentials`);
+  if (userError || !data.user)
+    redirect(`${signInPath}?error=invalid-credentials`);
   try {
     await provisionAccountForUser(data.user, locale);
   } catch {
@@ -59,19 +76,33 @@ async function signInForPortal(rawLocale: string, portal: AuthPortal, formData: 
   redirect(`/${locale}/workspace?portal=${portal}`);
 }
 
-export async function signInTalentAction(rawLocale: string, formData: FormData): Promise<never> {
+export async function signInTalentAction(
+  rawLocale: string,
+  formData: FormData,
+): Promise<never> {
   return signInForPortal(rawLocale, "talent", formData);
 }
-export async function signInBusinessAction(rawLocale: string, formData: FormData): Promise<never> {
+export async function signInBusinessAction(
+  rawLocale: string,
+  formData: FormData,
+): Promise<never> {
   return signInForPortal(rawLocale, "business", formData);
 }
-export async function signInAgencyAction(rawLocale: string, formData: FormData): Promise<never> {
+export async function signInAgencyAction(
+  rawLocale: string,
+  formData: FormData,
+): Promise<never> {
   return signInForPortal(rawLocale, "agency", formData);
 }
 
-async function signUpForPortal(rawLocale: string, portal: AuthPortal, formData: FormData): Promise<never> {
+async function signUpForPortal(
+  rawLocale: string,
+  portal: AuthPortal,
+  formData: FormData,
+): Promise<never> {
   const locale = localeOrDefault(rawLocale);
   const signUpPath = authPortalPath(locale, portal, "sign-up");
+  const signInPath = authPortalPath(locale, portal, "sign-in");
   const fullName = textValue(formData, "full_name", 120);
   const email = textValue(formData, "email", 254).toLowerCase();
   const password = rawValue(formData, "password", 1024);
@@ -79,20 +110,37 @@ async function signUpForPortal(rawLocale: string, portal: AuthPortal, formData: 
   const organizationName = textValue(formData, "organization_name", 160);
   let organizationType = textValue(formData, "organization_type", 48);
 
-  if (!fullName || !email || !password || !confirmPassword) redirect(`${signUpPath}?error=required`);
-  if (!meetsPasswordPolicy(password)) redirect(`${signUpPath}?error=password-short`);
-  if (password !== confirmPassword) redirect(`${signUpPath}?error=password-mismatch`);
+  if (!fullName || !email || !password || !confirmPassword)
+    redirect(`${signUpPath}?error=required`);
+  if (!meetsPasswordPolicy(password))
+    redirect(`${signUpPath}?error=password-short`);
+  if (password !== confirmPassword)
+    redirect(`${signUpPath}?error=password-mismatch`);
 
   const organizationRequired = portal !== "talent";
   const businessOrganizationTypes = [
-    "employer", "ngo", "public_sector", "educational_institution", "artisan_association", "cooperative", "other",
+    "employer",
+    "ngo",
+    "public_sector",
+    "educational_institution",
+    "artisan_association",
+    "cooperative",
+    "other",
   ];
   const agencyOrganizationTypes = ["staffing_agency", "recruitment_agency"];
-  if (portal === "business" && !businessOrganizationTypes.includes(organizationType)) organizationType = "employer";
-  if (portal === "agency" && !agencyOrganizationTypes.includes(organizationType)) {
+  if (
+    portal === "business" &&
+    !businessOrganizationTypes.includes(organizationType)
+  )
+    organizationType = "employer";
+  if (
+    portal === "agency" &&
+    !agencyOrganizationTypes.includes(organizationType)
+  ) {
     redirect(`${signUpPath}?error=invalid-organization-type`);
   }
-  if (organizationRequired && organizationName.length < 2) redirect(`${signUpPath}?error=organization-required`);
+  if (organizationRequired && organizationName.length < 2)
+    redirect(`${signUpPath}?error=organization-required`);
 
   const accountType = portal;
   const supabase = await createSupabaseServerClient();
@@ -100,7 +148,10 @@ async function signUpForPortal(rawLocale: string, portal: AuthPortal, formData: 
     email,
     password,
     options: {
-      emailRedirectTo: callbackUrl(locale, `/${locale}/workspace?portal=${portal}&welcome=1`),
+      emailRedirectTo: callbackUrl(
+        locale,
+        `/${locale}/workspace?portal=${portal}&welcome=1`,
+      ),
       data: {
         full_name: fullName,
         locale,
@@ -116,8 +167,9 @@ async function signUpForPortal(rawLocale: string, portal: AuthPortal, formData: 
   if (data.session && data.user) {
     try {
       await provisionAccountForUser(data.user, locale);
-    } catch {
-      redirect(`${signUpPath}?error=profile-setup`);
+    } catch (error) {
+      console.error("[HCIL] Profile provisioning failed:", error);
+      redirect(`${signInPath}?error=profile-setup`);
     }
     redirect(`/${locale}/workspace?portal=${portal}&welcome=1`);
   }
@@ -126,13 +178,22 @@ async function signUpForPortal(rawLocale: string, portal: AuthPortal, formData: 
   redirect(`/${locale}/auth/check-email?portal=${portal}`);
 }
 
-export async function signUpTalentAction(rawLocale: string, formData: FormData): Promise<never> {
+export async function signUpTalentAction(
+  rawLocale: string,
+  formData: FormData,
+): Promise<never> {
   return signUpForPortal(rawLocale, "talent", formData);
 }
-export async function signUpBusinessAction(rawLocale: string, formData: FormData): Promise<never> {
+export async function signUpBusinessAction(
+  rawLocale: string,
+  formData: FormData,
+): Promise<never> {
   return signUpForPortal(rawLocale, "business", formData);
 }
-export async function signUpAgencyAction(rawLocale: string, formData: FormData): Promise<never> {
+export async function signUpAgencyAction(
+  rawLocale: string,
+  formData: FormData,
+): Promise<never> {
   return signUpForPortal(rawLocale, "agency", formData);
 }
 
@@ -143,33 +204,60 @@ export async function signOutAction(rawLocale: string): Promise<never> {
   redirect(`/${locale}`);
 }
 
-export async function requestPasswordResetAction(rawLocale: string, formData: FormData): Promise<never> {
+export async function requestPasswordResetAction(
+  rawLocale: string,
+  formData: FormData,
+): Promise<never> {
   const locale = localeOrDefault(rawLocale);
   const email = textValue(formData, "email", 254).toLowerCase();
   const submittedPortal = textValue(formData, "portal", 16);
   const portal = isAuthPortal(submittedPortal) ? submittedPortal : null;
-  if (!email) redirect(`/${locale}/auth/forgot-password?sent=1${portal ? `&portal=${portal}` : ""}`);
+  if (!email)
+    redirect(
+      `/${locale}/auth/forgot-password?sent=1${portal ? `&portal=${portal}` : ""}`,
+    );
 
   const nextPath = `/${locale}/auth/update-password${portal ? `?portal=${portal}` : ""}`;
   const supabase = await createSupabaseServerClient();
-  await supabase.auth.resetPasswordForEmail(email, { redirectTo: callbackUrl(locale, nextPath) });
-  redirect(`/${locale}/auth/forgot-password?sent=1${portal ? `&portal=${portal}` : ""}`);
+  await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: callbackUrl(locale, nextPath),
+  });
+  redirect(
+    `/${locale}/auth/forgot-password?sent=1${portal ? `&portal=${portal}` : ""}`,
+  );
 }
 
-export async function updatePasswordAction(rawLocale: string, formData: FormData): Promise<never> {
+export async function updatePasswordAction(
+  rawLocale: string,
+  formData: FormData,
+): Promise<never> {
   const locale = localeOrDefault(rawLocale);
   const submittedPortal = textValue(formData, "portal", 16);
   const portal = isAuthPortal(submittedPortal) ? submittedPortal : null;
   const password = rawValue(formData, "password", 1024);
   const confirmPassword = rawValue(formData, "confirm_password", 1024);
-  const returnSignIn = portal ? authPortalPath(locale, portal, "sign-in") : `/${locale}/auth/sign-in`;
-  if (!meetsPasswordPolicy(password)) redirect(`/${locale}/auth/update-password?error=password-short${portal ? `&portal=${portal}` : ""}`);
-  if (password !== confirmPassword) redirect(`/${locale}/auth/update-password?error=password-mismatch${portal ? `&portal=${portal}` : ""}`);
+  const returnSignIn = portal
+    ? authPortalPath(locale, portal, "sign-in")
+    : `/${locale}/auth/sign-in`;
+  if (!meetsPasswordPolicy(password))
+    redirect(
+      `/${locale}/auth/update-password?error=password-short${portal ? `&portal=${portal}` : ""}`,
+    );
+  if (password !== confirmPassword)
+    redirect(
+      `/${locale}/auth/update-password?error=password-mismatch${portal ? `&portal=${portal}` : ""}`,
+    );
 
   const supabase = await createSupabaseServerClient();
   const { data, error: userError } = await supabase.auth.getUser();
-  if (userError || !data.user) redirect(`${returnSignIn}?error=recovery-expired`);
+  if (userError || !data.user)
+    redirect(`${returnSignIn}?error=recovery-expired`);
   const { error } = await supabase.auth.updateUser({ password });
-  if (error) redirect(`/${locale}/auth/update-password?error=update-failed${portal ? `&portal=${portal}` : ""}`);
-  redirect(`/${locale}/workspace?password-updated=1${portal ? `&portal=${portal}` : ""}`);
+  if (error)
+    redirect(
+      `/${locale}/auth/update-password?error=update-failed${portal ? `&portal=${portal}` : ""}`,
+    );
+  redirect(
+    `/${locale}/workspace?password-updated=1${portal ? `&portal=${portal}` : ""}`,
+  );
 }
