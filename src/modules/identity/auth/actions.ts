@@ -1,4 +1,3 @@
-
 "use server";
 
 import { redirect } from "next/navigation";
@@ -15,22 +14,12 @@ function localeOrDefault(value: string): Locale {
   return isLocale(value) ? value : DEFAULT_LOCALE;
 }
 
-function textValue(
-  formData: FormData,
-  key: string,
-  maxLength = 200,
-): string {
+function textValue(formData: FormData, key: string, maxLength = 200): string {
   const value = formData.get(key);
-  return typeof value === "string"
-    ? value.trim().slice(0, maxLength)
-    : "";
+  return typeof value === "string" ? value.trim().slice(0, maxLength) : "";
 }
 
-function rawValue(
-  formData: FormData,
-  key: string,
-  maxLength = 1024,
-): string {
+function rawValue(formData: FormData, key: string, maxLength = 1024): string {
   const value = formData.get(key);
 
   // Passwords are not trimmed because spaces may be intentional credentials.
@@ -64,10 +53,7 @@ function callbackUrl(locale: Locale, nextPath: string): string {
 }
 
 function workspaceUrl(locale: Locale, portal: AuthPortal): string {
-  const destination = new URL(
-    `/${locale}/workspace`,
-    siteUrl(),
-  );
+  const destination = new URL(`/${locale}/workspace`, siteUrl());
 
   destination.searchParams.set("portal", portal);
 
@@ -91,10 +77,20 @@ async function signInForPortal(
 
   const supabase = await createSupabaseServerClient();
 
-  const { error: signInError } =
-    await supabase.auth.signInWithPassword({ email, password });
+  const { error: signInError } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
 
   if (signInError) {
+    // Check specifically for unconfirmed email errors returned by Supabase
+    if (
+      signInError.code === "email_not_confirmed" ||
+      signInError.message?.toLowerCase().includes("email not confirmed")
+    ) {
+      redirect(`${signInPath}?error=email-not-confirmed`);
+    }
+
     redirect(`${signInPath}?error=invalid-credentials`);
   }
 
@@ -123,14 +119,11 @@ async function signInForPortal(
       userId: data.user.id,
     });
   } catch (error) {
-    console.error(
-      "[HCIL AUTH] Profile provisioning failed during sign-in.",
-      {
-        portal,
-        userId: data.user.id,
-        error,
-      },
-    );
+    console.error("[HCIL AUTH] Profile provisioning failed during sign-in.", {
+      portal,
+      userId: data.user.id,
+      error,
+    });
 
     redirect(`${signInPath}?error=profile-setup`);
   }
@@ -172,17 +165,9 @@ async function signUpForPortal(
   const email = textValue(formData, "email", 254).toLowerCase();
   const password = rawValue(formData, "password");
   const confirmPassword = rawValue(formData, "confirm_password");
-  const organizationName = textValue(
-    formData,
-    "organization_name",
-    160,
-  );
+  const organizationName = textValue(formData, "organization_name", 160);
 
-  let organizationType = textValue(
-    formData,
-    "organization_type",
-    48,
-  );
+  let organizationType = textValue(formData, "organization_type", 48);
 
   if (!fullName || !email || !password || !confirmPassword) {
     redirect(`${signUpPath}?error=required`);
@@ -208,10 +193,7 @@ async function signUpForPortal(
     "other",
   ];
 
-  const agencyOrganizationTypes = [
-    "staffing_agency",
-    "recruitment_agency",
-  ];
+  const agencyOrganizationTypes = ["staffing_agency", "recruitment_agency"];
 
   if (
     portal === "business" &&
@@ -245,12 +227,8 @@ async function signUpForPortal(
         full_name: fullName,
         locale,
         account_type: portal,
-        organization_name: organizationRequired
-          ? organizationName
-          : null,
-        organization_type: organizationRequired
-          ? organizationType
-          : null,
+        organization_name: organizationRequired ? organizationName : null,
+        organization_type: organizationRequired ? organizationType : null,
       },
     },
   });
@@ -266,8 +244,7 @@ async function signUpForPortal(
     redirect(`${signUpPath}?error=signup-failed`);
   }
 
-  // With email confirmation disabled, Supabase may return an active session.
-  // In that case, provision the HCIL profile immediately.
+  // With email confirmation disabled, Supabase returns an active session immediately.
   if (data.session && data.user) {
     try {
       await provisionAccountForUser(data.user, locale);
@@ -277,14 +254,11 @@ async function signUpForPortal(
         userId: data.user.id,
       });
     } catch (error) {
-      console.error(
-        "[HCIL AUTH] Profile provisioning failed after signup.",
-        {
-          portal,
-          userId: data.user.id,
-          error,
-        },
-      );
+      console.error("[HCIL AUTH] Profile provisioning failed after signup.", {
+        portal,
+        userId: data.user.id,
+        error,
+      });
 
       redirect(`${signInPath}?error=profile-setup`);
     }
@@ -292,8 +266,10 @@ async function signUpForPortal(
     redirect(workspaceUrl(locale, portal));
   }
 
-  // Email confirmation is required, or Supabase did not create a session.
-  redirect(`${signInPath}?message=check-email`);
+  // Email confirmation is required (Supabase email confirm enabled). Redirect to check-email screen.
+  redirect(
+    `/${locale}/auth/check-email?portal=${portal}&email=${encodeURIComponent(email)}`,
+  );
 }
 
 export async function signUpTalentAction(
@@ -317,9 +293,7 @@ export async function signUpAgencyAction(
   return signUpForPortal(rawLocale, "agency", formData);
 }
 
-export async function signOutAction(
-  rawLocale: string,
-): Promise<never> {
+export async function signOutAction(rawLocale: string): Promise<never> {
   const locale = localeOrDefault(rawLocale);
   const supabase = await createSupabaseServerClient();
 
@@ -340,21 +314,16 @@ export async function requestPasswordResetAction(
   const email = textValue(formData, "email", 254).toLowerCase();
 
   const submittedPortal = textValue(formData, "portal", 16);
-  const portal = isAuthPortal(submittedPortal)
-    ? submittedPortal
-    : null;
+  const portal = isAuthPortal(submittedPortal) ? submittedPortal : null;
 
   const portalQuery = portal ? `&portal=${portal}` : "";
 
   if (!email) {
-    redirect(
-      `/${locale}/auth/forgot-password?sent=1${portalQuery}`,
-    );
+    redirect(`/${locale}/auth/forgot-password?sent=1${portalQuery}`);
   }
 
   const nextPath =
-    `/${locale}/auth/update-password` +
-    (portal ? `?portal=${portal}` : "");
+    `/${locale}/auth/update-password` + (portal ? `?portal=${portal}` : "");
 
   const supabase = await createSupabaseServerClient();
 
@@ -362,7 +331,6 @@ export async function requestPasswordResetAction(
     redirectTo: callbackUrl(locale, nextPath),
   });
 
-  // Use a generic response to avoid revealing whether an email exists.
   if (error) {
     console.error("[HCIL AUTH] Password reset request failed.", {
       message: error.message,
@@ -370,9 +338,7 @@ export async function requestPasswordResetAction(
     });
   }
 
-  redirect(
-    `/${locale}/auth/forgot-password?sent=1${portalQuery}`,
-  );
+  redirect(`/${locale}/auth/forgot-password?sent=1${portalQuery}`);
 }
 
 export async function updatePasswordAction(
@@ -382,9 +348,7 @@ export async function updatePasswordAction(
   const locale = localeOrDefault(rawLocale);
 
   const submittedPortal = textValue(formData, "portal", 16);
-  const portal = isAuthPortal(submittedPortal)
-    ? submittedPortal
-    : null;
+  const portal = isAuthPortal(submittedPortal) ? submittedPortal : null;
 
   const password = rawValue(formData, "password");
   const confirmPassword = rawValue(formData, "confirm_password");

@@ -26,7 +26,8 @@ OUTPUT
 Return only the JSON object required by the supplied output contract. If the interview is incomplete, invalid, or not reliably scorable, set a non-completed status and explain why. Never promise employment, income, certification, or selection.
 `.trim();
 
-export const CAPABILITY_INTELLIGENCE_PROMPT_KEY = "hcil.candidate_capability_intelligence";
+export const CAPABILITY_INTELLIGENCE_PROMPT_KEY =
+  "hcil.candidate_capability_intelligence";
 export const CAPABILITY_INTELLIGENCE_PROMPT_VERSION = "1.0.0";
 
 export const CANDIDATE_CAPABILITY_INTELLIGENCE_PROMPT = String.raw`
@@ -46,7 +47,11 @@ Do not invent candidate history, role requirements, learning resources, test res
 export type InterviewCompetencyResult = {
   key: string;
   score: number;
-  evidence: Array<{ questionId: string; responseReference: string; observation: string }>;
+  evidence: Array<{
+    questionId: string;
+    responseReference: string;
+    observation: string;
+  }>;
   limitations: string[];
   confidence: "low" | "moderate" | "high";
 };
@@ -55,27 +60,73 @@ export type InterviewEvaluation = {
   assessmentKey: string;
   status: "completed" | "incomplete" | "blocked" | "review_required";
   competencies: InterviewCompetencyResult[];
-  overallRecommendation: "meets_rubric" | "does_not_yet_meet_rubric" | "human_review" | "insufficient_evidence";
+  overallRecommendation:
+    | "meets_rubric"
+    | "does_not_yet_meet_rubric"
+    | "human_review"
+    | "insufficient_evidence";
   reviewReasons: string[];
   promptVersion: string;
 };
 
 /** Runtime validation is deliberately dependency-free; always validate model output before persistence. */
-export function validateInterviewEvaluation(value: unknown, allowedCompetencies: string[]): value is InterviewEvaluation {
+export function validateInterviewEvaluation(
+  value: unknown,
+  allowedCompetencies: string[],
+): value is InterviewEvaluation {
   if (!value || typeof value !== "object" || Array.isArray(value)) return false;
   const v = value as Record<string, unknown>;
-  if (typeof v.assessmentKey !== "string" || typeof v.promptVersion !== "string") return false;
-  if (!["completed", "incomplete", "blocked", "review_required"].includes(String(v.status))) return false;
-  if (!["meets_rubric", "does_not_yet_meet_rubric", "human_review", "insufficient_evidence"].includes(String(v.overallRecommendation))) return false;
-  if (!Array.isArray(v.competencies) || !Array.isArray(v.reviewReasons)) return false;
-  if (!(v.reviewReasons as unknown[]).every((x) => typeof x === "string")) return false;
+  if (
+    typeof v.assessmentKey !== "string" ||
+    typeof v.promptVersion !== "string"
+  )
+    return false;
+  if (
+    !["completed", "incomplete", "blocked", "review_required"].includes(
+      String(v.status),
+    )
+  )
+    return false;
+  if (
+    ![
+      "meets_rubric",
+      "does_not_yet_meet_rubric",
+      "human_review",
+      "insufficient_evidence",
+    ].includes(String(v.overallRecommendation))
+  )
+    return false;
+  if (!Array.isArray(v.competencies) || !Array.isArray(v.reviewReasons))
+    return false;
+  if (!(v.reviewReasons as unknown[]).every((x) => typeof x === "string"))
+    return false;
   return (v.competencies as unknown[]).every((item) => {
     if (!item || typeof item !== "object" || Array.isArray(item)) return false;
     const c = item as Record<string, unknown>;
-    if (typeof c.key !== "string" || !allowedCompetencies.includes(c.key)) return false;
-    if (typeof c.score !== "number" || !Number.isFinite(c.score) || c.score < 0 || c.score > 5) return false;
-    if (!["low", "moderate", "high"].includes(String(c.confidence))) return false;
-    if (!Array.isArray(c.evidence) || !Array.isArray(c.limitations) || !(c.limitations as unknown[]).every((x) => typeof x === "string")) return false;
-    return (c.evidence as unknown[]).every((e) => !!e && typeof e === "object" && typeof (e as Record<string, unknown>).questionId === "string" && typeof (e as Record<string, unknown>).responseReference === "string" && typeof (e as Record<string, unknown>).observation === "string");
+    if (typeof c.key !== "string" || !allowedCompetencies.includes(c.key))
+      return false;
+    if (
+      typeof c.score !== "number" ||
+      !Number.isFinite(c.score) ||
+      c.score < 0 ||
+      c.score > 5
+    )
+      return false;
+    if (!["low", "moderate", "high"].includes(String(c.confidence)))
+      return false;
+    if (
+      !Array.isArray(c.evidence) ||
+      !Array.isArray(c.limitations) ||
+      !(c.limitations as unknown[]).every((x) => typeof x === "string")
+    )
+      return false;
+    return (c.evidence as unknown[]).every(
+      (e) =>
+        !!e &&
+        typeof e === "object" &&
+        typeof (e as Record<string, unknown>).questionId === "string" &&
+        typeof (e as Record<string, unknown>).responseReference === "string" &&
+        typeof (e as Record<string, unknown>).observation === "string",
+    );
   });
 }

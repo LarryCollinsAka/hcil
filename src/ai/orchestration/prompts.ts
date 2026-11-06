@@ -14,9 +14,13 @@ const TASK_PROMPTS: Record<HcilTaskType, string> = {
   MATCHING_ASSISTANCE: `Provide decision support for a candidate-to-work match using only supplied requirements and evidence. Separate evidence-backed fit, gaps, and unknowns. Do not infer legal work eligibility or make a binding hiring decision. Do not create a numeric score unless the input defines a scoring rubric. Return JSON: {"fitEvidence":[],"gaps":[],"unknowns":[],"recommendation":"","warnings":[]}.`,
 };
 
-export function getSystemPrompt(taskType: HcilTaskType, language: "en" | "fr"): string {
-  const languageInstruction = language === "fr"
-    ? "Respond in French unless the task explicitly asks for another language."
-    : "Respond in English unless the task explicitly asks for another language.";
+export function getSystemPrompt(
+  taskType: HcilTaskType,
+  language: "en" | "fr",
+): string {
+  const languageInstruction =
+    language === "fr"
+      ? "Respond in French unless the task explicitly asks for another language."
+      : "Respond in English unless the task explicitly asks for another language.";
   return `${SHARED_POLICY}\n\n${languageInstruction}\n\nTask instructions: ${TASK_PROMPTS[taskType]}`;
 }
