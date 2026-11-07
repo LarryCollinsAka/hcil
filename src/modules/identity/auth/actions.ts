@@ -233,15 +233,39 @@ async function signUpForPortal(
     },
   });
 
-  // Keep signup errors generic to avoid exposing account-existence details.
+  // Keep signup responses generic. A duplicate account must never be provisioned
+  // or sent through the new-account confirmation flow.
   if (signUpError) {
+    // Supabase may return this code when email-enumeration protection is disabled.
+    // The UI message remains neutral and does not confirm whether the address exists.
+    if (signUpError.code === "user_already_exists") {
+      redirect(`${signInPath}?error=user-exists`);
+    }
+
     console.error("[HCIL AUTH] Signup request failed.", {
       portal,
-      message: signUpError.message,
       code: signUpError.code,
     });
 
     redirect(`${signUpPath}?error=signup-failed`);
+  }
+
+  // With email-enumeration protection enabled, Supabase can return an obfuscated
+  // user object with an empty identities array for an existing email address.
+  // Check this BEFORE session/confirmation handling so no duplicate profile is
+  // provisioned and no misleading check-email screen is shown.
+  if (
+    data.user &&
+    Array.isArray(data.user.identities) &&
+    data.user.identities.length === 0
+  ) {
+    console.info("[HCIL AUTH] Existing-account signup response detected.", {
+      portal,
+      identityCount: 0,
+      hasSession: Boolean(data.session),
+    });
+
+    redirect(`${signInPath}?error=user-exists`);
   }
 
   // With email confirmation disabled, Supabase returns an active session immediately.
