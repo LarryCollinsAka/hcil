@@ -2,7 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { and, eq, gt, inArray, isNull, or } from "drizzle-orm";
 import { db } from "@/db";
-import { accessRoles, organizations, profiles, userRoleAssignments } from "@/db/schema";
+import { accessRoles, profiles, userRoleAssignments } from "@/db/schema";
 import { isLocale } from "@/lib/i18n";
 import { requireAuthenticatedPrincipal, hasPermission } from "@/modules/identity/application/authorization";
 import {

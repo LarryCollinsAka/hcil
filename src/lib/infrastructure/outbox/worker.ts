@@ -1,5 +1,5 @@
 import "server-only";
-import { and, eq, isNull, lte, or, sql } from "drizzle-orm";
+import {eq, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { outboxEvents, processedEvents } from "@/db/schema/platform";
 import {
