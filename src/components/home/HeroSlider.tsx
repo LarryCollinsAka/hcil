@@ -15,7 +15,7 @@ export function HeroSlider({ slides, label }: { slides: HeroSlide[]; label: stri
     setActiveIndex((current) => (current + direction + slides.length) % slides.length);
 
   return (
-    <section aria-label={label} className={`${container} pt-5 sm:pt-8`}>
+    <section aria-label={label} className={`${container} pt-5 pb-6 sm:pt-8 sm:pb-8`}>
       <div className="relative isolate min-h-[360px] overflow-hidden rounded-[1.75rem] bg-green-950 shadow-[0_24px_70px_-34px_rgba(0,22,17,0.55)] sm:min-h-[410px] lg:min-h-[430px]">
         <div
           role="img"
