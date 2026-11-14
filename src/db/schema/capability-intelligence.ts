@@ -81,4 +81,4 @@ export const learningRoadmaps = pgTable("learning_roadmaps", {
   index("learning_roadmaps_profile_idx").on(t.profileId, t.createdAt),
   check("learning_roadmaps_hours_ck", sql`${t.estimatedHours} is null or ${t.estimatedHours} >= 0`),
   check("learning_roadmaps_status_ck", sql`${t.status} in ('proposed','active','paused','completed','superseded')`),
-]);
+]).enableRLS();

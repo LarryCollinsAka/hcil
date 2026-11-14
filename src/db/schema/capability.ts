@@ -39,6 +39,7 @@ import {
 } from "./_shared";
 import { profiles } from "./identity";
 import { capabilities, languages } from "./reference";
+import { identityVerifications } from "./identity-security";
 
 export const EVIDENCE_KINDS = [
   "assessment_result",
@@ -461,7 +462,10 @@ export const assessmentAttempts = pgTable(
     workerId: uuid("worker_id")
       .notNull()
       .references(() => profiles.id, { onDelete: "restrict" }),
-    identityVerificationId: uuid("identity_verification_id"), // enforced by identity-security migration trigger
+    identityVerificationId: uuid("identity_verification_id").references(
+      () => identityVerifications.id,
+      { onDelete: "restrict" },
+    ), // enforced by identity-security migration trigger
     // Language the worker took it in (default: their UI language, unless language is what is measured).
     deliveryLanguageId: uuid("delivery_language_id")
       .notNull()
@@ -485,6 +489,9 @@ export const assessmentAttempts = pgTable(
   (t) => [
     index("assessment_attempts_worker_idx").on(t.workerId, t.createdAt),
     index("assessment_attempts_version_idx").on(t.versionId),
+    index("assessment_attempts_identity_verification_idx").on(
+      t.identityVerificationId,
+    ),
     uniqueIndex("assessment_attempts_evidence_uq").on(t.evidenceId),
     valuesIn("assessment_attempts_status_ck", t.status, ATTEMPT_STATUSES),
     check(

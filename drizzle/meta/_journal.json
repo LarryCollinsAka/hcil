@@ -64,6 +64,13 @@
       "when": 1793000000000,
       "tag": "0008_capability_intelligence",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1794617714189,
+      "tag": "0009_guard_assessment_identity_updates",
+      "breakpoints": true
     }
   ]
 }
