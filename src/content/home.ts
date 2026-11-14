@@ -1,5 +1,8 @@
+import { and, eq } from "drizzle-orm";
+import { db } from "@/db";
+import { pages, pageTranslations, platformLocales } from "@/db/schema";
 import { type Locale, href } from "@/lib/i18n";
-import type { HomeBlock } from "./types";
+import type { HomeBlock, HeroSlide } from "./types";
 
 // DRAFT COPY. Edit freely, but keep claims to what the product will really do.
 // The blocks use the same { type, props } shape as page_translations.blocks, so this file can be
@@ -50,10 +53,10 @@ function en(): HomeBlock[] {
       props: {
         ariaLabel: "HCIL product commitments",
         items: [
-          { title: "Outcome-first", text: "Start with the business result, not a job title." },
-          { title: "Evidence-backed", text: "Connect capability claims to relevant evidence." },
-          { title: "Composable teams", text: "Combine complementary capabilities when needed." },
-          { title: "Package-level payout", text: "Milestones group work; each contributor’s payout follows acceptance of their own package." },
+          { title: "Start with the result", text: "Start with the business result, not a job title." },
+          { title: "Supported by proof", text: "Support skills with relevant examples and assessments." },
+          { title: "Build the right team", text: "Combine complementary capabilities when needed." },
+          { title: "Clear agreements for each task", text: "Milestones group work; each contributor’s payout follows acceptance of their own package." },
         ],
       },
     },
@@ -61,25 +64,25 @@ function en(): HomeBlock[] {
       type: "steps",
       props: {
         id: "how",
-        title: "From problem to proof in five steps",
-        subtitle: "Every project follows the same path, and every step leaves evidence behind.",
+        title: "From a real need to work people can show",
+        subtitle: "A clear process helps everyone understand what needs to happen, who is doing it and what has been completed.",
         items: [
           { title: "Describe the outcome", text: "Tell us what you need in your own words, in English or French. No job title required." },
           {
             title: "Structure the work",
-            text: "AI-assisted breakdown into work packages with acceptance criteria. Nothing moves until you confirm it.",
+            text: "AI can help organize the work into clear tasks and expected results. You review and approve the plan before anything moves forward.",
           },
           {
-            title: "Match on capability",
-            text: "People are matched package by package on the capabilities and languages the work actually requires.",
+            title: "Find people with the right skills",
+            text: "People are considered for the skills and languages that the work actually needs.",
           },
           {
             title: "Fund, deliver, accept",
             text: "Fund a milestone before work starts. Review each submission against its package criteria; the intended payout trigger is acceptance of that contributor’s assigned package.",
           },
           {
-            title: "Build proof",
-            text: "Accepted work becomes verifiable evidence that strengthens the worker’s capability record.",
+            title: "Show what you have done",
+            text: "Completed work can help people build a stronger record of what they know and can do.",
           },
         ],
       },
@@ -88,18 +91,18 @@ function en(): HomeBlock[] {
       type: "intelligence",
       props: {
         id: "intelligence",
-        eyebrow: "Organizational intelligence, by design",
-        title: "An AI that understands the work around the work.",
-        subtitle: "Companies are more than job descriptions. People, teams, documents, decisions, capability evidence and dependencies all shape how work gets done. HCIL is being designed to connect that context before recommending action.",
+        eyebrow: "A clearer picture of people, skills and work",
+        title: "AI that helps people and organizations make better decisions about work.",
+        subtitle: "A business is more than a list of job titles. HCIL is being built to help understand the people, skills, goals and activities involved, so organizations can make better-informed decisions.",
         layers: [
-          { tag: "Authoritative records", title: "PostgreSQL", text: "Keeps the official record of organizations, work packages, evidence, approvals and commitments." },
-          { tag: "Connected context", title: "Knowledge graph", text: "Connects people, teams, projects, documents, decisions, capabilities and outcomes so relationships can be traced." },
-          { tag: "Meaning-based retrieval", title: "Qdrant search", text: "Finds relevant descriptions and evidence even when people use different words for similar work." },
-          { tag: "Plan and coordinate", title: "AI orchestrator", text: "Uses shared, permission-aware context and controlled tools to clarify needs, propose work and coordinate next steps." },
+          { tag: "Reliable information", title: "One trusted record", text: "Keeps important information about organizations, projects, skills, approvals and commitments in one place." },
+          { tag: "How things connect", title: "Connected information", text: "Shows how people, teams, projects, skills and results relate to one another." },
+          { tag: "Smarter search", title: "Search by meaning", text: "Helps find useful information even when people describe the same thing in different words." },
+          { tag: "Planning support", title: "AI assistant", text: "Uses information people are allowed to access to help clarify needs, suggest next steps and support coordination." },
         ],
-        flowTitle: "The intended intelligence loop",
-        flow: ["Recall authorized company context", "Connect requirements to evidence", "Propose work or the next action", "Record outcomes and update derived indexes"],
-        statusNote: "Architecture in development. Graph and vector indexes are derived from authoritative records; consequential actions require the relevant rules, permissions and approvals. Illustrative description—not a claim that all components are live.",
+        flowTitle: "How the AI is intended to help",
+        flow: ["Understand the organization’s needs", "Connect the work to relevant skills", "Suggest useful next steps", "Learn from completed work"],
+        statusNote: "This is the direction HCIL is being built toward. Some features are still in development. Important decisions will remain subject to clear rules, permissions and human approval.",
         link: { label: "Explore how HCIL intelligence works", href: href(l, "/about/intelligence") },
       },
     },
@@ -117,13 +120,13 @@ function en(): HomeBlock[] {
           },
           {
             icon: "languages",
-            title: "Languages, by modality",
+            title: "Language skills that matter for the work",
             text: "Reading, writing, listening and speaking are assessed separately, because a translator and a call-centre agent need different things.",
           },
           {
             icon: "shield",
             title: "Proof over claims",
-            text: "When a capability is marked verified, its record is intended to link back to an assessment or accepted work. Self-reported skills remain distinct from verified evidence.",
+            text: "When a skill is marked as verified, it should be supported by an assessment or completed work. Skills people report themselves remain clearly identified.",
           },
           {
             icon: "coins",
@@ -142,9 +145,9 @@ function en(): HomeBlock[] {
           title: "Get the outcome, not a pile of CVs.",
           items: [
             "Describe the problem; we structure it with you",
-            "Staff each package with the right capabilities and languages",
-            "Assemble micro-teams when one person can’t cover it all",
-            "Each package has explicit acceptance criteria",
+            "Find people with the right skills and languages for each task",
+            "Bring together a small team when one person is not enough",
+            "Everyone knows what a completed task should look like",
           ],
           cta: { label: "See how projects work", href: href(l, "#how") },
         },
@@ -155,9 +158,9 @@ function en(): HomeBlock[] {
             "Take assessments in the language you work best in",
             "Build a record of verified capabilities, skill by skill",
             "Get matched to work that fits, remote or on-site",
-            "Your agreed payout follows acceptance of your assigned package",
+            "Clear expectations about how your contribution is recognized",
           ],
-          cta: { label: "How capability is verified", href: href(l, "#principles") },
+          cta: { label: "How skills are checked", href: href(l, "#principles") },
         },
       },
     },
@@ -210,7 +213,7 @@ function en(): HomeBlock[] {
           },
           {
             q: "How does pricing work?",
-            a: "The intended model funds work by milestone, while each contributor’s agreed payout follows acceptance of their own assigned package. Payment processing is not live in this early-access preview.",
+            a: "The planned approach is to agree on payment for each person’s contribution and connect it to the work they complete. Payment processing is not available in this early-access preview.",
           },
           {
             q: "Is it live yet?",
@@ -277,9 +280,9 @@ function fr(): HomeBlock[] {
         ariaLabel: "Les engagements de HCIL",
         items: [
           { title: "Résultat d’abord", text: "Partir du résultat attendu, pas d’un intitulé de poste." },
-          { title: "Fondé sur des preuves", text: "Relier les compétences déclarées aux preuves pertinentes." },
+          { title: "Appuyé par des preuves", text: "Appuyer les compétences par des exemples et des évaluations utiles." },
           { title: "Équipes modulaires", text: "Combiner des compétences complémentaires lorsque nécessaire." },
-          { title: "Paiement par lot", text: "Les jalons regroupent le travail ; chaque contributeur est payé selon l’acceptation de son propre lot." },
+          { title: "Des accords clairs pour chaque tâche", text: "Les jalons regroupent le travail ; chaque contributeur est payé selon l’acceptation de son propre lot." },
         ],
       },
     },
@@ -287,8 +290,8 @@ function fr(): HomeBlock[] {
       type: "steps",
       props: {
         id: "how",
-        title: "Du problème à la preuve en cinq étapes",
-        subtitle: "Chaque projet suit le même chemin, et chaque étape laisse des preuves.",
+        title: "D’un besoin concret à un travail bien réalisé",
+        subtitle: "Un parcours clair permet à chacun de comprendre le travail à faire, les responsabilités et les résultats obtenus.",
         items: [
           {
             title: "Décrivez le résultat",
@@ -296,19 +299,19 @@ function fr(): HomeBlock[] {
           },
           {
             title: "Structurez le travail",
-            text: "Découpage assisté par IA en lots de travail avec critères d’acceptation. Rien n’avance sans votre confirmation.",
+            text: "L’IA peut aider à organiser le travail en tâches claires et en résultats attendus. Vous examinez et validez le plan avant la suite.",
           },
           {
-            title: "Associez par compétence",
-            text: "Les personnes sont associées lot par lot, selon les compétences et les langues que le travail exige vraiment.",
+            title: "Trouvez les personnes qui ont les bonnes compétences",
+            text: "Les personnes sont proposées selon les compétences et les langues réellement nécessaires au travail.",
           },
           {
             title: "Financez, livrez, acceptez",
             text: "Financez un jalon avant le début du travail. Évaluez chaque livraison selon les critères de son lot ; le paiement prévu est déclenché par l’acceptation du lot attribué à chaque contributeur.",
           },
           {
-            title: "Construisez la preuve",
-            text: "Le travail accepté devient une preuve vérifiable qui renforce le dossier de compétences.",
+            title: "Montrez ce que vous avez réalisé",
+            text: "Le travail réalisé peut aider chacun à mieux démontrer ses connaissances et ses compétences.",
           },
         ],
       },
@@ -317,18 +320,18 @@ function fr(): HomeBlock[] {
       type: "intelligence",
       props: {
         id: "intelligence",
-        eyebrow: "L’intelligence organisationnelle, dès la conception",
-        title: "Une IA qui comprend le travail et son contexte.",
-        subtitle: "Une entreprise ne se résume pas à des fiches de poste. Les personnes, les équipes, les documents, les décisions, les preuves de compétences et les dépendances influencent l’exécution du travail. HCIL est conçu pour relier ce contexte avant de proposer une action.",
+        eyebrow: "Mieux comprendre les personnes, les compétences et le travail",
+        title: "Une IA qui aide les personnes et les organisations à mieux décider.",
+        subtitle: "Une organisation ne se résume pas à une liste de postes. HCIL est conçu pour mieux comprendre les personnes, les compétences, les objectifs et les activités afin d’aider à prendre de meilleures décisions.",
         layers: [
-          { tag: "Données de référence", title: "PostgreSQL", text: "Conserve les données de référence sur les organisations, les lots de travail, les preuves, les validations et les engagements." },
-          { tag: "Contexte connecté", title: "Graphe de connaissances", text: "Relie les personnes, équipes, projets, documents, décisions, compétences et résultats pour rendre les relations traçables." },
-          { tag: "Recherche par le sens", title: "Recherche Qdrant", text: "Retrouve des descriptions et des preuves pertinentes même lorsque les termes employés diffèrent." },
-          { tag: "Planifier et coordonner", title: "Orchestrateur IA", text: "Utilise un contexte partagé soumis aux permissions et des outils contrôlés pour clarifier les besoins, proposer du travail et coordonner les étapes suivantes." },
+          { tag: "Informations fiables", title: "One trusted record", text: "Rassemble les informations importantes sur les organisations, les projets, les compétences, les validations et les engagements." },
+          { tag: "Les liens entre les informations", title: "Informations reliées", text: "Montre les liens entre les personnes, les équipes, les projets, les compétences et les résultats." },
+          { tag: "Recherche intelligente", title: "Recherche par le sens", text: "Aide à retrouver les bonnes informations même lorsque les mots utilisés sont différents." },
+          { tag: "Aide à la planification", title: "Assistant IA", text: "Utilise les informations autorisées pour clarifier les besoins, suggérer les prochaines étapes et faciliter la coordination." },
         ],
-        flowTitle: "La boucle d’intelligence prévue",
-        flow: ["Retrouver le contexte autorisé", "Relier les exigences aux preuves", "Proposer le travail ou l’action suivante", "Enregistrer les résultats et actualiser les index dérivés"],
-        statusNote: "Architecture en cours de développement. Les index du graphe et les vecteurs sont dérivés des données de référence ; les actions importantes nécessitent les règles, permissions et validations adaptées. Description illustrative, pas une affirmation que tous les composants sont déjà actifs.",
+        flowTitle: "Comment l’IA devrait vous aider",
+        flow: ["Comprendre les besoins de l’organisation", "Relier le travail aux compétences utiles", "Suggérer les prochaines étapes", "Tirer des enseignements du travail réalisé"],
+        statusNote: "Cette approche guide le développement de HCIL. Certaines fonctionnalités sont encore en préparation. Les décisions importantes resteront soumises à des règles claires, aux autorisations nécessaires et à une validation humaine.",
         link: { label: "Comprendre l’intelligence HCIL", href: href(l, "/about/intelligence") },
       },
     },
@@ -346,13 +349,13 @@ function fr(): HomeBlock[] {
           },
           {
             icon: "languages",
-            title: "Les langues, par modalité",
+            title: "Les compétences linguistiques utiles au travail",
             text: "Lecture, écriture, écoute et expression orale sont évaluées séparément, car un traducteur et un conseiller de centre d’appels n’ont pas les mêmes besoins.",
           },
           {
             icon: "shield",
             title: "Des preuves, pas des promesses",
-            text: "Lorsqu’une compétence est marquée comme vérifiée, son dossier doit renvoyer à une évaluation ou à un travail accepté. Les compétences simplement déclarées restent distinctes des preuves vérifiées.",
+            text: "Lorsqu’une compétence est dite vérifiée, elle doit être appuyée par une évaluation ou un travail réalisé. Les compétences déclarées par les personnes restent clairement identifiées.",
           },
           {
             icon: "coins",
@@ -371,9 +374,9 @@ function fr(): HomeBlock[] {
           title: "Obtenez le résultat, pas une pile de CV.",
           items: [
             "Décrivez le problème ; nous le structurons avec vous",
-            "Affectez chaque lot aux bonnes compétences et langues",
-            "Formez des micro-équipes quand une seule personne ne suffit pas",
-            "Chaque lot possède ses propres critères d’acceptation",
+            "Trouvez les compétences et les langues adaptées à chaque tâche",
+            "Réunissez une petite équipe quand une seule personne ne suffit pas",
+            "Chacun sait à quoi ressemble un travail terminé",
           ],
           cta: { label: "Voir le déroulement d’un projet", href: href(l, "#how") },
         },
@@ -384,9 +387,9 @@ function fr(): HomeBlock[] {
             "Passez les évaluations dans la langue où vous êtes le plus à l’aise",
             "Constituez un dossier de compétences vérifiées, une par une",
             "Soyez associé à du travail adapté, à distance ou sur site",
-            "Votre paiement convenu suit l’acceptation de votre lot attribué",
+            "Les attentes concernant votre contribution sont clairement définies",
           ],
-          cta: { label: "Comment les compétences sont vérifiées", href: href(l, "#principles") },
+          cta: { label: "Comment les compétences sont évaluées", href: href(l, "#principles") },
         },
       },
     },
@@ -439,7 +442,7 @@ function fr(): HomeBlock[] {
           },
           {
             q: "Comment fonctionne la tarification ?",
-            a: "Le modèle prévu finance le travail par jalon, tandis que le paiement convenu de chaque contributeur suit l’acceptation de son propre lot. Le traitement des paiements n’est pas encore actif dans cet aperçu en accès anticipé.",
+            a: "Le modèle prévu consiste à convenir du paiement de chaque contribution et à le relier au travail réalisé. Le traitement des paiements n’est pas encore disponible dans cet aperçu en accès anticipé.",
           },
           {
             q: "Est-ce déjà disponible ?",
@@ -460,7 +463,54 @@ function fr(): HomeBlock[] {
   ];
 }
 
-// Async on purpose: the database version will be async too.
+const fallbackSlides: Record<Locale, HeroSlide[]> = {
+  en: [
+    { id: "people", eyebrow: "Early access preview · People. Skills. Opportunity.", title: "Make your abilities visible. Find work that values them.", description: "HCIL helps people show what they can do and helps organizations understand the skills behind the work they need done.", imageUrl: "https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1800&q=85", imageAlt: "A diverse team working together around a table", primary: { label: "I’m looking for opportunities", href: href("en", "/auth/sign-up") }, secondary: { label: "I’m hiring or building a team", href: "#for-companies" } },
+    { id: "organizations", eyebrow: "For organizations and teams", title: "Start with the work. Find the people who can deliver it.", description: "Explain the result you need in everyday language. HCIL is being built to help turn that need into clear tasks and bring the right abilities together.", imageUrl: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1800&q=85", imageAlt: "Colleagues planning a project together", primary: { label: "Explore the employer journey", href: "#for-companies" }, secondary: { label: "How HCIL works", href: "#how" } },
+    { id: "learning", eyebrow: "A stronger way to show what you know", title: "Your experience is more than a job title or a certificate.", description: "Build a clearer picture of your skills through learning, practical assessments and work you can demonstrate.", imageUrl: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1800&q=85", imageAlt: "Young adults learning and collaborating", primary: { label: "Create your talent profile", href: href("en", "/auth/sign-up") }, secondary: { label: "Discover our approach", href: href("en", "/about") } },
+  ],
+  fr: [
+    { id: "people", eyebrow: "Aperçu en accès anticipé · Personnes. Compétences. Opportunités.", title: "Faites connaître vos compétences. Trouvez un travail qui les valorise.", description: "HCIL aide chacun à montrer ce qu’il sait faire et aide les organisations à comprendre les compétences nécessaires à leurs projets.", imageUrl: "https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1800&q=85", imageAlt: "Une équipe diverse qui travaille ensemble autour d’une table", primary: { label: "Je cherche des opportunités", href: href("fr", "/auth/sign-up") }, secondary: { label: "Je recrute ou je forme une équipe", href: "#for-companies" } },
+    { id: "organizations", eyebrow: "Pour les organisations et les équipes", title: "Partez du travail à réaliser. Trouvez les personnes capables de le faire.", description: "Expliquez simplement le résultat attendu. HCIL est conçu pour aider à organiser le travail et réunir les compétences adaptées.", imageUrl: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1800&q=85", imageAlt: "Des collègues qui planifient un projet ensemble", primary: { label: "Découvrir le parcours des organisations", href: "#for-companies" }, secondary: { label: "Comment fonctionne HCIL", href: "#how" } },
+    { id: "learning", eyebrow: "Montrez ce que vous savez faire", title: "Votre expérience ne se résume pas à un titre ou à un diplôme.", description: "Présentez vos compétences à travers l’apprentissage, des évaluations pratiques et des réalisations concrètes.", imageUrl: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1800&q=85", imageAlt: "De jeunes adultes qui apprennent et collaborent", primary: { label: "Créer mon profil talent", href: href("fr", "/auth/sign-up") }, secondary: { label: "Découvrir notre approche", href: href("fr", "/about") } },
+  ],
+};
+
+function isHeroSlide(value: unknown): value is HeroSlide {
+  if (!value || typeof value !== "object") return false;
+  const item = value as Partial<HeroSlide>;
+  const safeHref = (hrefValue: unknown) => typeof hrefValue === "string" && (hrefValue.startsWith("/") || hrefValue.startsWith("#")) && !hrefValue.startsWith("//");
+  const safeImage = (imageValue: unknown) => typeof imageValue === "string" && /^https:\/\/[a-z0-9.-]+(?:\/[^\s"'`()<>]*)?$/i.test(imageValue);
+  return typeof item.id === "string" && typeof item.eyebrow === "string" && typeof item.title === "string" && typeof item.description === "string" && safeImage(item.imageUrl) && typeof item.imageAlt === "string" && !!item.primary && typeof item.primary.label === "string" && safeHref(item.primary.href) && !!item.secondary && typeof item.secondary.label === "string" && safeHref(item.secondary.href);
+}
+
+async function getPublishedHeroSlides(locale: Locale): Promise<HeroSlide[] | null> {
+  try {
+    const [row] = await db
+      .select({ blocks: pageTranslations.blocks })
+      .from(pages)
+      .innerJoin(pageTranslations, eq(pageTranslations.pageId, pages.id))
+      .innerJoin(platformLocales, eq(platformLocales.id, pageTranslations.localeId))
+      .where(and(eq(pages.key, "home"), eq(platformLocales.tag, locale), eq(pageTranslations.status, "published")))
+      .limit(1);
+    if (!row) return null;
+    const block = row.blocks.find((item) => item.type === "hero_slider");
+    if (!block || !Array.isArray(block.props.slides)) return null;
+    const slides = block.props.slides.filter(isHeroSlide);
+    return slides.length ? slides : null;
+  } catch (error) {
+    // Public content remains available during a temporary CMS/database outage.
+    console.error("[public-content] Unable to load published homepage slides", error);
+    return null;
+  }
+}
+
+// The page copy remains a typed fallback; published slider content is read from the canonical CMS tables.
 export async function getHomeBlocks(locale: Locale): Promise<HomeBlock[]> {
-  return locale === "fr" ? fr() : en();
+  const blocks = locale === "fr" ? fr() : en();
+  const slides = (await getPublishedHeroSlides(locale)) ?? fallbackSlides[locale];
+  return [
+    { type: "hero_slider", props: { label: locale === "fr" ? "À la une" : "Featured stories", slides } },
+    ...blocks.filter((block) => block.type !== "hero"),
+  ];
 }

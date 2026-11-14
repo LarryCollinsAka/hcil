@@ -15,6 +15,8 @@ export type IconName =
   | "book"
   | "shield-check"
   | "plus"
+  | "chevron-left"
+  | "chevron-right"
   | "menu"
   | "close";
 
@@ -139,6 +141,18 @@ export function Icon({ name, className }: { name: IconName; className?: string }
       return (
         <svg {...base} {...stroke} strokeWidth={2}>
           <path d="M12 5v14M5 12h14" />
+        </svg>
+      );
+    case "chevron-left":
+      return (
+        <svg {...base} {...stroke}>
+          <path d="m15 18-6-6 6-6" />
+        </svg>
+      );
+    case "chevron-right":
+      return (
+        <svg {...base} {...stroke}>
+          <path d="m9 18 6-6-6-6" />
         </svg>
       );
     case "menu":

@@ -2,6 +2,9 @@ import { BlockRenderer } from "@/components/home/BlockRenderer";
 import { getHomeBlocks } from "@/content/home";
 import { DEFAULT_LOCALE, isLocale } from "@/lib/i18n";
 
+// Published homepage slides are read from PostgreSQL at request time.
+export const dynamic = "force-dynamic";
+
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const loc = isLocale(locale) ? locale : DEFAULT_LOCALE;

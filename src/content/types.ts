@@ -21,7 +21,19 @@ export type HeroVisual = {
 
 export type Audience = { tag: string; title: string; items: string[]; cta: Cta };
 
+export type HeroSlide = {
+  id: string;
+  eyebrow: string;
+  title: string;
+  description: string;
+  imageUrl: string;
+  imageAlt: string;
+  primary: Cta;
+  secondary: Cta;
+};
+
 export type HomeBlock =
+  | { type: "hero_slider"; props: { slides: HeroSlide[]; label: string } }
   | {
       type: "hero";
       props: { eyebrow: string; title: string; subtitle: string; primary: Cta; secondary: Cta; note: string; visual: HeroVisual };

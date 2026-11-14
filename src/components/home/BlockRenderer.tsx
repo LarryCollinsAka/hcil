@@ -3,6 +3,7 @@ import { Audiences } from "./Audiences";
 import { Cta } from "./Cta";
 import { Faq } from "./Faq";
 import { Hero } from "./Hero";
+import { HeroSlider } from "./HeroSlider";
 import { Highlights } from "./Highlights";
 import { Intelligence } from "./Intelligence";
 import { Journal } from "./Journal";
@@ -17,6 +18,8 @@ export function BlockRenderer({ blocks }: { blocks: HomeBlock[] }) {
     <>
       {blocks.map((block, index) => {
         switch (block.type) {
+          case "hero_slider":
+            return <HeroSlider key={index} {...block.props} />;
           case "hero":
             return <Hero key={index} {...block.props} />;
           case "highlights":
