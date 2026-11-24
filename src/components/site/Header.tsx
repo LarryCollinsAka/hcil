@@ -45,8 +45,8 @@ export function Header({ locale, copy }: { locale: Locale; copy: SiteCopy }) {
   }
 
   return (
-    <header className="sticky top-0 z-50 px-3 pt-3 sm:px-5">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 rounded-full border border-green-950/10 bg-gold-50/90 py-2 pl-4 pr-2 shadow-[0_10px_34px_-14px_rgba(0,22,17,0.3)] backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-green-950/10 bg-white/95 backdrop-blur-xl">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-5 py-3 sm:px-8">
         <Logo locale={locale} />
 
         <nav aria-label={copy.primaryNav} className="hidden items-center gap-0.5 lg:flex">
@@ -80,7 +80,7 @@ export function Header({ locale, copy }: { locale: Locale; copy: SiteCopy }) {
               {copy.nav.about}
               <span className="text-xs transition group-open:rotate-180">⌄</span>
             </summary>
-            <div className="absolute right-0 top-11 w-72 rounded-3xl border border-green-950/10 bg-gold-50 p-2 shadow-[0_24px_60px_-20px_rgba(0,22,17,0.35)]">
+            <div className="absolute right-0 top-11 w-72 rounded-3xl border border-green-950/10 bg-white p-2 shadow-[0_24px_60px_-20px_rgba(0,22,17,0.2)]">
               {aboutPaths.map(({ key, path }) => (
                 <Link
                   key={key}
@@ -119,7 +119,7 @@ export function Header({ locale, copy }: { locale: Locale; copy: SiteCopy }) {
               <Icon name="menu" className="size-5 group-open:hidden" />
               <Icon name="close" className="hidden size-5 group-open:block" />
             </summary>
-            <div className="absolute right-0 top-12 max-h-[80vh] w-72 overflow-y-auto rounded-3xl border border-green-950/10 bg-gold-50 p-2 shadow-[0_24px_60px_-20px_rgba(0,22,17,0.45)]">
+            <div className="absolute right-0 top-12 max-h-[80vh] w-72 overflow-y-auto rounded-3xl border border-green-950/10 bg-white p-2 shadow-[0_24px_60px_-20px_rgba(0,22,17,0.2)]">
               {anchors.map((link) => (
                 <Link
                   key={link.href}

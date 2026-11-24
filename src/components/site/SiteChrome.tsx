@@ -6,6 +6,7 @@ import type { SiteCopy } from "@/content/site";
 import type { Locale } from "@/lib/i18n";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
+import { AccessibilityPreferences } from "./AccessibilityPreferences";
 
 export function SiteChrome({ locale, copy, children }: { locale: Locale; copy: SiteCopy; children: ReactNode }) {
   const pathname = usePathname() ?? "";
@@ -14,5 +15,6 @@ export function SiteChrome({ locale, copy, children }: { locale: Locale; copy: S
     {!isWorkspace ? <Header locale={locale} copy={copy} /> : null}
     {children}
     {!isWorkspace ? <Footer locale={locale} copy={copy} /> : null}
+    {!isWorkspace ? <AccessibilityPreferences locale={locale} /> : null}
   </>;
 }

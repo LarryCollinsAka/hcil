@@ -95,3 +95,55 @@
     cursor: pointer;
   }
 }
+
+
+/* Inclusive presentation preferences. These settings alter presentation only;
+   they do not change content, functionality, or a visitor's account data. */
+@layer base {
+  html[data-hcil-text="large"] { font-size: 112.5%; }
+  html[data-hcil-text="larger"] { font-size: 125%; }
+
+  html[data-hcil-spacing="comfortable"] body { line-height: 1.75; }
+  html[data-hcil-spacing="wide"] body { line-height: 1.9; }
+  html[data-hcil-spacing="wide"] p,
+  html[data-hcil-spacing="wide"] li { letter-spacing: 0.015em; word-spacing: 0.08em; }
+
+  html[data-hcil-font="alternative"] body {
+    font-family: Arial, Verdana, ui-sans-serif, system-ui, sans-serif;
+    letter-spacing: 0.01em;
+  }
+
+  html[data-hcil-contrast="high"] {
+    --color-green-950: #000000;
+    --color-green-900: #000000;
+    --color-green-800: #111111;
+    --color-green-700: #111111;
+    --color-green-600: #003d2f;
+    --color-gold-500: #f5d000;
+  }
+  html[data-hcil-contrast="high"] body {
+    background-color: #ffffff;
+    color: #000000;
+  }
+  html[data-hcil-contrast="high"] a { text-decoration-thickness: 0.12em; text-underline-offset: 0.18em; }
+  html[data-hcil-contrast="high"] :focus-visible { outline-width: 3px; outline-offset: 4px; }
+
+  html[data-hcil-motion="reduced"] *,
+  html[data-hcil-motion="reduced"] *::before,
+  html[data-hcil-motion="reduced"] *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}

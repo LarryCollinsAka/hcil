@@ -9,6 +9,7 @@ import { Intelligence } from "./Intelligence";
 import { Journal } from "./Journal";
 import { Languages } from "./Languages";
 import { Principles } from "./Principles";
+import { Regions } from "./Regions";
 import { Steps } from "./Steps";
 
 // Maps each block type to its component. Unknown types are ignored, so a newer database block
@@ -34,6 +35,8 @@ export function BlockRenderer({ blocks }: { blocks: HomeBlock[] }) {
             return <Audiences key={index} {...block.props} />;
           case "languages":
             return <Languages key={index} {...block.props} />;
+          case "regions":
+            return <Regions key={index} {...block.props} />;
           case "journal":
             return <Journal key={index} {...block.props} />;
           case "faq":

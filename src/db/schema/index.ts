@@ -3,6 +3,7 @@
 // Domain schemas are exported here so Drizzle can build a complete schema snapshot.
 
 export * from "./reference";
+export * from "./jurisdiction";
 export * from "./identity";
 export * from "./content";
 export * from "./community";
