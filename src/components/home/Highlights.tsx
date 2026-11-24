@@ -1,21 +1,18 @@
 import { container } from "@/components/site/ui";
 import type { HomeBlock } from "@/content/types";
 
-type Props = Extract<HomeBlock, { type: "highlights" }>["props"];
+type Props = Extract<HomeBlock, { type: "highlights" }>['props'];
 
-/** Four product commitments. Avoid unverified adoption or performance statistics. */
+/** A concise statement of the experience HCIL is being designed to create. */
 export function Highlights({ ariaLabel, items }: Props) {
   return (
-    <section aria-label={ariaLabel} className="bg-gold-500 text-green-950">
-      <div className={`${container} grid grid-cols-1 gap-0 py-5 sm:grid-cols-2 lg:grid-cols-4 lg:py-8`}>
+    <section aria-label={ariaLabel} className="border-y border-green-950/10 bg-white">
+      <div className={`${container} grid grid-cols-1 divide-y divide-green-950/10 py-3 sm:grid-cols-2 sm:divide-y-0 lg:grid-cols-4 lg:py-5`}>
         {items.map((item, i) => (
-          <article
-            key={item.title}
-            className={`relative px-4 py-5 sm:px-6 ${i > 0 ? "border-t border-green-950/15 sm:border-t-0" : ""} ${i % 2 === 1 ? "sm:border-l sm:border-green-950/15" : ""} ${i > 1 ? "lg:border-l lg:border-green-950/15" : ""}`}
-          >
-            <span className="mb-3 block size-2 rounded-full bg-green-950" aria-hidden="true" />
-            <h2 className="text-xl font-semibold leading-tight tracking-[-0.025em] sm:text-2xl">{item.title}</h2>
-            <p className="mt-2 max-w-[18rem] text-sm leading-relaxed text-green-900">{item.text}</p>
+          <article key={item.title} className={`px-3 py-5 sm:px-5 ${i % 2 === 1 ? "sm:border-l sm:border-green-950/10" : ""} ${i > 1 ? "lg:border-l lg:border-green-950/10" : ""}`}>
+            <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-green-600">0{i + 1}</p>
+            <h2 className="mt-2 text-lg font-semibold leading-snug tracking-tight text-green-950">{item.title}</h2>
+            <p className="mt-2 text-sm leading-relaxed text-green-800">{item.text}</p>
           </article>
         ))}
       </div>

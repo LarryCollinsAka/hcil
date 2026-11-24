@@ -1,6 +1,6 @@
 {
-  "id": "b8868586-b16e-4e74-a9ea-a0359ee43e85",
-  "prevId": "7983c43f-2d5f-42de-be65-cd27571c7d47",
+  "id": "8ff91f21-52bf-4d1a-adfe-e25824fb7f4a",
+  "prevId": "7483a088-ae77-486f-a004-e34b701194f8",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -79,9 +79,9 @@
             }
           ],
           "isUnique": true,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         },
         "capabilities_domain_idx": {
           "name": "capabilities_domain_idx",
@@ -94,37 +94,37 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {
         "capabilities_domain_id_capability_domains_id_fk": {
           "name": "capabilities_domain_id_capability_domains_id_fk",
           "tableFrom": "capabilities",
+          "tableTo": "capability_domains",
           "columnsFrom": [
             "domain_id"
           ],
-          "tableTo": "capability_domains",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         },
         "capabilities_replaced_by_id_capabilities_id_fk": {
           "name": "capabilities_replaced_by_id_capabilities_id_fk",
           "tableFrom": "capabilities",
+          "tableTo": "capabilities",
           "columnsFrom": [
             "replaced_by_id"
           ],
-          "tableTo": "capabilities",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -181,8 +181,8 @@
           "primaryKey": false,
           "notNull": false,
           "generated": {
-            "type": "stored",
-            "as": "lower(btrim(alias))"
+            "as": "lower(btrim(alias))",
+            "type": "stored"
           }
         },
         "created_at": {
@@ -211,9 +211,9 @@
             }
           ],
           "isUnique": true,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         },
         "capability_aliases_neutral_norm_uq": {
           "name": "capability_aliases_neutral_norm_uq",
@@ -226,10 +226,10 @@
             }
           ],
           "isUnique": true,
-          "with": {},
-          "method": "btree",
           "where": "\"capability_aliases\".\"language_id\" is null",
-          "concurrently": false
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         },
         "capability_aliases_cap_idx": {
           "name": "capability_aliases_cap_idx",
@@ -242,37 +242,37 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {
         "capability_aliases_capability_id_capabilities_id_fk": {
           "name": "capability_aliases_capability_id_capabilities_id_fk",
           "tableFrom": "capability_aliases",
+          "tableTo": "capabilities",
           "columnsFrom": [
             "capability_id"
           ],
-          "tableTo": "capabilities",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         },
         "capability_aliases_language_id_languages_id_fk": {
           "name": "capability_aliases_language_id_languages_id_fk",
           "tableFrom": "capability_aliases",
+          "tableTo": "languages",
           "columnsFrom": [
             "language_id"
           ],
-          "tableTo": "languages",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -349,28 +349,28 @@
         "capability_domain_translations_domain_id_capability_domains_id_fk": {
           "name": "capability_domain_translations_domain_id_capability_domains_id_fk",
           "tableFrom": "capability_domain_translations",
+          "tableTo": "capability_domains",
           "columnsFrom": [
             "domain_id"
           ],
-          "tableTo": "capability_domains",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         },
         "capability_domain_translations_locale_id_platform_locales_id_fk": {
           "name": "capability_domain_translations_locale_id_platform_locales_id_fk",
           "tableFrom": "capability_domain_translations",
+          "tableTo": "platform_locales",
           "columnsFrom": [
             "locale_id"
           ],
-          "tableTo": "platform_locales",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
@@ -461,9 +461,9 @@
             }
           ],
           "isUnique": true,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         },
         "capability_domains_parent_idx": {
           "name": "capability_domains_parent_idx",
@@ -476,24 +476,24 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {
         "capability_domains_parent_id_capability_domains_id_fk": {
           "name": "capability_domains_parent_id_capability_domains_id_fk",
           "tableFrom": "capability_domains",
+          "tableTo": "capability_domains",
           "columnsFrom": [
             "parent_id"
           ],
-          "tableTo": "capability_domains",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -583,28 +583,28 @@
         "capability_translations_capability_id_capabilities_id_fk": {
           "name": "capability_translations_capability_id_capabilities_id_fk",
           "tableFrom": "capability_translations",
+          "tableTo": "capabilities",
           "columnsFrom": [
             "capability_id"
           ],
-          "tableTo": "capabilities",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         },
         "capability_translations_locale_id_platform_locales_id_fk": {
           "name": "capability_translations_locale_id_platform_locales_id_fk",
           "tableFrom": "capability_translations",
+          "tableTo": "platform_locales",
           "columnsFrom": [
             "locale_id"
           ],
-          "tableTo": "platform_locales",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
@@ -655,8 +655,8 @@
           "primaryKey": false,
           "notNull": false,
           "generated": {
-            "type": "stored",
-            "as": "lower(btrim(alias))"
+            "as": "lower(btrim(alias))",
+            "type": "stored"
           }
         },
         "created_at": {
@@ -685,24 +685,24 @@
             }
           ],
           "isUnique": true,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {
         "language_aliases_language_id_languages_id_fk": {
           "name": "language_aliases_language_id_languages_id_fk",
           "tableFrom": "language_aliases",
+          "tableTo": "languages",
           "columnsFrom": [
             "language_id"
           ],
-          "tableTo": "languages",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -799,9 +799,9 @@
             }
           ],
           "isUnique": true,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         },
         "languages_iso_639_1_uq": {
           "name": "languages_iso_639_1_uq",
@@ -814,24 +814,24 @@
             }
           ],
           "isUnique": true,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {
         "languages_replaced_by_id_languages_id_fk": {
           "name": "languages_replaced_by_id_languages_id_fk",
           "tableFrom": "languages",
+          "tableTo": "languages",
           "columnsFrom": [
             "replaced_by_id"
           ],
-          "tableTo": "languages",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -890,8 +890,8 @@
           "primaryKey": false,
           "notNull": false,
           "generated": {
-            "type": "stored",
-            "as": "lower(btrim(tag))"
+            "as": "lower(btrim(tag))",
+            "type": "stored"
           }
         },
         "label": {
@@ -954,9 +954,9 @@
             }
           ],
           "isUnique": true,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         },
         "platform_locales_one_default_uq": {
           "name": "platform_locales_one_default_uq",
@@ -969,38 +969,38 @@
             }
           ],
           "isUnique": true,
-          "with": {},
-          "method": "btree",
           "where": "\"platform_locales\".\"is_default\" = true",
-          "concurrently": false
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         }
       },
       "foreignKeys": {
         "platform_locales_language_id_languages_id_fk": {
           "name": "platform_locales_language_id_languages_id_fk",
           "tableFrom": "platform_locales",
+          "tableTo": "languages",
           "columnsFrom": [
             "language_id"
           ],
-          "tableTo": "languages",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         },
         "platform_locales_fallback_locale_id_platform_locales_id_fk": {
           "name": "platform_locales_fallback_locale_id_platform_locales_id_fk",
           "tableFrom": "platform_locales",
+          "tableTo": "platform_locales",
           "columnsFrom": [
             "fallback_locale_id"
           ],
-          "tableTo": "platform_locales",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -1109,9 +1109,9 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {},
@@ -1233,10 +1233,10 @@
             }
           ],
           "isUnique": true,
-          "with": {},
-          "method": "btree",
           "where": "\"agency_representations\".\"status\" in ('pending_consent', 'active', 'suspended')",
-          "concurrently": false
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         },
         "agency_representations_talent_idx": {
           "name": "agency_representations_talent_idx",
@@ -1255,9 +1255,9 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         },
         "agency_representations_agency_idx": {
           "name": "agency_representations_agency_idx",
@@ -1276,63 +1276,63 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {
         "agency_representations_agency_organization_id_organizations_id_fk": {
           "name": "agency_representations_agency_organization_id_organizations_id_fk",
           "tableFrom": "agency_representations",
+          "tableTo": "organizations",
           "columnsFrom": [
             "agency_organization_id"
           ],
-          "tableTo": "organizations",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         },
         "agency_representations_talent_profile_id_profiles_id_fk": {
           "name": "agency_representations_talent_profile_id_profiles_id_fk",
           "tableFrom": "agency_representations",
+          "tableTo": "profiles",
           "columnsFrom": [
             "talent_profile_id"
           ],
-          "tableTo": "profiles",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         },
         "agency_representations_requested_by_profiles_id_fk": {
           "name": "agency_representations_requested_by_profiles_id_fk",
           "tableFrom": "agency_representations",
+          "tableTo": "profiles",
           "columnsFrom": [
             "requested_by"
           ],
-          "tableTo": "profiles",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         },
         "agency_representations_consented_by_profiles_id_fk": {
           "name": "agency_representations_consented_by_profiles_id_fk",
           "tableFrom": "agency_representations",
+          "tableTo": "profiles",
           "columnsFrom": [
             "consented_by"
           ],
-          "tableTo": "profiles",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -1402,37 +1402,37 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {
         "organization_members_organization_id_organizations_id_fk": {
           "name": "organization_members_organization_id_organizations_id_fk",
           "tableFrom": "organization_members",
+          "tableTo": "organizations",
           "columnsFrom": [
             "organization_id"
           ],
-          "tableTo": "organizations",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         },
         "organization_members_profile_id_profiles_id_fk": {
           "name": "organization_members_profile_id_profiles_id_fk",
           "tableFrom": "organization_members",
+          "tableTo": "profiles",
           "columnsFrom": [
             "profile_id"
           ],
-          "tableTo": "profiles",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
@@ -1585,15 +1585,15 @@
           "columns": [
             {
               "expression": "lower(\"email\")",
-              "isExpression": true,
               "asc": true,
+              "isExpression": true,
               "nulls": "last"
             }
           ],
           "isUnique": true,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         },
         "profiles_phone_uq": {
           "name": "profiles_phone_uq",
@@ -1606,24 +1606,24 @@
             }
           ],
           "isUnique": true,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {
         "profiles_locale_id_platform_locales_id_fk": {
           "name": "profiles_locale_id_platform_locales_id_fk",
           "tableFrom": "profiles",
+          "tableTo": "platform_locales",
           "columnsFrom": [
             "locale_id"
           ],
-          "tableTo": "platform_locales",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -1673,28 +1673,28 @@
         "staff_roles_profile_id_profiles_id_fk": {
           "name": "staff_roles_profile_id_profiles_id_fk",
           "tableFrom": "staff_roles",
+          "tableTo": "profiles",
           "columnsFrom": [
             "profile_id"
           ],
-          "tableTo": "profiles",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         },
         "staff_roles_granted_by_profiles_id_fk": {
           "name": "staff_roles_granted_by_profiles_id_fk",
           "tableFrom": "staff_roles",
+          "tableTo": "profiles",
           "columnsFrom": [
             "granted_by"
           ],
-          "tableTo": "profiles",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "set null"
+          "onDelete": "set null",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
@@ -1729,6 +1729,12 @@
         },
         "bio": {
           "name": "bio",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "avatar_path": {
+          "name": "avatar_path",
           "type": "text",
           "primaryKey": false,
           "notNull": false
@@ -1784,15 +1790,15 @@
         "worker_profiles_profile_id_profiles_id_fk": {
           "name": "worker_profiles_profile_id_profiles_id_fk",
           "tableFrom": "worker_profiles",
+          "tableTo": "profiles",
           "columnsFrom": [
             "profile_id"
           ],
-          "tableTo": "profiles",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -1933,50 +1939,50 @@
             }
           ],
           "isUnique": true,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {
         "page_translations_page_id_pages_id_fk": {
           "name": "page_translations_page_id_pages_id_fk",
           "tableFrom": "page_translations",
+          "tableTo": "pages",
           "columnsFrom": [
             "page_id"
           ],
-          "tableTo": "pages",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         },
         "page_translations_locale_id_platform_locales_id_fk": {
           "name": "page_translations_locale_id_platform_locales_id_fk",
           "tableFrom": "page_translations",
+          "tableTo": "platform_locales",
           "columnsFrom": [
             "locale_id"
           ],
-          "tableTo": "platform_locales",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         },
         "page_translations_updated_by_profiles_id_fk": {
           "name": "page_translations_updated_by_profiles_id_fk",
           "tableFrom": "page_translations",
+          "tableTo": "profiles",
           "columnsFrom": [
             "updated_by"
           ],
-          "tableTo": "profiles",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "set null"
+          "onDelete": "set null",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
@@ -2057,9 +2063,9 @@
             }
           ],
           "isUnique": true,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {},
@@ -2125,9 +2131,9 @@
             }
           ],
           "isUnique": true,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {},
@@ -2229,37 +2235,37 @@
             }
           ],
           "isUnique": true,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {
         "post_category_translations_category_id_post_categories_id_fk": {
           "name": "post_category_translations_category_id_post_categories_id_fk",
           "tableFrom": "post_category_translations",
+          "tableTo": "post_categories",
           "columnsFrom": [
             "category_id"
           ],
-          "tableTo": "post_categories",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         },
         "post_category_translations_locale_id_platform_locales_id_fk": {
           "name": "post_category_translations_locale_id_platform_locales_id_fk",
           "tableFrom": "post_category_translations",
+          "tableTo": "platform_locales",
           "columnsFrom": [
             "locale_id"
           ],
-          "tableTo": "platform_locales",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
@@ -2402,9 +2408,9 @@
             }
           ],
           "isUnique": true,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         },
         "post_translations_listing_idx": {
           "name": "post_translations_listing_idx",
@@ -2429,37 +2435,37 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {
         "post_translations_post_id_posts_id_fk": {
           "name": "post_translations_post_id_posts_id_fk",
           "tableFrom": "post_translations",
+          "tableTo": "posts",
           "columnsFrom": [
             "post_id"
           ],
-          "tableTo": "posts",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         },
         "post_translations_locale_id_platform_locales_id_fk": {
           "name": "post_translations_locale_id_platform_locales_id_fk",
           "tableFrom": "post_translations",
+          "tableTo": "platform_locales",
           "columnsFrom": [
             "locale_id"
           ],
-          "tableTo": "platform_locales",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
@@ -2564,9 +2570,9 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         },
         "posts_author_idx": {
           "name": "posts_author_idx",
@@ -2579,50 +2585,50 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {
         "posts_author_id_profiles_id_fk": {
           "name": "posts_author_id_profiles_id_fk",
           "tableFrom": "posts",
+          "tableTo": "profiles",
           "columnsFrom": [
             "author_id"
           ],
-          "tableTo": "profiles",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "set null"
+          "onDelete": "set null",
+          "onUpdate": "no action"
         },
         "posts_category_id_post_categories_id_fk": {
           "name": "posts_category_id_post_categories_id_fk",
           "tableFrom": "posts",
+          "tableTo": "post_categories",
           "columnsFrom": [
             "category_id"
           ],
-          "tableTo": "post_categories",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "set null"
+          "onDelete": "set null",
+          "onUpdate": "no action"
         },
         "posts_source_locale_id_platform_locales_id_fk": {
           "name": "posts_source_locale_id_platform_locales_id_fk",
           "tableFrom": "posts",
+          "tableTo": "platform_locales",
           "columnsFrom": [
             "source_locale_id"
           ],
-          "tableTo": "platform_locales",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -2695,9 +2701,9 @@
             }
           ],
           "isUnique": true,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {},
@@ -2799,37 +2805,37 @@
             }
           ],
           "isUnique": true,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {
         "forum_category_translations_category_id_forum_categories_id_fk": {
           "name": "forum_category_translations_category_id_forum_categories_id_fk",
           "tableFrom": "forum_category_translations",
+          "tableTo": "forum_categories",
           "columnsFrom": [
             "category_id"
           ],
-          "tableTo": "forum_categories",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         },
         "forum_category_translations_locale_id_platform_locales_id_fk": {
           "name": "forum_category_translations_locale_id_platform_locales_id_fk",
           "tableFrom": "forum_category_translations",
+          "tableTo": "platform_locales",
           "columnsFrom": [
             "locale_id"
           ],
-          "tableTo": "platform_locales",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
@@ -2936,9 +2942,9 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         },
         "forum_posts_author_idx": {
           "name": "forum_posts_author_idx",
@@ -2951,63 +2957,63 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {
         "forum_posts_thread_id_forum_threads_id_fk": {
           "name": "forum_posts_thread_id_forum_threads_id_fk",
           "tableFrom": "forum_posts",
+          "tableTo": "forum_threads",
           "columnsFrom": [
             "thread_id"
           ],
-          "tableTo": "forum_threads",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         },
         "forum_posts_author_id_profiles_id_fk": {
           "name": "forum_posts_author_id_profiles_id_fk",
           "tableFrom": "forum_posts",
+          "tableTo": "profiles",
           "columnsFrom": [
             "author_id"
           ],
-          "tableTo": "profiles",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "set null"
+          "onDelete": "set null",
+          "onUpdate": "no action"
         },
         "forum_posts_reply_to_post_id_forum_posts_id_fk": {
           "name": "forum_posts_reply_to_post_id_forum_posts_id_fk",
           "tableFrom": "forum_posts",
+          "tableTo": "forum_posts",
           "columnsFrom": [
             "reply_to_post_id"
           ],
-          "tableTo": "forum_posts",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "set null"
+          "onDelete": "set null",
+          "onUpdate": "no action"
         },
         "forum_posts_language_id_languages_id_fk": {
           "name": "forum_posts_language_id_languages_id_fk",
           "tableFrom": "forum_posts",
+          "tableTo": "languages",
           "columnsFrom": [
             "language_id"
           ],
-          "tableTo": "languages",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -3097,50 +3103,50 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {
         "forum_reports_post_id_forum_posts_id_fk": {
           "name": "forum_reports_post_id_forum_posts_id_fk",
           "tableFrom": "forum_reports",
+          "tableTo": "forum_posts",
           "columnsFrom": [
             "post_id"
           ],
-          "tableTo": "forum_posts",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         },
         "forum_reports_reporter_id_profiles_id_fk": {
           "name": "forum_reports_reporter_id_profiles_id_fk",
           "tableFrom": "forum_reports",
+          "tableTo": "profiles",
           "columnsFrom": [
             "reporter_id"
           ],
-          "tableTo": "profiles",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "set null"
+          "onDelete": "set null",
+          "onUpdate": "no action"
         },
         "forum_reports_resolved_by_profiles_id_fk": {
           "name": "forum_reports_resolved_by_profiles_id_fk",
           "tableFrom": "forum_reports",
+          "tableTo": "profiles",
           "columnsFrom": [
             "resolved_by"
           ],
-          "tableTo": "profiles",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "set null"
+          "onDelete": "set null",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -3251,9 +3257,9 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         },
         "forum_threads_language_idx": {
           "name": "forum_threads_language_idx",
@@ -3266,9 +3272,9 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         },
         "forum_threads_author_idx": {
           "name": "forum_threads_author_idx",
@@ -3281,50 +3287,50 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {
         "forum_threads_category_id_forum_categories_id_fk": {
           "name": "forum_threads_category_id_forum_categories_id_fk",
           "tableFrom": "forum_threads",
+          "tableTo": "forum_categories",
           "columnsFrom": [
             "category_id"
           ],
-          "tableTo": "forum_categories",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         },
         "forum_threads_author_id_profiles_id_fk": {
           "name": "forum_threads_author_id_profiles_id_fk",
           "tableFrom": "forum_threads",
+          "tableTo": "profiles",
           "columnsFrom": [
             "author_id"
           ],
-          "tableTo": "profiles",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "set null"
+          "onDelete": "set null",
+          "onUpdate": "no action"
         },
         "forum_threads_language_id_languages_id_fk": {
           "name": "forum_threads_language_id_languages_id_fk",
           "tableFrom": "forum_threads",
+          "tableTo": "languages",
           "columnsFrom": [
             "language_id"
           ],
-          "tableTo": "languages",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -3434,10 +3440,10 @@
             }
           ],
           "isUnique": false,
-          "with": {},
-          "method": "btree",
           "where": "\"outbox_events\".\"processed_at\" is null and \"outbox_events\".\"dead_at\" is null",
-          "concurrently": false
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         },
         "outbox_events_aggregate_idx": {
           "name": "outbox_events_aggregate_idx",
@@ -3456,9 +3462,9 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {},
@@ -3510,15 +3516,15 @@
         "processed_events_event_id_outbox_events_id_fk": {
           "name": "processed_events_event_id_outbox_events_id_fk",
           "tableFrom": "processed_events",
+          "tableTo": "outbox_events",
           "columnsFrom": [
             "event_id"
           ],
-          "tableTo": "outbox_events",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
@@ -3557,6 +3563,12 @@
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
+        },
+        "identity_verification_id": {
+          "name": "identity_verification_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
         },
         "delivery_language_id": {
           "name": "delivery_language_id",
@@ -3658,9 +3670,9 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         },
         "assessment_attempts_version_idx": {
           "name": "assessment_attempts_version_idx",
@@ -3673,9 +3685,24 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
+        },
+        "assessment_attempts_identity_verification_idx": {
+          "name": "assessment_attempts_identity_verification_idx",
+          "columns": [
+            {
+              "expression": "identity_verification_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         },
         "assessment_attempts_evidence_uq": {
           "name": "assessment_attempts_evidence_uq",
@@ -3688,63 +3715,76 @@
             }
           ],
           "isUnique": true,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {
         "assessment_attempts_version_id_assessment_versions_id_fk": {
           "name": "assessment_attempts_version_id_assessment_versions_id_fk",
           "tableFrom": "assessment_attempts",
+          "tableTo": "assessment_versions",
           "columnsFrom": [
             "version_id"
           ],
-          "tableTo": "assessment_versions",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         },
         "assessment_attempts_worker_id_profiles_id_fk": {
           "name": "assessment_attempts_worker_id_profiles_id_fk",
           "tableFrom": "assessment_attempts",
+          "tableTo": "profiles",
           "columnsFrom": [
             "worker_id"
           ],
-          "tableTo": "profiles",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "assessment_attempts_identity_verification_id_identity_verifications_id_fk": {
+          "name": "assessment_attempts_identity_verification_id_identity_verifications_id_fk",
+          "tableFrom": "assessment_attempts",
+          "tableTo": "identity_verifications",
+          "columnsFrom": [
+            "identity_verification_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         },
         "assessment_attempts_delivery_language_id_languages_id_fk": {
           "name": "assessment_attempts_delivery_language_id_languages_id_fk",
           "tableFrom": "assessment_attempts",
+          "tableTo": "languages",
           "columnsFrom": [
             "delivery_language_id"
           ],
-          "tableTo": "languages",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         },
         "assessment_attempts_evidence_id_evidence_id_fk": {
           "name": "assessment_attempts_evidence_id_evidence_id_fk",
           "tableFrom": "assessment_attempts",
+          "tableTo": "evidence",
           "columnsFrom": [
             "evidence_id"
           ],
-          "tableTo": "evidence",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -3814,28 +3854,28 @@
         "assessment_capabilities_version_id_assessment_versions_id_fk": {
           "name": "assessment_capabilities_version_id_assessment_versions_id_fk",
           "tableFrom": "assessment_capabilities",
+          "tableTo": "assessment_versions",
           "columnsFrom": [
             "version_id"
           ],
-          "tableTo": "assessment_versions",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         },
         "assessment_capabilities_capability_id_capabilities_id_fk": {
           "name": "assessment_capabilities_capability_id_capabilities_id_fk",
           "tableFrom": "assessment_capabilities",
+          "tableTo": "capabilities",
           "columnsFrom": [
             "capability_id"
           ],
-          "tableTo": "capabilities",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
@@ -3913,28 +3953,28 @@
         "assessment_lang_results_attempt_id_assessment_attempts_id_fk": {
           "name": "assessment_lang_results_attempt_id_assessment_attempts_id_fk",
           "tableFrom": "assessment_lang_results",
+          "tableTo": "assessment_attempts",
           "columnsFrom": [
             "attempt_id"
           ],
-          "tableTo": "assessment_attempts",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         },
         "assessment_lang_results_language_id_languages_id_fk": {
           "name": "assessment_lang_results_language_id_languages_id_fk",
           "tableFrom": "assessment_lang_results",
+          "tableTo": "languages",
           "columnsFrom": [
             "language_id"
           ],
-          "tableTo": "languages",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
@@ -4012,28 +4052,28 @@
         "assessment_lang_targets_version_id_assessment_versions_id_fk": {
           "name": "assessment_lang_targets_version_id_assessment_versions_id_fk",
           "tableFrom": "assessment_lang_targets",
+          "tableTo": "assessment_versions",
           "columnsFrom": [
             "version_id"
           ],
-          "tableTo": "assessment_versions",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         },
         "assessment_lang_targets_language_id_languages_id_fk": {
           "name": "assessment_lang_targets_language_id_languages_id_fk",
           "tableFrom": "assessment_lang_targets",
+          "tableTo": "languages",
           "columnsFrom": [
             "language_id"
           ],
-          "tableTo": "languages",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
@@ -4110,28 +4150,28 @@
         "assessment_results_attempt_id_assessment_attempts_id_fk": {
           "name": "assessment_results_attempt_id_assessment_attempts_id_fk",
           "tableFrom": "assessment_results",
+          "tableTo": "assessment_attempts",
           "columnsFrom": [
             "attempt_id"
           ],
-          "tableTo": "assessment_attempts",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         },
         "assessment_results_capability_id_capabilities_id_fk": {
           "name": "assessment_results_capability_id_capabilities_id_fk",
           "tableFrom": "assessment_results",
+          "tableTo": "capabilities",
           "columnsFrom": [
             "capability_id"
           ],
-          "tableTo": "capabilities",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
@@ -4232,28 +4272,28 @@
         "assessment_translations_version_id_assessment_versions_id_fk": {
           "name": "assessment_translations_version_id_assessment_versions_id_fk",
           "tableFrom": "assessment_translations",
+          "tableTo": "assessment_versions",
           "columnsFrom": [
             "version_id"
           ],
-          "tableTo": "assessment_versions",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         },
         "assessment_translations_language_id_languages_id_fk": {
           "name": "assessment_translations_language_id_languages_id_fk",
           "tableFrom": "assessment_translations",
+          "tableTo": "languages",
           "columnsFrom": [
             "language_id"
           ],
-          "tableTo": "languages",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
@@ -4363,37 +4403,37 @@
             }
           ],
           "isUnique": true,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {
         "assessment_versions_assessment_id_assessments_id_fk": {
           "name": "assessment_versions_assessment_id_assessments_id_fk",
           "tableFrom": "assessment_versions",
+          "tableTo": "assessments",
           "columnsFrom": [
             "assessment_id"
           ],
-          "tableTo": "assessments",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         },
         "assessment_versions_created_by_profiles_id_fk": {
           "name": "assessment_versions_created_by_profiles_id_fk",
           "tableFrom": "assessment_versions",
+          "tableTo": "profiles",
           "columnsFrom": [
             "created_by"
           ],
-          "tableTo": "profiles",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -4478,9 +4518,9 @@
             }
           ],
           "isUnique": true,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {},
@@ -4602,9 +4642,9 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         },
         "evidence_context_idx": {
           "name": "evidence_context_idx",
@@ -4623,37 +4663,37 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {
         "evidence_worker_id_profiles_id_fk": {
           "name": "evidence_worker_id_profiles_id_fk",
           "tableFrom": "evidence",
+          "tableTo": "profiles",
           "columnsFrom": [
             "worker_id"
           ],
-          "tableTo": "profiles",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         },
         "evidence_recorded_by_profiles_id_fk": {
           "name": "evidence_recorded_by_profiles_id_fk",
           "tableFrom": "evidence",
+          "tableTo": "profiles",
           "columnsFrom": [
             "recorded_by"
           ],
-          "tableTo": "profiles",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -4739,37 +4779,37 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {
         "evidence_capabilities_evidence_id_evidence_id_fk": {
           "name": "evidence_capabilities_evidence_id_evidence_id_fk",
           "tableFrom": "evidence_capabilities",
+          "tableTo": "evidence",
           "columnsFrom": [
             "evidence_id"
           ],
-          "tableTo": "evidence",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         },
         "evidence_capabilities_capability_id_capabilities_id_fk": {
           "name": "evidence_capabilities_capability_id_capabilities_id_fk",
           "tableFrom": "evidence_capabilities",
+          "tableTo": "capabilities",
           "columnsFrom": [
             "capability_id"
           ],
-          "tableTo": "capabilities",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
@@ -4873,37 +4913,37 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {
         "evidence_languages_evidence_id_evidence_id_fk": {
           "name": "evidence_languages_evidence_id_evidence_id_fk",
           "tableFrom": "evidence_languages",
+          "tableTo": "evidence",
           "columnsFrom": [
             "evidence_id"
           ],
-          "tableTo": "evidence",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         },
         "evidence_languages_language_id_languages_id_fk": {
           "name": "evidence_languages_language_id_languages_id_fk",
           "tableFrom": "evidence_languages",
+          "tableTo": "languages",
           "columnsFrom": [
             "language_id"
           ],
-          "tableTo": "languages",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
@@ -4977,28 +5017,28 @@
         "evidence_retractions_evidence_id_evidence_id_fk": {
           "name": "evidence_retractions_evidence_id_evidence_id_fk",
           "tableFrom": "evidence_retractions",
+          "tableTo": "evidence",
           "columnsFrom": [
             "evidence_id"
           ],
-          "tableTo": "evidence",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         },
         "evidence_retractions_retracted_by_profiles_id_fk": {
           "name": "evidence_retractions_retracted_by_profiles_id_fk",
           "tableFrom": "evidence_retractions",
+          "tableTo": "profiles",
           "columnsFrom": [
             "retracted_by"
           ],
-          "tableTo": "profiles",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -5079,37 +5119,37 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {
         "worker_capabilities_worker_id_profiles_id_fk": {
           "name": "worker_capabilities_worker_id_profiles_id_fk",
           "tableFrom": "worker_capabilities",
+          "tableTo": "profiles",
           "columnsFrom": [
             "worker_id"
           ],
-          "tableTo": "profiles",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         },
         "worker_capabilities_capability_id_capabilities_id_fk": {
           "name": "worker_capabilities_capability_id_capabilities_id_fk",
           "tableFrom": "worker_capabilities",
+          "tableTo": "capabilities",
           "columnsFrom": [
             "capability_id"
           ],
-          "tableTo": "capabilities",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
@@ -5223,26 +5263,26 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {
         "wlp_worker_language_fk": {
           "name": "wlp_worker_language_fk",
           "tableFrom": "worker_language_proficiency",
+          "tableTo": "worker_languages",
           "columnsFrom": [
             "worker_id",
             "language_id"
           ],
-          "tableTo": "worker_languages",
           "columnsTo": [
             "worker_id",
             "language_id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
@@ -5333,38 +5373,38 @@
             }
           ],
           "isUnique": true,
-          "with": {},
-          "method": "btree",
           "where": "\"worker_languages\".\"is_primary\" = true",
-          "concurrently": false
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         }
       },
       "foreignKeys": {
         "worker_languages_worker_id_profiles_id_fk": {
           "name": "worker_languages_worker_id_profiles_id_fk",
           "tableFrom": "worker_languages",
+          "tableTo": "profiles",
           "columnsFrom": [
             "worker_id"
           ],
-          "tableTo": "profiles",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         },
         "worker_languages_language_id_languages_id_fk": {
           "name": "worker_languages_language_id_languages_id_fk",
           "tableFrom": "worker_languages",
+          "tableTo": "languages",
           "columnsFrom": [
             "language_id"
           ],
-          "tableTo": "languages",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
@@ -5447,37 +5487,37 @@
             }
           ],
           "isUnique": true,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {
         "acceptances_submission_id_submissions_id_fk": {
           "name": "acceptances_submission_id_submissions_id_fk",
           "tableFrom": "acceptances",
+          "tableTo": "submissions",
           "columnsFrom": [
             "submission_id"
           ],
-          "tableTo": "submissions",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         },
         "acceptances_decided_by_profiles_id_fk": {
           "name": "acceptances_decided_by_profiles_id_fk",
           "tableFrom": "acceptances",
+          "tableTo": "profiles",
           "columnsFrom": [
             "decided_by"
           ],
-          "tableTo": "profiles",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -5614,10 +5654,10 @@
             }
           ],
           "isUnique": true,
-          "with": {},
-          "method": "btree",
           "where": "\"assignments\".\"status\" in ('offered', 'accepted', 'active', 'completed')",
-          "concurrently": false
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         },
         "assignments_worker_idx": {
           "name": "assignments_worker_idx",
@@ -5636,9 +5676,9 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         },
         "assignments_package_idx": {
           "name": "assignments_package_idx",
@@ -5651,50 +5691,50 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {
         "assignments_work_package_id_work_packages_id_fk": {
           "name": "assignments_work_package_id_work_packages_id_fk",
           "tableFrom": "assignments",
+          "tableTo": "work_packages",
           "columnsFrom": [
             "work_package_id"
           ],
-          "tableTo": "work_packages",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         },
         "assignments_worker_id_worker_profiles_profile_id_fk": {
           "name": "assignments_worker_id_worker_profiles_profile_id_fk",
           "tableFrom": "assignments",
+          "tableTo": "worker_profiles",
           "columnsFrom": [
             "worker_id"
           ],
-          "tableTo": "worker_profiles",
           "columnsTo": [
             "profile_id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         },
         "assignments_offered_by_profiles_id_fk": {
           "name": "assignments_offered_by_profiles_id_fk",
           "tableFrom": "assignments",
+          "tableTo": "profiles",
           "columnsFrom": [
             "offered_by"
           ],
-          "tableTo": "profiles",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -5824,35 +5864,35 @@
             }
           ],
           "isUnique": true,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {
         "milestones_work_request_id_work_requests_id_fk": {
           "name": "milestones_work_request_id_work_requests_id_fk",
           "tableFrom": "milestones",
+          "tableTo": "work_requests",
           "columnsFrom": [
             "work_request_id"
           ],
-          "tableTo": "work_requests",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "milestones_id_request_uq": {
           "name": "milestones_id_request_uq",
+          "nullsNotDistinct": false,
           "columns": [
             "id",
             "work_request_id"
-          ],
-          "nullsNotDistinct": false
+          ]
         }
       },
       "policies": {},
@@ -5943,24 +5983,24 @@
             }
           ],
           "isUnique": true,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {
         "submissions_assignment_id_assignments_id_fk": {
           "name": "submissions_assignment_id_assignments_id_fk",
           "tableFrom": "submissions",
+          "tableTo": "assignments",
           "columnsFrom": [
             "assignment_id"
           ],
-          "tableTo": "assignments",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -6049,37 +6089,37 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {
         "work_package_capabilities_work_package_id_work_packages_id_fk": {
           "name": "work_package_capabilities_work_package_id_work_packages_id_fk",
           "tableFrom": "work_package_capabilities",
+          "tableTo": "work_packages",
           "columnsFrom": [
             "work_package_id"
           ],
-          "tableTo": "work_packages",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         },
         "work_package_capabilities_capability_id_capabilities_id_fk": {
           "name": "work_package_capabilities_capability_id_capabilities_id_fk",
           "tableFrom": "work_package_capabilities",
+          "tableTo": "capabilities",
           "columnsFrom": [
             "capability_id"
           ],
-          "tableTo": "capabilities",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
@@ -6176,37 +6216,37 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {
         "work_package_languages_work_package_id_work_packages_id_fk": {
           "name": "work_package_languages_work_package_id_work_packages_id_fk",
           "tableFrom": "work_package_languages",
+          "tableTo": "work_packages",
           "columnsFrom": [
             "work_package_id"
           ],
-          "tableTo": "work_packages",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         },
         "work_package_languages_language_id_languages_id_fk": {
           "name": "work_package_languages_language_id_languages_id_fk",
           "tableFrom": "work_package_languages",
+          "tableTo": "languages",
           "columnsFrom": [
             "language_id"
           ],
-          "tableTo": "languages",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
@@ -6368,9 +6408,9 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         },
         "work_packages_parent_idx": {
           "name": "work_packages_parent_idx",
@@ -6383,9 +6423,9 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         },
         "work_packages_milestone_idx": {
           "name": "work_packages_milestone_idx",
@@ -6398,9 +6438,9 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         },
         "work_packages_matchable_idx": {
           "name": "work_packages_matchable_idx",
@@ -6413,78 +6453,78 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {
         "work_packages_work_request_id_work_requests_id_fk": {
           "name": "work_packages_work_request_id_work_requests_id_fk",
           "tableFrom": "work_packages",
+          "tableTo": "work_requests",
           "columnsFrom": [
             "work_request_id"
           ],
-          "tableTo": "work_requests",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         },
         "work_packages_created_by_profiles_id_fk": {
           "name": "work_packages_created_by_profiles_id_fk",
           "tableFrom": "work_packages",
+          "tableTo": "profiles",
           "columnsFrom": [
             "created_by"
           ],
-          "tableTo": "profiles",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         },
         "work_packages_parent_fk": {
           "name": "work_packages_parent_fk",
           "tableFrom": "work_packages",
+          "tableTo": "work_packages",
           "columnsFrom": [
             "parent_id",
             "work_request_id"
           ],
-          "tableTo": "work_packages",
           "columnsTo": [
             "id",
             "work_request_id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         },
         "work_packages_milestone_fk": {
           "name": "work_packages_milestone_fk",
           "tableFrom": "work_packages",
+          "tableTo": "milestones",
           "columnsFrom": [
             "milestone_id",
             "work_request_id"
           ],
-          "tableTo": "milestones",
           "columnsTo": [
             "id",
             "work_request_id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "work_packages_id_request_uq": {
           "name": "work_packages_id_request_uq",
+          "nullsNotDistinct": false,
           "columns": [
             "id",
             "work_request_id"
-          ],
-          "nullsNotDistinct": false
+          ]
         }
       },
       "policies": {},
@@ -6599,9 +6639,9 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         },
         "work_requests_creator_idx": {
           "name": "work_requests_creator_idx",
@@ -6614,50 +6654,50 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {
         "work_requests_organization_id_organizations_id_fk": {
           "name": "work_requests_organization_id_organizations_id_fk",
           "tableFrom": "work_requests",
+          "tableTo": "organizations",
           "columnsFrom": [
             "organization_id"
           ],
-          "tableTo": "organizations",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         },
         "work_requests_created_by_profiles_id_fk": {
           "name": "work_requests_created_by_profiles_id_fk",
           "tableFrom": "work_requests",
+          "tableTo": "profiles",
           "columnsFrom": [
             "created_by"
           ],
-          "tableTo": "profiles",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         },
         "work_requests_source_language_id_languages_id_fk": {
           "name": "work_requests_source_language_id_languages_id_fk",
           "tableFrom": "work_requests",
+          "tableTo": "languages",
           "columnsFrom": [
             "source_language_id"
           ],
-          "tableTo": "languages",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -6726,9 +6766,9 @@
             }
           ],
           "isUnique": true,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {},
@@ -6772,28 +6812,28 @@
         "access_role_permissions_role_id_access_roles_id_fk": {
           "name": "access_role_permissions_role_id_access_roles_id_fk",
           "tableFrom": "access_role_permissions",
+          "tableTo": "access_roles",
           "columnsFrom": [
             "role_id"
           ],
-          "tableTo": "access_roles",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         },
         "access_role_permissions_permission_id_access_permissions_id_fk": {
           "name": "access_role_permissions_permission_id_access_permissions_id_fk",
           "tableFrom": "access_role_permissions",
+          "tableTo": "access_permissions",
           "columnsFrom": [
             "permission_id"
           ],
-          "tableTo": "access_permissions",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
@@ -6879,9 +6919,9 @@
             }
           ],
           "isUnique": true,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {},
@@ -6991,9 +7031,9 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         },
         "user_role_assignments_org_idx": {
           "name": "user_role_assignments_org_idx",
@@ -7012,9 +7052,9 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         },
         "user_role_assignments_platform_active_uq": {
           "name": "user_role_assignments_platform_active_uq",
@@ -7033,10 +7073,10 @@
             }
           ],
           "isUnique": true,
-          "with": {},
-          "method": "btree",
           "where": "\"user_role_assignments\".\"organization_id\" is null and \"user_role_assignments\".\"revoked_at\" is null",
-          "concurrently": false
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         },
         "user_role_assignments_org_active_uq": {
           "name": "user_role_assignments_org_active_uq",
@@ -7061,77 +7101,77 @@
             }
           ],
           "isUnique": true,
-          "with": {},
-          "method": "btree",
           "where": "\"user_role_assignments\".\"organization_id\" is not null and \"user_role_assignments\".\"revoked_at\" is null",
-          "concurrently": false
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         }
       },
       "foreignKeys": {
         "user_role_assignments_profile_id_profiles_id_fk": {
           "name": "user_role_assignments_profile_id_profiles_id_fk",
           "tableFrom": "user_role_assignments",
+          "tableTo": "profiles",
           "columnsFrom": [
             "profile_id"
           ],
-          "tableTo": "profiles",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         },
         "user_role_assignments_role_id_access_roles_id_fk": {
           "name": "user_role_assignments_role_id_access_roles_id_fk",
           "tableFrom": "user_role_assignments",
+          "tableTo": "access_roles",
           "columnsFrom": [
             "role_id"
           ],
-          "tableTo": "access_roles",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         },
         "user_role_assignments_organization_id_organizations_id_fk": {
           "name": "user_role_assignments_organization_id_organizations_id_fk",
           "tableFrom": "user_role_assignments",
+          "tableTo": "organizations",
           "columnsFrom": [
             "organization_id"
           ],
-          "tableTo": "organizations",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         },
         "user_role_assignments_granted_by_profiles_id_fk": {
           "name": "user_role_assignments_granted_by_profiles_id_fk",
           "tableFrom": "user_role_assignments",
+          "tableTo": "profiles",
           "columnsFrom": [
             "granted_by"
           ],
-          "tableTo": "profiles",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "set null"
+          "onDelete": "set null",
+          "onUpdate": "no action"
         },
         "user_role_assignments_revoked_by_profiles_id_fk": {
           "name": "user_role_assignments_revoked_by_profiles_id_fk",
           "tableFrom": "user_role_assignments",
+          "tableTo": "profiles",
           "columnsFrom": [
             "revoked_by"
           ],
-          "tableTo": "profiles",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "set null"
+          "onDelete": "set null",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -7141,6 +7181,748 @@
         "user_role_assignments_expiry_ck": {
           "name": "user_role_assignments_expiry_ck",
           "value": "\"user_role_assignments\".\"expires_at\" is null or \"user_role_assignments\".\"expires_at\" > \"user_role_assignments\".\"granted_at\""
+        }
+      },
+      "isRLSEnabled": true
+    },
+    "public.identity_verifications": {
+      "name": "identity_verifications",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "profile_id": {
+          "name": "profile_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'pending'"
+        },
+        "method": {
+          "name": "method",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "provider": {
+          "name": "provider",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "external_reference": {
+          "name": "external_reference",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "verified_at": {
+          "name": "verified_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "reviewed_by": {
+          "name": "reviewed_by",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "decision_reason": {
+          "name": "decision_reason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "consented_at": {
+          "name": "consented_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "identity_verifications_profile_status_idx": {
+          "name": "identity_verifications_profile_status_idx",
+          "columns": [
+            {
+              "expression": "profile_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "status",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "expires_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "identity_verifications_profile_id_profiles_id_fk": {
+          "name": "identity_verifications_profile_id_profiles_id_fk",
+          "tableFrom": "identity_verifications",
+          "tableTo": "profiles",
+          "columnsFrom": [
+            "profile_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "identity_verifications_reviewed_by_profiles_id_fk": {
+          "name": "identity_verifications_reviewed_by_profiles_id_fk",
+          "tableFrom": "identity_verifications",
+          "tableTo": "profiles",
+          "columnsFrom": [
+            "reviewed_by"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "identity_verifications_status_ck": {
+          "name": "identity_verifications_status_ck",
+          "value": "\"identity_verifications\".\"status\" in ('pending','verified','rejected','expired','revoked')"
+        },
+        "identity_verifications_method_ck": {
+          "name": "identity_verifications_method_ck",
+          "value": "\"identity_verifications\".\"method\" in ('provider','document_review','in_person','other')"
+        },
+        "identity_verifications_expiry_ck": {
+          "name": "identity_verifications_expiry_ck",
+          "value": "\"identity_verifications\".\"expires_at\" is null or \"identity_verifications\".\"verified_at\" is null or \"identity_verifications\".\"expires_at\" > \"identity_verifications\".\"verified_at\""
+        },
+        "identity_verifications_verified_ck": {
+          "name": "identity_verifications_verified_ck",
+          "value": "\"identity_verifications\".\"status\" <> 'verified' or (\"identity_verifications\".\"verified_at\" is not null and \"identity_verifications\".\"consented_at\" is not null)"
+        }
+      },
+      "isRLSEnabled": true
+    },
+    "public.ai_interviews": {
+      "name": "ai_interviews",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "attempt_id": {
+          "name": "attempt_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "prompt_key": {
+          "name": "prompt_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "prompt_version": {
+          "name": "prompt_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "model_provider": {
+          "name": "model_provider",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "model_id": {
+          "name": "model_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'created'"
+        },
+        "language_code": {
+          "name": "language_code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'en'"
+        },
+        "transcript": {
+          "name": "transcript",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'[]'::jsonb"
+        },
+        "evaluation": {
+          "name": "evaluation",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "review_status": {
+          "name": "review_status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'not_required'"
+        },
+        "started_at": {
+          "name": "started_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "completed_at": {
+          "name": "completed_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "ai_interviews_attempt_uq": {
+          "name": "ai_interviews_attempt_uq",
+          "columns": [
+            {
+              "expression": "attempt_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "ai_interviews_attempt_id_assessment_attempts_id_fk": {
+          "name": "ai_interviews_attempt_id_assessment_attempts_id_fk",
+          "tableFrom": "ai_interviews",
+          "tableTo": "assessment_attempts",
+          "columnsFrom": [
+            "attempt_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "ai_interviews_status_ck": {
+          "name": "ai_interviews_status_ck",
+          "value": "\"ai_interviews\".\"status\" in ('created','in_progress','completed','interrupted','failed','voided')"
+        },
+        "ai_interviews_review_status_ck": {
+          "name": "ai_interviews_review_status_ck",
+          "value": "\"ai_interviews\".\"review_status\" in ('not_required','pending','approved','rejected','appealed')"
+        },
+        "ai_interviews_language_ck": {
+          "name": "ai_interviews_language_ck",
+          "value": "\"ai_interviews\".\"language_code\" ~ '^[a-z]{2,3}(-[A-Za-z0-9]{2,8})*$'"
+        }
+      },
+      "isRLSEnabled": true
+    },
+    "public.capability_claims": {
+      "name": "capability_claims",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "profile_id": {
+          "name": "profile_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "capability_id": {
+          "name": "capability_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "claimed_level": {
+          "name": "claimed_level",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "evidence_references": {
+          "name": "evidence_references",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'[]'::jsonb"
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'self_reported'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "capability_claims_profile_idx": {
+          "name": "capability_claims_profile_idx",
+          "columns": [
+            {
+              "expression": "profile_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "capability_claims_capability_idx": {
+          "name": "capability_claims_capability_idx",
+          "columns": [
+            {
+              "expression": "capability_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "status",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "capability_claims_profile_id_profiles_id_fk": {
+          "name": "capability_claims_profile_id_profiles_id_fk",
+          "tableFrom": "capability_claims",
+          "tableTo": "profiles",
+          "columnsFrom": [
+            "profile_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "capability_claims_capability_id_capabilities_id_fk": {
+          "name": "capability_claims_capability_id_capabilities_id_fk",
+          "tableFrom": "capability_claims",
+          "tableTo": "capabilities",
+          "columnsFrom": [
+            "capability_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "capability_claims_level_ck": {
+          "name": "capability_claims_level_ck",
+          "value": "\"capability_claims\".\"claimed_level\" is null or \"capability_claims\".\"claimed_level\" between 0 and 5"
+        },
+        "capability_claims_status_ck": {
+          "name": "capability_claims_status_ck",
+          "value": "\"capability_claims\".\"status\" in ('self_reported','evidence_assessed','verified','disputed','withdrawn')"
+        }
+      },
+      "isRLSEnabled": true
+    },
+    "public.capability_gap_analyses": {
+      "name": "capability_gap_analyses",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "profile_id": {
+          "name": "profile_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "target_type": {
+          "name": "target_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "target_key": {
+          "name": "target_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "target_description": {
+          "name": "target_description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "requirements": {
+          "name": "requirements",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'[]'::jsonb"
+        },
+        "analysis": {
+          "name": "analysis",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "prompt_version": {
+          "name": "prompt_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'draft'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "capability_gap_analyses_profile_idx": {
+          "name": "capability_gap_analyses_profile_idx",
+          "columns": [
+            {
+              "expression": "profile_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "capability_gap_analyses_profile_id_profiles_id_fk": {
+          "name": "capability_gap_analyses_profile_id_profiles_id_fk",
+          "tableFrom": "capability_gap_analyses",
+          "tableTo": "profiles",
+          "columnsFrom": [
+            "profile_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "capability_gap_analyses_target_type_ck": {
+          "name": "capability_gap_analyses_target_type_ck",
+          "value": "\"capability_gap_analyses\".\"target_type\" in ('role','work_package','learning_goal')"
+        },
+        "capability_gap_analyses_status_ck": {
+          "name": "capability_gap_analyses_status_ck",
+          "value": "\"capability_gap_analyses\".\"status\" in ('draft','ready','review_required','superseded')"
+        }
+      },
+      "isRLSEnabled": true
+    },
+    "public.learning_roadmaps": {
+      "name": "learning_roadmaps",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "profile_id": {
+          "name": "profile_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "gap_analysis_id": {
+          "name": "gap_analysis_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "summary": {
+          "name": "summary",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "target_date": {
+          "name": "target_date",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "estimated_hours": {
+          "name": "estimated_hours",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "steps": {
+          "name": "steps",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'[]'::jsonb"
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'proposed'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "learning_roadmaps_profile_idx": {
+          "name": "learning_roadmaps_profile_idx",
+          "columns": [
+            {
+              "expression": "profile_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "learning_roadmaps_profile_id_profiles_id_fk": {
+          "name": "learning_roadmaps_profile_id_profiles_id_fk",
+          "tableFrom": "learning_roadmaps",
+          "tableTo": "profiles",
+          "columnsFrom": [
+            "profile_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "learning_roadmaps_gap_analysis_id_capability_gap_analyses_id_fk": {
+          "name": "learning_roadmaps_gap_analysis_id_capability_gap_analyses_id_fk",
+          "tableFrom": "learning_roadmaps",
+          "tableTo": "capability_gap_analyses",
+          "columnsFrom": [
+            "gap_analysis_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "learning_roadmaps_hours_ck": {
+          "name": "learning_roadmaps_hours_ck",
+          "value": "\"learning_roadmaps\".\"estimated_hours\" is null or \"learning_roadmaps\".\"estimated_hours\" >= 0"
+        },
+        "learning_roadmaps_status_ck": {
+          "name": "learning_roadmaps_status_ck",
+          "value": "\"learning_roadmaps\".\"status\" in ('proposed','active','paused','completed','superseded')"
         }
       },
       "isRLSEnabled": true
@@ -7194,10 +7976,10 @@
     }
   },
   "schemas": {},
-  "views": {},
   "sequences": {},
   "roles": {},
   "policies": {},
+  "views": {},
   "_meta": {
     "columns": {},
     "schemas": {},

@@ -18,7 +18,8 @@ export type IconName =
   | "chevron-left"
   | "chevron-right"
   | "menu"
-  | "close";
+  | "close"
+  | "accessibility";
 
 const stroke = {
   fill: "none",
@@ -159,6 +160,13 @@ export function Icon({ name, className }: { name: IconName; className?: string }
       return (
         <svg {...base} {...stroke} strokeWidth={2}>
           <path d="M4 7h16M4 12h16M4 17h16" />
+        </svg>
+      );
+    case "accessibility":
+      return (
+        <svg {...base} {...stroke}>
+          <circle cx="12" cy="4.5" r="2.2" />
+          <path d="M5 8.5h14M12 7v13M8.5 12l-3 5M15.5 12l3 5" />
         </svg>
       );
     case "close":

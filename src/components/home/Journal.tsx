@@ -7,7 +7,7 @@ type Props = Extract<HomeBlock, { type: "journal" }>['props'];
 
 export function Journal({ id, eyebrow, title, subtitle, items, link, readLabel, previewNote }: Props) {
   return (
-    <section id={id} className="scroll-mt-24 bg-gold-50 py-24 sm:py-28">
+    <section id={id} className="scroll-mt-24 bg-gold-50 py-20 sm:py-24">
       <div className={container}>
         <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
           <div>
@@ -19,8 +19,8 @@ export function Journal({ id, eyebrow, title, subtitle, items, link, readLabel, 
         </div>
         <div className="mt-10 grid gap-4 md:grid-cols-3">
           {items.map((item, index) => (
-            <article key={item.slug} className={`flex h-full flex-col rounded-3xl border border-green-950/10 p-6 sm:p-7 ${index === 1 ? "bg-gold-200/55" : "bg-white/60"}`}>
-              <span className="w-fit rounded-full bg-gold-500 px-3 py-1 text-xs font-semibold text-green-950">{item.category}</span>
+            <article key={item.slug} className="flex h-full flex-col rounded-[1.5rem] border border-green-950/10 bg-white p-6 sm:p-7">
+              <span className="w-fit rounded-full bg-gold-100 px-3 py-1 text-xs font-semibold text-green-800">{item.category}</span>
               <h3 className="mt-5 text-xl font-semibold leading-tight tracking-tight">{item.title}</h3>
               <p className="mt-3 flex-1 text-sm leading-relaxed text-green-900/80">{item.excerpt}</p>
               <Link href={item.href} className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-green-800 hover:text-green-950">{readLabel}<Icon name="arrow" className="size-4"/></Link>

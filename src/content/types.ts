@@ -19,7 +19,7 @@ export type HeroVisual = {
   packageOutcomeText: string;
 };
 
-export type Audience = { tag: string; title: string; items: string[]; cta: Cta };
+export type Audience = { tag: string; title: string; items: string[]; cta: Cta; imageUrl?: string; imageAlt?: string };
 
 export type HeroSlide = {
   id: string;
@@ -33,7 +33,7 @@ export type HeroSlide = {
 };
 
 export type HomeBlock =
-  | { type: "hero_slider"; props: { slides: HeroSlide[]; label: string } }
+  | { type: "hero_slider"; props: { slides: HeroSlide[]; label: string; previousLabel: string; nextLabel: string; slideLabel: string; regionLabel: string } }
   | {
       type: "hero";
       props: { eyebrow: string; title: string; subtitle: string; primary: Cta; secondary: Cta; note: string; visual: HeroVisual };
@@ -60,10 +60,11 @@ export type HomeBlock =
         id: string;
         title: string;
         subtitle: string;
-        items: { icon: "layers" | "languages" | "shield" | "coins"; title: string; text: string }[];
+        items: { icon: "layers" | "languages" | "shield" | "coins" | "accessibility"; title: string; text: string }[];
       };
     }
-  | { type: "audiences"; props: { id: string; employers: Audience; talent: Audience } }
+  | { type: "audiences"; props: { id: string; employers: Audience; talent: Audience; institutions: Audience } }
+  | { type: "regions"; props: { eyebrow: string; title: string; subtitle: string; items: { kicker: string; title: string; text: string; imageUrl: string; imageAlt: string }[] } }
   | {
       type: "languages";
       props: { id: string; title: string; subtitle: string; live: string[]; liveLabel: string; soonLabel: string; soon: string[] };

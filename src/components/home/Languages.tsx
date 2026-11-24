@@ -5,7 +5,7 @@ type Props = Extract<HomeBlock, { type: "languages" }>["props"];
 
 export function Languages({ id, title, subtitle, live, liveLabel, soonLabel, soon }: Props) {
   return (
-    <section id={id} className="scroll-mt-24 bg-gold-100 py-20 text-center sm:py-24">
+    <section id={id} className="scroll-mt-24 border-y border-green-950/10 bg-white py-20 text-center sm:py-24">
       <div className={container}>
         <h2 className="mx-auto max-w-2xl text-balance text-3xl font-semibold leading-[1.1] tracking-[-0.03em] sm:text-4xl">{title}</h2>
         <p className="mx-auto mt-4 max-w-xl text-lg text-green-800">{subtitle}</p>
@@ -13,7 +13,7 @@ export function Languages({ id, title, subtitle, live, liveLabel, soonLabel, soo
         <p className="mt-8 text-xs font-semibold uppercase tracking-[0.14em] text-green-700">{liveLabel}</p>
         <ul className="mt-4 flex flex-wrap items-center justify-center gap-3">
           {live.map((name) => (
-            <li key={name} className="rounded-full bg-gold-500 px-6 py-3 text-lg font-semibold text-green-950 shadow-[0_10px_26px_-12px_rgba(0,22,17,0.45)]">
+            <li key={name} className="rounded-full border border-green-950/10 bg-gold-100 px-6 py-3 text-lg font-semibold text-green-950">
               {name}
             </li>
           ))}
