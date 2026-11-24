@@ -24,7 +24,8 @@ const copy = {
   en: {
     open: "Accessibility and display preferences",
     title: "Make this site more comfortable",
-    intro: "Adjust how content looks and moves. Your choices are saved on this device.",
+    intro:
+      "Adjust how content looks and moves. Your choices are saved on this device.",
     text: "Text size",
     standard: "Standard",
     large: "Large",
@@ -46,7 +47,8 @@ const copy = {
   fr: {
     open: "Préférences d’accessibilité et d’affichage",
     title: "Personnalisez votre confort de lecture",
-    intro: "Ajustez l’affichage et les animations. Vos choix sont enregistrés sur cet appareil.",
+    intro:
+      "Ajustez l’affichage et les animations. Vos choix sont enregistrés sur cet appareil.",
     text: "Taille du texte",
     standard: "Standard",
     large: "Grande",
@@ -76,17 +78,34 @@ export function AccessibilityPreferences({ locale }: { locale: Locale }) {
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
+    let cancelled = false;
+
+    let saved: string | null = null;
+
     try {
-      const saved = window.localStorage.getItem(storageKey);
-      if (saved) {
-        const parsed = JSON.parse(saved) as Partial<Preferences>;
-        setPreferences({ ...defaults, ...parsed });
-      }
+      saved = window.localStorage.getItem(storageKey);
     } catch {
-      // Preferences remain usable for this session if storage is unavailable.
-    } finally {
-      setHydrated(true);
+      // Preferences remain usable if storage is unavailable.
     }
+
+    window.setTimeout(() => {
+      if (cancelled) return;
+
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved) as Partial<Preferences>;
+          setPreferences({ ...defaults, ...parsed });
+        } catch {
+          // Invalid saved preferences: retain defaults.
+        }
+      }
+
+      setHydrated(true);
+    }, 0);
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   useEffect(() => {
@@ -130,10 +149,25 @@ export function AccessibilityPreferences({ locale }: { locale: Locale }) {
         >
           <div className="flex items-start justify-between gap-3">
             <div>
-              <h2 id="hcil-accessibility-title" className="text-lg font-semibold">{t.title}</h2>
-              <p id="hcil-accessibility-intro" className="mt-1 text-sm leading-relaxed text-green-800">{t.intro}</p>
+              <h2
+                id="hcil-accessibility-title"
+                className="text-lg font-semibold"
+              >
+                {t.title}
+              </h2>
+              <p
+                id="hcil-accessibility-intro"
+                className="mt-1 text-sm leading-relaxed text-green-800"
+              >
+                {t.intro}
+              </p>
             </div>
-            <button type="button" onClick={() => setOpen(false)} aria-label={t.close} className="grid size-10 shrink-0 place-items-center rounded-full border border-green-950/15 hover:bg-green-50 focus-visible:outline-2 focus-visible:outline-offset-2">
+            <button
+              type="button"
+              onClick={() => setOpen(false)}
+              aria-label={t.close}
+              className="grid size-10 shrink-0 place-items-center rounded-full border border-green-950/15 hover:bg-green-50 focus-visible:outline-2 focus-visible:outline-offset-2"
+            >
               <Icon name="close" className="size-5" />
             </button>
           </div>
@@ -143,7 +177,13 @@ export function AccessibilityPreferences({ locale }: { locale: Locale }) {
               <legend className="mb-2 text-sm font-semibold">{t.text}</legend>
               <div className="grid grid-cols-3 gap-2">
                 {(["standard", "large", "larger"] as const).map((value) => (
-                  <button key={value} type="button" aria-pressed={preferences.text === value} onClick={() => update("text", value)} className={`min-h-11 rounded-xl border px-2 text-sm font-medium ${preferences.text === value ? "border-green-800 bg-green-50 ring-2 ring-green-700/20" : "border-green-950/15 hover:bg-green-50"}`}>
+                  <button
+                    key={value}
+                    type="button"
+                    aria-pressed={preferences.text === value}
+                    onClick={() => update("text", value)}
+                    className={`min-h-11 rounded-xl border px-2 text-sm font-medium ${preferences.text === value ? "border-green-800 bg-green-50 ring-2 ring-green-700/20" : "border-green-950/15 hover:bg-green-50"}`}
+                  >
                     {t[value]}
                   </button>
                 ))}
@@ -151,11 +191,23 @@ export function AccessibilityPreferences({ locale }: { locale: Locale }) {
             </fieldset>
 
             <fieldset>
-              <legend className="mb-2 text-sm font-semibold">{t.spacing}</legend>
+              <legend className="mb-2 text-sm font-semibold">
+                {t.spacing}
+              </legend>
               <div className="grid grid-cols-3 gap-2">
                 {(["standard", "comfortable", "wide"] as const).map((value) => (
-                  <button key={value} type="button" aria-pressed={preferences.spacing === value} onClick={() => update("spacing", value)} className={`min-h-11 rounded-xl border px-2 text-sm font-medium ${preferences.spacing === value ? "border-green-800 bg-green-50 ring-2 ring-green-700/20" : "border-green-950/15 hover:bg-green-50"}`}>
-                    {value === "standard" ? t.standard : value === "comfortable" ? t.comfortable : t.wide}
+                  <button
+                    key={value}
+                    type="button"
+                    aria-pressed={preferences.spacing === value}
+                    onClick={() => update("spacing", value)}
+                    className={`min-h-11 rounded-xl border px-2 text-sm font-medium ${preferences.spacing === value ? "border-green-800 bg-green-50 ring-2 ring-green-700/20" : "border-green-950/15 hover:bg-green-50"}`}
+                  >
+                    {value === "standard"
+                      ? t.standard
+                      : value === "comfortable"
+                        ? t.comfortable
+                        : t.wide}
                   </button>
                 ))}
               </div>
@@ -165,7 +217,13 @@ export function AccessibilityPreferences({ locale }: { locale: Locale }) {
               <legend className="mb-2 text-sm font-semibold">{t.font}</legend>
               <div className="grid grid-cols-1 gap-2">
                 {(["standard", "alternative"] as const).map((value) => (
-                  <button key={value} type="button" aria-pressed={preferences.font === value} onClick={() => update("font", value)} className={`min-h-11 rounded-xl border px-3 text-left text-sm font-medium ${preferences.font === value ? "border-green-800 bg-green-50 ring-2 ring-green-700/20" : "border-green-950/15 hover:bg-green-50"}`}>
+                  <button
+                    key={value}
+                    type="button"
+                    aria-pressed={preferences.font === value}
+                    onClick={() => update("font", value)}
+                    className={`min-h-11 rounded-xl border px-3 text-left text-sm font-medium ${preferences.font === value ? "border-green-800 bg-green-50 ring-2 ring-green-700/20" : "border-green-950/15 hover:bg-green-50"}`}
+                  >
                     {value === "standard" ? t.usual : t.alternative}
                   </button>
                 ))}
@@ -173,10 +231,18 @@ export function AccessibilityPreferences({ locale }: { locale: Locale }) {
             </fieldset>
 
             <fieldset>
-              <legend className="mb-2 text-sm font-semibold">{t.contrast}</legend>
+              <legend className="mb-2 text-sm font-semibold">
+                {t.contrast}
+              </legend>
               <div className="grid grid-cols-2 gap-2">
                 {(["standard", "high"] as const).map((value) => (
-                  <button key={value} type="button" aria-pressed={preferences.contrast === value} onClick={() => update("contrast", value)} className={`min-h-11 rounded-xl border px-3 text-sm font-medium ${preferences.contrast === value ? "border-green-800 bg-green-50 ring-2 ring-green-700/20" : "border-green-950/15 hover:bg-green-50"}`}>
+                  <button
+                    key={value}
+                    type="button"
+                    aria-pressed={preferences.contrast === value}
+                    onClick={() => update("contrast", value)}
+                    className={`min-h-11 rounded-xl border px-3 text-sm font-medium ${preferences.contrast === value ? "border-green-800 bg-green-50 ring-2 ring-green-700/20" : "border-green-950/15 hover:bg-green-50"}`}
+                  >
                     {value === "standard" ? t.standard : t.high}
                   </button>
                 ))}
@@ -187,7 +253,13 @@ export function AccessibilityPreferences({ locale }: { locale: Locale }) {
               <legend className="mb-2 text-sm font-semibold">{t.motion}</legend>
               <div className="grid grid-cols-1 gap-2">
                 {(["system", "reduced"] as const).map((value) => (
-                  <button key={value} type="button" aria-pressed={preferences.motion === value} onClick={() => update("motion", value)} className={`min-h-11 rounded-xl border px-3 text-left text-sm font-medium ${preferences.motion === value ? "border-green-800 bg-green-50 ring-2 ring-green-700/20" : "border-green-950/15 hover:bg-green-50"}`}>
+                  <button
+                    key={value}
+                    type="button"
+                    aria-pressed={preferences.motion === value}
+                    onClick={() => update("motion", value)}
+                    className={`min-h-11 rounded-xl border px-3 text-left text-sm font-medium ${preferences.motion === value ? "border-green-800 bg-green-50 ring-2 ring-green-700/20" : "border-green-950/15 hover:bg-green-50"}`}
+                  >
                     {value === "system" ? t.system : t.reduced}
                   </button>
                 ))}
@@ -195,7 +267,11 @@ export function AccessibilityPreferences({ locale }: { locale: Locale }) {
             </fieldset>
           </div>
 
-          <button type="button" onClick={() => setPreferences(defaults)} className="mt-5 min-h-11 w-full rounded-full border border-green-950/20 px-4 py-2 text-sm font-semibold text-green-900 hover:bg-green-50 focus-visible:outline-2 focus-visible:outline-offset-2">
+          <button
+            type="button"
+            onClick={() => setPreferences(defaults)}
+            className="mt-5 min-h-11 w-full rounded-full border border-green-950/20 px-4 py-2 text-sm font-semibold text-green-900 hover:bg-green-50 focus-visible:outline-2 focus-visible:outline-offset-2"
+          >
             {t.reset}
           </button>
         </section>
@@ -209,7 +285,9 @@ export function AccessibilityPreferences({ locale }: { locale: Locale }) {
         className="flex min-h-12 items-center gap-2 rounded-full border border-green-950/15 bg-white px-4 py-3 text-sm font-semibold text-green-950 shadow-lg transition hover:bg-green-50 focus-visible:outline-2 focus-visible:outline-offset-2"
       >
         <Icon name="accessibility" className="size-5" />
-        <span className="hidden sm:inline">{locale === "fr" ? "Accessibilité" : "Accessibility"}</span>
+        <span className="hidden sm:inline">
+          {locale === "fr" ? "Accessibilité" : "Accessibility"}
+        </span>
       </button>
     </div>
   );
